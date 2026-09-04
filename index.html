@@ -212,9 +212,25 @@
 
   .card {
     position: absolute; inset: 0;
-    will-change: transform, opacity;
+    --away: 0;                       /* 0 centred, 1 fully off to the side */
+    will-change: transform;
   }
-  .card > * { position: absolute; }
+  .card > *, .card-extras > * { position: absolute; }
+  .card-extras { position: absolute; inset: 0; }
+
+  /* Off centre, a card sheds everything but its device. The snippets, tags,
+     copy and button go first; the phone or laptop stays, smaller and softly
+     blurred, so the cases read as devices travelling along one line. */
+  .card-extras {
+    opacity: calc(1 - var(--away) * 2.1);
+    transition: opacity .25s linear;
+    pointer-events: none;
+  }
+  .card.at-centre .card-extras { pointer-events: auto; }
+  .device {
+    filter: blur(calc(var(--away) * 2.6px));
+    opacity: calc(1 - var(--away) * 0.42);
+  }
 
   .tags { left: 563px; top: 160px; display: flex; gap: 10px; }
   .tag {
@@ -225,7 +241,11 @@
   }
 
   .phone  { left: 443.5px; top: 197px; width: 402px; height: 402px; }
-  .laptop { left: 448px;   top: 250px; width: 392px; height: 337px; object-fit: contain; }
+  /* 2478x1384 asset, aspect 1.790. Centred on the same axis as the phone
+     (644.5, 398) so both cards sit on one optical line, and sized to the
+     width of the copy beneath it. The earlier export was a 1.164 crop that
+     cut the laptop in half. */
+  .laptop { left: 384.5px; top: 253px; width: 520px; height: 290px; object-fit: contain; }
 
   .snip { transform-origin: 50% 50%; }
   .snip-session { left: 435px; top: 278px; width: 144px; height: 142px; }
@@ -358,12 +378,12 @@
 
       <!-- ── card 1 · M2Med ── -->
       <article class="card" data-i="0" id="cardM2med">
+        <img class="device phone stage1" src="assets/m2med/phone.png" alt="M2Med app on an iPhone">
+        <div class="card-extras">
         <div class="tags stage1">
           <span class="tag">2026</span>
           <span class="tag">App Design</span>
         </div>
-
-        <img class="phone stage1" src="assets/m2med/phone.png" alt="M2Med app on an iPhone">
 
         <img class="snip snip-session" src="assets/m2med/session-card.png" alt="Parallel session card with room picker">
         <img class="snip snip-event"   src="assets/m2med/event-card.png"   alt="Event card showing CME credits">
@@ -375,16 +395,17 @@
         </p>
 
         <a class="dive stage1" href="m2med-case.html">Dive in</a>
+        </div>
       </article>
 
       <!-- ── card 2 · Samsung. Shell only: cover photo and features to come. ── -->
       <article class="card" data-i="1" id="cardSamsung">
+        <img class="device laptop stage1" src="assets/m2med/laptop.png" alt="Samsung CRM work on a laptop">
+        <div class="card-extras">
         <div class="tags stage1">
           <span class="tag">2025</span>
           <span class="tag">CRM Design</span>
         </div>
-
-        <img class="laptop stage1" src="assets/m2med/laptop.png" alt="Samsung CRM work on a laptop">
 
         <p class="case-desc stage1">
           <b>Samsung</b> is <b>CRM product design</b> across five markets and three languages,
@@ -392,6 +413,7 @@
         </p>
 
         <a class="dive stage1" href="samsung-case.html">Dive in</a>
+        </div>
       </article>
 
     </div>
@@ -578,34 +600,40 @@
 
     var PITCH  = 380;   // px between card centres at rest
     var SCALE  = 0.55;  // how much a neighbour shrinks
-    var FADE   = 0.62;  // how much it fades
-    var TRAVEL = 760;   // px of scroll per card transition
+    var TRAVEL = 760;   // px of scroll per travel segment
+
+    // N segments, not N-1: the first one carries the cases IN from the right
+    // as you leave the hero, so hero -> case studies is itself a horizontal
+    // move rather than the first card simply being there already.
+    var SEGS = N;
 
     var k = 1, snapTimer = 0, lenis = window.__lenis || null;
 
     function fit() {
       k = Math.min(1, innerWidth / 1320, innerHeight / 880);
       rail.style.transform = 'scale(' + k + ')';
-      wrap.style.height = (innerHeight + (N - 1) * TRAVEL) + 'px';
+      wrap.style.height = (innerHeight + SEGS * TRAVEL) + 'px';
     }
 
     function progress() {
       var r = wrap.getBoundingClientRect();
-      var total = (N - 1) * TRAVEL;
+      var total = SEGS * TRAVEL;
       if (total <= 0) return 0;
       return Math.min(1, Math.max(0, -r.top / total));
     }
+    // index runs -1 .. N-1, so at the very start every card is off to the right
+    function index() { return progress() * SEGS - 1; }
 
     function paint() {
-      var c = progress() * (N - 1);
+      var c = index();
       cards.forEach(function (el, i) {
         var d = i - c;
         var a = Math.min(1, Math.abs(d));
         el.style.transform =
           'translateX(' + (d * PITCH).toFixed(1) + 'px) scale(' + (1 - SCALE * a).toFixed(3) + ')';
-        el.style.opacity = (1 - FADE * a).toFixed(3);
+        el.style.setProperty('--away', a.toFixed(3));
         el.style.zIndex = String(100 - Math.round(a * 100));
-        el.style.pointerEvents = a < 0.2 ? 'auto' : 'none';
+        el.classList.toggle('at-centre', a < 0.2);
 
         // a card animates its contents in only once it has taken the stage
         if (a < 0.16) {
@@ -626,10 +654,10 @@
     function snap() {
       var r = wrap.getBoundingClientRect();
       if (r.top > 0 || r.bottom < innerHeight) return;      // not inside the deck
-      var c = progress() * (N - 1);
-      var target = Math.round(c);
+      var c = index();
+      var target = Math.max(0, Math.min(N - 1, Math.round(c)));
       if (Math.abs(c - target) < 0.02) return;
-      var y = wrap.offsetTop + (target / (N - 1)) * ((N - 1) * TRAVEL);
+      var y = wrap.offsetTop + ((target + 1) / SEGS) * (SEGS * TRAVEL);
       if (lenis) lenis.scrollTo(y, { duration: 0.55 });
       else scrollTo({ top: y, behavior: 'smooth' });
     }
@@ -654,7 +682,8 @@
       }, { threshold: 0, rootMargin: '-40% 0px -40% 0px' }).observe(wrap);
     }
 
-    window.__deck = { progress: progress, cards: cards, PITCH: PITCH, fitScale: function () { return k; } };
+    window.__deck = { progress: progress, index: index, cards: cards,
+                      PITCH: PITCH, SEGS: SEGS, fitScale: function () { return k; } };
   })();
 </script>
 </body>
