@@ -82,7 +82,11 @@
   .nav-cta:hover { transform: scale(1.05); filter: saturate(1.08); }
 
   /* ── hero ──────────────────────────────────────────────────────── */
-  .hero { padding: 190px 24px 0; }   /* cases sit right under it */
+  /* The hero is a PAGE. Without min-height it was 713px against an 860px
+     viewport, so the case studies crowded onto the same screen instead of
+     following it. 'Right under' means no gap between the two pages, not the
+     two sharing one. */
+  .hero { padding: 190px 24px 0; min-height: 100vh; }
   .hero-inner {
     width: 943px; max-width: 100%; margin: 0 auto;
     display: grid; grid-template-columns: 555px 388px;
@@ -280,7 +284,9 @@
   }
   .dive:hover { transform: scale(1.04); }
 
-  /* stage 1 — the card's own furniture, once it reaches centre */
+  /* stage 1 — the card's own furniture, once it reaches centre. Devices are
+     deliberately NOT in here: a waiting card still has to show its phone or
+     laptop, which is what makes it read as the next case study peeking in. */
   .card .stage1 { opacity: 0; transform: translateY(22px); }
   .card.in1 .stage1 {
     opacity: 1; transform: none;
@@ -389,7 +395,7 @@
 
       <!-- ── card 1 · M2Med ── -->
       <article class="card" data-i="0" id="cardM2med">
-        <img class="device phone stage1" src="assets/m2med/phone.png" alt="M2Med app on an iPhone">
+        <img class="device phone" src="assets/m2med/phone.png" alt="M2Med app on an iPhone">
         <div class="card-extras">
         <div class="tags stage1">
           <span class="tag">2026</span>
@@ -411,7 +417,7 @@
 
       <!-- ── card 2 · Samsung. Shell only: cover photo and features to come. ── -->
       <article class="card" data-i="1" id="cardSamsung">
-        <img class="device laptop stage1" src="assets/m2med/laptop.png" alt="Samsung CRM work on a laptop">
+        <img class="device laptop" src="assets/samsung/laptop-cover.png" alt="Samsung CRM work on a laptop">
         <div class="card-extras">
         <div class="tags stage1">
           <span class="tag">2025</span>
