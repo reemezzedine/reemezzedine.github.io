@@ -197,13 +197,24 @@
     will-change: transform;
   }
 
-  /* ── case section ──────────────────────────────────────────────── */
-  .case { position: relative; overflow: hidden; }
-  .case-canvas {
-    position: relative; width: 1280px; height: 828px;
-    margin: 0 auto; transform-origin: 50% 0;
+  /* ── case studies: a pinned horizontal deck ────────────────────────
+     The wrapper is tall; the stage inside it sticks to the viewport, so
+     scrolling DOWN advances a continuous card index and each card slides
+     sideways. Off-centre cards shrink and fade, which is the depth cue that
+     makes the next one read as waiting its turn. After the last card the
+     wrapper ends and the page returns to normal vertical scroll. */
+  .rail-wrap { position: relative; }
+  .rail-stage {
+    position: sticky; top: 0; height: 100vh;
+    overflow: hidden; display: grid; place-items: center;
   }
-  .case-canvas > * { position: absolute; }
+  .rail { position: relative; width: 1280px; height: 828px; transform-origin: 50% 50%; }
+
+  .card {
+    position: absolute; inset: 0;
+    will-change: transform, opacity;
+  }
+  .card > * { position: absolute; }
 
   .tags { left: 563px; top: 160px; display: flex; gap: 10px; }
   .tag {
@@ -213,24 +224,13 @@
     font-size: 10px; font-weight: 600; letter-spacing: -.32px;
   }
 
-  .phone { left: 443.5px; top: 197px; width: 402px; height: 402px; }
+  .phone  { left: 443.5px; top: 197px; width: 402px; height: 402px; }
+  .laptop { left: 448px;   top: 250px; width: 392px; height: 337px; object-fit: contain; }
 
   .snip { transform-origin: 50% 50%; }
   .snip-session { left: 435px; top: 278px; width: 144px; height: 142px; }
   .snip-event   { left: 737px; top: 240px; width: 157px; height: 139px; }
   .snip-nav     { left: 673px; top: 431px; width: 177px; height: 35px;  }
-
-  /* Next case study, peeking to the right of the phone: smaller and faded
-     until you reach it. Position and size are MINE, not from a Figma board -
-     there is no board yet showing the laptop beside the phone. */
-  .laptop {
-    left: 902px; top: 330px; width: 210px; height: 180px;
-    opacity: .38; filter: saturate(.7);
-    transition: opacity .5s var(--ease), transform .55s var(--spring),
-                filter .5s var(--ease);
-  }
-  .laptop img { width: 100%; height: 100%; object-fit: contain; display: block; }
-  .laptop:hover { opacity: .92; filter: saturate(1); transform: scale(1.04); }
 
   .case-desc {
     left: 381px; top: 611px; width: 517px;
@@ -245,36 +245,32 @@
     width: 203px; height: 55px; border-radius: 100px; background: #000;
     color: #fff; font-family: "Inclusive Sans", var(--body);
     font-size: 16px; font-weight: 600; letter-spacing: -.32px;
-    transition: transform .45s var(--spring), filter .3s var(--ease);
+    transition: transform .45s var(--spring);
   }
   .dive:hover { transform: scale(1.04); }
 
-  /* stage 1 — phone, tags, copy, button */
-  .case-canvas .stage1 { opacity: 0; transform: translateY(22px); }
-  .case.in1 .stage1 {
+  /* stage 1 — the card's own furniture, once it reaches centre */
+  .card .stage1 { opacity: 0; transform: translateY(22px); }
+  .card.in1 .stage1 {
     opacity: 1; transform: none;
     transition: opacity .7s var(--ease), transform .7s var(--ease);
   }
-  .case.in1 .phone     { transition-delay: 60ms; }
-  .case.in1 .case-desc { transition-delay: 180ms; }
-  .case.in1 .dive      { transition-delay: 260ms; }
+  .card.in1 .phone     { transition-delay: 60ms; }
+  .card.in1 .laptop    { transition-delay: 60ms; }
+  .card.in1 .case-desc { transition-delay: 180ms; }
+  .card.in1 .dive      { transition-delay: 260ms; }
 
   /* stage 2 — the snippets bubble in, then hold still */
-  .snip { opacity: 0; transform: scale(.82); }
-  .case.in2 .snip {
-    opacity: 1; transform: scale(1);
+  .snip { opacity: 0; transform: scale(.82); pointer-events: none; }
+  .card.in2 .snip {
+    opacity: 1; transform: scale(1); pointer-events: auto;
     transition: opacity .42s var(--ease),
                 transform .62s cubic-bezier(.34, 1.56, .64, 1);
   }
-  .case.in2 .snip-session { transition-delay:   0ms; }
-  .case.in2 .snip-event   { transition-delay: 130ms; }
-  .case.in2 .snip-nav     { transition-delay: 260ms; }
-  .case.in2 .laptop       { transition-delay: 400ms; opacity: .38; }
-  .case.in2 .laptop:hover { transition-delay: 0ms; opacity: .92; }
-
-  /* small expand on hover, once they have settled */
-  .case.in2 .snip { pointer-events: auto; }
-  .case.in2 .snip:hover {
+  .card.in2 .snip-session { transition-delay:   0ms; }
+  .card.in2 .snip-event   { transition-delay: 130ms; }
+  .card.in2 .snip-nav     { transition-delay: 260ms; }
+  .card.in2 .snip:hover {
     transform: scale(1.055);
     transition: transform .42s cubic-bezier(.34, 1.5, .64, 1);
   }
@@ -356,32 +352,49 @@
   </div>
 </header>
 
-<section class="case" id="case-studies" aria-labelledby="m2medTitle">
-  <div class="case-canvas" id="caseCanvas">
+<section class="rail-wrap" id="railWrap"><a id="case-studies" aria-hidden="true"></a>
+  <div class="rail-stage">
+    <div class="rail" id="rail">
 
-    <div class="tags stage1">
-      <span class="tag">2026</span>
-      <span class="tag">App Design</span>
+      <!-- ── card 1 · M2Med ── -->
+      <article class="card" data-i="0" id="cardM2med">
+        <div class="tags stage1">
+          <span class="tag">2026</span>
+          <span class="tag">App Design</span>
+        </div>
+
+        <img class="phone stage1" src="assets/m2med/phone.png" alt="M2Med app on an iPhone">
+
+        <img class="snip snip-session" src="assets/m2med/session-card.png" alt="Parallel session card with room picker">
+        <img class="snip snip-event"   src="assets/m2med/event-card.png"   alt="Event card showing CME credits">
+        <img class="snip snip-nav"     src="assets/m2med/bottom-nav.png"   alt="App bottom navigation">
+
+        <p class="case-desc stage1">
+          <b>M2med</b> is a <b>medical events app</b> for healthcare professionals, finding and
+          registering for conferences, tracking CME credits, and managing speaking engagements
+        </p>
+
+        <a class="dive stage1" href="m2med-case.html">Dive in</a>
+      </article>
+
+      <!-- ── card 2 · Samsung. Shell only: cover photo and features to come. ── -->
+      <article class="card" data-i="1" id="cardSamsung">
+        <div class="tags stage1">
+          <span class="tag">2025</span>
+          <span class="tag">CRM Design</span>
+        </div>
+
+        <img class="laptop stage1" src="assets/m2med/laptop.png" alt="Samsung CRM work on a laptop">
+
+        <p class="case-desc stage1">
+          <b>Samsung</b> is <b>CRM product design</b> across five markets and three languages,
+          covering pod layouts, localisation, and partner campaigns
+        </p>
+
+        <a class="dive stage1" href="samsung-case.html">Dive in</a>
+      </article>
+
     </div>
-
-    <img class="phone stage1" src="assets/m2med/phone.png" alt="M2Med app on an iPhone">
-
-    <!-- the snippets: bubble in after the phone, then hold still -->
-    <img class="snip snip-session" src="assets/m2med/session-card.png" alt="Parallel session card with room picker">
-    <img class="snip snip-event"   src="assets/m2med/event-card.png"   alt="Event card showing CME credits">
-    <img class="snip snip-nav"     src="assets/m2med/bottom-nav.png"   alt="App bottom navigation">
-
-    <a class="laptop snip" href="samsung-case.html" aria-label="Next case study: Samsung">
-      <img src="assets/m2med/laptop.png" alt="">
-    </a>
-
-    <p class="case-desc stage1" id="m2medTitle">
-      <b>M2med</b> is a <b>medical events app</b> for healthcare professionals, finding and
-      registering for conferences, tracking CME credits, and managing speaking engagements
-    </p>
-
-    <a class="dive stage1" href="m2med-case.html">Dive in</a>
-
   </div>
 </section>
 
@@ -398,6 +411,7 @@
       lerp: 0.1, smoothWheel: true,
       wheelMultiplier: 1, touchMultiplier: 1, autoToggle: true
     });
+    window.__lenis = lenis;
     (function raf(t) { lenis.raf(t); requestAnimationFrame(raf); })(0);
   })();
 </script>
@@ -546,40 +560,101 @@
     paint();
   })();
 
-  /* ── case section: stage 1, then the snippets bubble ── */
-  (function () {
-    var sec = document.querySelector('.case');
-    if (!sec) return;
-    if (!('IntersectionObserver' in window)) { sec.classList.add('in1', 'in2'); return; }
-    var link = document.querySelector('.nav-links a[href="#case-studies"]');
-    var timer = 0;
-    var io = new IntersectionObserver(function (es) {
-      var vis = es[0].isIntersecting;
-      if (link) link.classList.toggle('active', vis);   // pink only while in view
-      if (vis) {
-        sec.classList.add('in1');
-        clearTimeout(timer);
-        timer = setTimeout(function () { sec.classList.add('in2'); }, 620);
-      } else {
-        clearTimeout(timer);
-        sec.classList.remove('in1', 'in2');             // replays on re-entry
-      }
-    }, { threshold: 0.25 });
-    io.observe(sec);
-  })();
+  /* ── the pinned deck ─────────────────────────────────────────────────
+     Scroll position inside the wrapper drives a continuous card index c.
+     Card i offsets by (i - c) * PITCH, shrinking and fading with distance,
+     so the next card genuinely waits its turn off to the right rather than
+     being a separate decoration. When the wrapper ends, the page carries on
+     scrolling vertically on its own.
 
-  /* ── the 1280 design canvas scales down rather than reflowing ── */
+     PITCH/SCALE/FADE are set so that with M2Med centred the next card lands
+     where the Figma board puts the laptop: around x900, small and faded. */
   (function () {
-    var canvas = document.getElementById('caseCanvas');
-    var sec = document.querySelector('.case');
-    if (!canvas || !sec) return;
+    var wrap  = document.getElementById('railWrap');
+    var rail  = document.getElementById('rail');
+    if (!wrap || !rail) return;
+    var cards = [].slice.call(rail.querySelectorAll('.card'));
+    var N = cards.length;
+
+    var PITCH  = 380;   // px between card centres at rest
+    var SCALE  = 0.55;  // how much a neighbour shrinks
+    var FADE   = 0.62;  // how much it fades
+    var TRAVEL = 760;   // px of scroll per card transition
+
+    var k = 1, snapTimer = 0, lenis = window.__lenis || null;
+
     function fit() {
-      var k = Math.min(1, sec.clientWidth / 1280);
-      canvas.style.transform = 'scale(' + k + ')';
-      sec.style.height = (828 * k) + 'px';
+      k = Math.min(1, innerWidth / 1320, innerHeight / 880);
+      rail.style.transform = 'scale(' + k + ')';
+      wrap.style.height = (innerHeight + (N - 1) * TRAVEL) + 'px';
     }
-    addEventListener('resize', fit);
-    fit();
+
+    function progress() {
+      var r = wrap.getBoundingClientRect();
+      var total = (N - 1) * TRAVEL;
+      if (total <= 0) return 0;
+      return Math.min(1, Math.max(0, -r.top / total));
+    }
+
+    function paint() {
+      var c = progress() * (N - 1);
+      cards.forEach(function (el, i) {
+        var d = i - c;
+        var a = Math.min(1, Math.abs(d));
+        el.style.transform =
+          'translateX(' + (d * PITCH).toFixed(1) + 'px) scale(' + (1 - SCALE * a).toFixed(3) + ')';
+        el.style.opacity = (1 - FADE * a).toFixed(3);
+        el.style.zIndex = String(100 - Math.round(a * 100));
+        el.style.pointerEvents = a < 0.2 ? 'auto' : 'none';
+
+        // a card animates its contents in only once it has taken the stage
+        if (a < 0.16) {
+          if (!el.classList.contains('in1')) {
+            el.classList.add('in1');
+            clearTimeout(el.__t);
+            el.__t = setTimeout(function () { el.classList.add('in2'); }, 620);
+          }
+        } else if (a > 0.4) {
+          clearTimeout(el.__t);
+          el.classList.remove('in1', 'in2');   // replays next time it centres
+        }
+      });
+    }
+
+    /* Snap: when scrolling stops inside the deck, ease to the nearest card so
+       it always settles centred rather than parked between two. */
+    function snap() {
+      var r = wrap.getBoundingClientRect();
+      if (r.top > 0 || r.bottom < innerHeight) return;      // not inside the deck
+      var c = progress() * (N - 1);
+      var target = Math.round(c);
+      if (Math.abs(c - target) < 0.02) return;
+      var y = wrap.offsetTop + (target / (N - 1)) * ((N - 1) * TRAVEL);
+      if (lenis) lenis.scrollTo(y, { duration: 0.55 });
+      else scrollTo({ top: y, behavior: 'smooth' });
+    }
+
+    var raf = 0;
+    function onScroll() {
+      if (!raf) raf = requestAnimationFrame(function () { raf = 0; paint(); });
+      clearTimeout(snapTimer);
+      snapTimer = setTimeout(snap, 160);
+    }
+
+    addEventListener('scroll', onScroll, { passive: true });
+    addEventListener('resize', function () { fit(); paint(); });
+    addEventListener('load', function () { fit(); paint(); });
+    fit(); paint();
+
+    // 'Case Studies' is pink only while the deck holds the screen
+    var link = document.querySelector('.nav-links a[href="#case-studies"]');
+    if (link && 'IntersectionObserver' in window) {
+      new IntersectionObserver(function (es) {
+        link.classList.toggle('active', es[0].isIntersecting);
+      }, { threshold: 0, rootMargin: '-40% 0px -40% 0px' }).observe(wrap);
+    }
+
+    window.__deck = { progress: progress, cards: cards, PITCH: PITCH, fitScale: function () { return k; } };
   })();
 </script>
 </body>
