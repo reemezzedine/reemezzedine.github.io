@@ -1,0 +1,12 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "portfolio-final",
+      "runtimeExecutable": "sh",
+      "runtimeArgs": ["-c", "python3 -m http.server ${PORT:-5610} --directory /Users/reemezzedine/portfolio-final"],
+      "port": 5610,
+      "autoPort": true
+    }
+  ]
+}

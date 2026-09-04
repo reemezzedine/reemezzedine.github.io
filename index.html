@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reem Ezzedine — Product Designer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  @font-face {
+    font-family: "Sans Sara";
+    src: url("assets/fonts/SansSara.ttf") format("truetype");
+    font-weight: 400; font-style: normal; font-display: swap;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink:   #1f1f1f;
+    --pink:  #ff85ba;
+    --pill:  #f6f6f6;
+    --paper: #ffffff;
+
+    --display: "Sans Sara", "Bradley Hand", cursive;
+    --body: "Montserrat", -apple-system, BlinkMacSystemFont, sans-serif;
+
+    /* settle for the stamps: a touch past the target, then back */
+    --spring: cubic-bezier(.34, 1.42, .64, 1);
+    --ease:   cubic-bezier(.22, 1, .36, 1);
+  }
+
+  html { -webkit-font-smoothing: antialiased; }
+  body {
+    background: var(--paper); color: var(--ink);
+    font-family: var(--body);
+    min-height: 100vh;
+  }
+  img { display: block; max-width: 100%; }
+  a { color: inherit; text-decoration: none; }
+
+  /* ── nav ───────────────────────────────────────────────────────── */
+  .nav {
+    position: fixed; top: 47px; left: 50%; transform: translateX(-50%);
+    z-index: 50;
+    width: min(871px, calc(100vw - 48px)); height: 72px;
+    border-radius: 36px; background: var(--pill);
+    display: flex; align-items: center;
+    padding: 0 16px 0 20px;
+    box-shadow: 0 10px 30px -18px rgba(20, 20, 20, .35);
+  }
+  .nav-links { display: flex; align-items: center; gap: 32px; }
+  .nav-links a {
+    font-size: 16px; font-weight: 500; letter-spacing: -.1px;
+    position: relative; padding: 4px 0;
+  }
+  .nav-links a::after {
+    content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1.5px;
+    background: var(--pink); transform: scaleX(0); transform-origin: left;
+    transition: transform .4s var(--ease);
+  }
+  .nav-links a:hover::after { transform: scaleX(1); }
+
+  .nav-cta {
+    margin-left: auto;
+    display: inline-flex; align-items: center; justify-content: center;
+    height: 39px; padding: 0 20px; border-radius: 999px;
+    background: var(--pink); color: #fff;
+    font-size: 16px; font-weight: 600; letter-spacing: -.1px;
+    transition: transform .4s var(--spring), filter .3s var(--ease);
+  }
+  .nav-cta:hover { transform: scale(1.05); filter: saturate(1.08); }
+
+  /* ── hero ──────────────────────────────────────────────────────── */
+  .hero { padding: 190px 24px 120px; }
+  .hero-inner {
+    width: 943px; max-width: 100%; margin: 0 auto;
+    display: grid; grid-template-columns: 555px 388px;
+    align-items: start;
+  }
+
+  .copy-col { position: relative; }
+
+  /* Lifts to make room for the stamps on first hover. */
+  .copy {
+    transform: translateY(30px);
+    transition: transform 780ms var(--ease);
+    will-change: transform;
+  }
+  body.revealed .copy { transform: translateY(0); }
+
+  .hello {
+    font-size: 26px; line-height: 37px; font-weight: 500;
+    letter-spacing: -.3px;
+  }
+  .name {
+    font-family: var(--display); font-weight: 400;
+    font-size: 82px; line-height: 96px; letter-spacing: 0;
+    margin-top: 22px; text-transform: lowercase;
+  }
+  .tagline {
+    font-size: 28px; line-height: 37px; font-weight: 500;
+    letter-spacing: -.4px; margin-top: 22px;
+    /* 540, not the box's 555: at 28px "…designer with a" measures 553px and
+       squeaks onto one line, which breaks the line where the design breaks it.
+       Trimming the measure restores the Figma wrap without touching the size,
+       which already matches the 74px block height exactly. */
+    max-width: 540px;
+  }
+
+  /* the hover target */
+  .footprint {
+    color: var(--pink); font-weight: 600;
+    cursor: pointer; position: relative;
+    padding-bottom: 2px;
+  }
+  .footprint::after {
+    content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 2px;
+    background: var(--pink); opacity: .0;
+    transform: scaleX(.3); transform-origin: left;
+    transition: opacity .35s var(--ease), transform .5s var(--ease);
+  }
+  .footprint:hover::after { opacity: .38; transform: scaleX(1); }
+
+  /* ── stamps ────────────────────────────────────────────────────── */
+  .stamps {
+    position: relative;
+    height: 132px;
+    margin-top: 14px;
+    pointer-events: none;          /* until revealed */
+  }
+  body.revealed .stamps { pointer-events: auto; }
+
+  .stamp {
+    position: absolute; top: 0; left: 0;
+    opacity: 0;
+    /* --px / --py are the parting offsets, written by JS on hover */
+    --px: 0; --py: 0; --pr: 0;
+    transform:
+      translate(calc(var(--x) * 1px + var(--px) * 1px),
+                calc(var(--y) * 1px + var(--py) * 1px + var(--in) * 1px))
+      rotate(calc(var(--pr) * 1deg))
+      scale(var(--s));
+    transition:
+      transform 620ms var(--spring),
+      opacity 520ms var(--ease);
+    will-change: transform, opacity;
+    --in: 16;                      /* entry offset, removed on reveal */
+    --s: .94;
+  }
+  body.revealed .stamp { opacity: 1; --in: 0; --s: 1; }
+
+  /* they arrive one after the other, and never leave again */
+  body.revealed .stamp:nth-child(1) { transition-delay:   0ms, 0ms; }
+  body.revealed .stamp:nth-child(2) { transition-delay:  90ms, 90ms; }
+  body.revealed .stamp:nth-child(3) { transition-delay: 180ms, 180ms; }
+  body.revealed .stamp:nth-child(4) { transition-delay: 270ms, 270ms; }
+
+  .stamp img {
+    width: 100%; height: auto;
+    filter: drop-shadow(0 6px 14px rgba(30, 20, 25, .18));
+  }
+
+  /* Figma coordinates, relative to the left column. Sizes are the node's
+     own, so each stamp keeps the tilt baked into its export. */
+  .stamp-dk { --x: 65.0;  --y: 14.2; width: 96.5px; }
+  .stamp-zm { --x: 143.6; --y: 6.0;  width: 83.0px; }
+  .stamp-lb { --x: 225.0; --y: 0;    width: 86.8px; }
+  .stamp-us { --x: 283.6; --y: 13.2; width: 78.9px; }
+
+  /* ── portrait ──────────────────────────────────────────────────── */
+  .portrait { width: 388px; }
+  .portrait img { width: 100%; height: auto; }
+
+  /* ── responsive ────────────────────────────────────────────────── */
+  @media (max-width: 1000px) {
+    .hero { padding-top: 160px; }
+    .hero-inner { grid-template-columns: 1fr; gap: 40px; justify-items: center; }
+    .copy-col { width: 555px; max-width: 100%; }
+    .portrait { width: min(320px, 70vw); }
+    .name { font-size: clamp(52px, 11vw, 82px); line-height: 1.16; }
+    .tagline { font-size: clamp(21px, 4.4vw, 28px); line-height: 1.33; }
+    .nav-links { gap: 22px; }
+    .nav-links a { font-size: 15px; }
+  }
+  @media (max-width: 560px) {
+    .nav { padding: 0 10px 0 14px; }
+    .nav-links { gap: 16px; }
+    .nav-links a { font-size: 13.5px; }
+    .nav-cta { font-size: 14px; padding: 0 15px; }
+    .stamps { transform: scale(.82); transform-origin: left top; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .copy, .stamp { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-links">
+    <a href="#case-studies">Case Studies</a>
+    <a href="#about">About</a>
+    <a href="#resume">Resume</a>
+  </div>
+  <a class="nav-cta" href="mailto:reem.ezzedine36@gmail.com">Contact</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+
+    <div class="copy-col">
+      <div class="copy">
+        <p class="hello">Hello, I&rsquo;m</p>
+        <h1 class="name">reem<br>ezzedine</h1>
+        <p class="tagline">
+          an experienced product designer with a
+          <span class="footprint" id="footprint" tabindex="0" role="button"
+                aria-label="Reveal stamps from places I have worked">global footprint.</span>
+        </p>
+      </div>
+
+      <div class="stamps" id="stamps" aria-hidden="true">
+        <figure class="stamp stamp-dk"><img src="assets/stamps/dk.png" alt="Denmark stamp"></figure>
+        <figure class="stamp stamp-zm"><img src="assets/stamps/zm.png" alt="Zambia stamp"></figure>
+        <figure class="stamp stamp-lb"><img src="assets/stamps/lb.png" alt="Lebanon stamp"></figure>
+        <figure class="stamp stamp-us"><img src="assets/stamps/us.png" alt="New York stamp"></figure>
+      </div>
+    </div>
+
+    <div class="portrait">
+      <img src="assets/portrait.png" alt="Reem Ezzedine">
+    </div>
+
+  </div>
+</header>
+
+<script>
+(function () {
+  var body    = document.body;
+  var trigger = document.getElementById('footprint');
+  var wrap    = document.getElementById('stamps');
+  var stamps  = [].slice.call(wrap.querySelectorAll('.stamp'));
+
+  /* ── the one-way reveal ───────────────────────────────────────────
+     First hover on "global footprint." lifts the copy and deals the
+     stamps out one after another. It latches: once they are out they
+     never go back, so this only ever runs once.                     */
+  var revealed = false;
+  function reveal() {
+    if (revealed) return;
+    revealed = true;
+    body.classList.add('revealed');
+    wrap.setAttribute('aria-hidden', 'false');
+  }
+  trigger.addEventListener('mouseenter', reveal);
+  trigger.addEventListener('focus', reveal);
+  trigger.addEventListener('click', reveal);
+
+  /* ── the fan ──────────────────────────────────────────────────────
+     Hovering one stamp pushes its neighbours away, the nearest moving
+     most, and everything settles back when the pointer leaves. Same
+     grammar as the card fan: distance in INDEX, not in pixels.      */
+  var PART = 20;   // px the immediate neighbour steps aside
+  var STEP = 9;    // each further neighbour adds this much
+  var RISE = 7;    // px the hovered stamp lifts
+  var TILT = 1.6;  // deg of lean on the neighbours
+
+  function fan(hover) {
+    stamps.forEach(function (el, j) {
+      if (hover === null) {
+        el.style.setProperty('--px', 0);
+        el.style.setProperty('--py', 0);
+        el.style.setProperty('--pr', 0);
+        return;
+      }
+      var d = j - hover;
+      if (d === 0) {
+        el.style.setProperty('--px', 0);
+        el.style.setProperty('--py', -RISE);
+        el.style.setProperty('--pr', 0);
+        return;
+      }
+      var dir = d < 0 ? -1 : 1;
+      var n = Math.abs(d);
+      el.style.setProperty('--px', dir * (PART + (n - 1) * STEP));
+      el.style.setProperty('--py', n * 3);
+      el.style.setProperty('--pr', dir * TILT * n);
+    });
+  }
+
+  stamps.forEach(function (el, i) {
+    el.addEventListener('mouseenter', function () { if (revealed) fan(i); });
+  });
+  wrap.addEventListener('mouseleave', function () { fan(null); });
+})();
+</script>
+</body>
+</html>
