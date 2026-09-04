@@ -20,6 +20,7 @@
     --ink:   #000000;
     --nav-ink: #1a1f1f;
     --pink:  #ff85ba;
+    --pink-active: #ff70ae;   /* the nav's in-view state, a shade deeper */
     --pill:  #f6f6f6;
     --paper: #ffffff;
 
@@ -62,6 +63,8 @@
     transition: transform .4s var(--ease);
   }
   .nav-links a:hover::after { transform: scaleX(1); }
+  /* deeper pink than the hero's, straight off the Figma node */
+  .nav-links a.active { color: var(--pink-active); }
 
   .nav-cta {
     margin-left: auto;
@@ -174,8 +177,89 @@
   .stamp-us { --x: 284; --y: 3; width: 78.9px; }
 
   /* ── portrait ──────────────────────────────────────────────────── */
-  .portrait { width: 388px; }
-  .portrait img { width: 100%; height: auto; }
+  .portrait { width: 388px; aspect-ratio: 388 / 523; }
+
+  /* One element the whole way. It is fixed, and JS lerps it from the hero
+     slot into the nav's head position as you scroll, so the hero portrait
+     and the nav head are literally the same object rather than a crossfade. */
+  .portrait-morph {
+    position: fixed; top: 0; left: 0; width: 388px; height: auto;
+    transform-origin: 0 0; z-index: 60; pointer-events: none;
+    will-change: transform;
+  }
+
+  /* ── case section ──────────────────────────────────────────────── */
+  .case { position: relative; overflow: hidden; }
+  .case-canvas {
+    position: relative; width: 1280px; height: 828px;
+    margin: 0 auto; transform-origin: 50% 0;
+  }
+  .case-canvas > * { position: absolute; }
+
+  .tags { left: 563px; top: 160px; display: flex; gap: 10px; }
+  .tag {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 71px; height: 19px; border-radius: 100px; background: #000;
+    color: #fff; font-family: "Inclusive Sans", var(--body);
+    font-size: 10px; font-weight: 600; letter-spacing: -.32px;
+  }
+
+  .phone { left: 443.5px; top: 197px; width: 402px; height: 402px; }
+
+  .snip { transform-origin: 50% 50%; }
+  .snip-session { left: 435px; top: 278px; width: 144px; height: 142px; }
+  .snip-event   { left: 737px; top: 240px; width: 157px; height: 139px; }
+  .snip-nav     { left: 673px; top: 431px; width: 177px; height: 35px;  }
+
+  .case-desc {
+    left: 381px; top: 611px; width: 517px;
+    text-align: center; font-size: 12px; line-height: 16px;
+    font-weight: 500; letter-spacing: 0; color: #000;
+  }
+  .case-desc b { font-weight: 700; }
+
+  .dive {
+    left: 538px; top: 668px;
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 203px; height: 55px; border-radius: 100px; background: #000;
+    color: #fff; font-family: "Inclusive Sans", var(--body);
+    font-size: 16px; font-weight: 600; letter-spacing: -.32px;
+    transition: transform .45s var(--spring), filter .3s var(--ease);
+  }
+  .dive:hover { transform: scale(1.04); }
+
+  /* stage 1 — phone, tags, copy, button */
+  .case-canvas .stage1 { opacity: 0; transform: translateY(22px); }
+  .case.in1 .stage1 {
+    opacity: 1; transform: none;
+    transition: opacity .7s var(--ease), transform .7s var(--ease);
+  }
+  .case.in1 .phone     { transition-delay: 60ms; }
+  .case.in1 .case-desc { transition-delay: 180ms; }
+  .case.in1 .dive      { transition-delay: 260ms; }
+
+  /* stage 2 — the snippets bubble in, then hold still */
+  .snip { opacity: 0; transform: scale(.82); }
+  .case.in2 .snip {
+    opacity: 1; transform: scale(1);
+    transition: opacity .42s var(--ease),
+                transform .62s cubic-bezier(.34, 1.56, .64, 1);
+  }
+  .case.in2 .snip-session { transition-delay:   0ms; }
+  .case.in2 .snip-event   { transition-delay: 130ms; }
+  .case.in2 .snip-nav     { transition-delay: 260ms; }
+
+  /* small expand on hover, once they have settled */
+  .case.in2 .snip { pointer-events: auto; }
+  .case.in2 .snip:hover {
+    transform: scale(1.055);
+    transition: transform .42s cubic-bezier(.34, 1.5, .64, 1);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .portrait-morph { transition: none; }
+    .case-canvas .stage1, .snip { opacity: 1 !important; transform: none !important; }
+  }
 
   /* ── responsive ────────────────────────────────────────────────── */
   @media (max-width: 1000px) {
@@ -204,13 +288,15 @@
 <body>
 
 <nav class="nav">
-  <div class="nav-links">
+  <div class="nav-links" id="navLinks">
     <a href="#case-studies">Case Studies</a>
     <a href="#about">About</a>
     <a href="#resume">Resume</a>
   </div>
   <a class="nav-cta" href="mailto:reem.ezzedine36@gmail.com">Contact</a>
 </nav>
+
+<img class="portrait-morph" id="portraitMorph" src="assets/portrait.png" alt="Reem Ezzedine">
 
 <header class="hero">
   <div class="hero-inner">
@@ -240,12 +326,37 @@
       </div>
     </div>
 
-    <div class="portrait">
-      <img src="assets/portrait.png" alt="Reem Ezzedine">
-    </div>
+    <!-- Spacer holds the hero's layout slot. The portrait itself is fixed and
+         lerps from this slot into the nav, so it is one object the whole way. -->
+    <div class="portrait" id="portraitSlot" aria-hidden="true"></div>
 
   </div>
 </header>
+
+<section class="case" id="case-studies" aria-labelledby="m2medTitle">
+  <div class="case-canvas" id="caseCanvas">
+
+    <div class="tags stage1">
+      <span class="tag">2026</span>
+      <span class="tag">App Design</span>
+    </div>
+
+    <img class="phone stage1" src="assets/m2med/phone.png" alt="M2Med app on an iPhone">
+
+    <!-- the snippets: bubble in after the phone, then hold still -->
+    <img class="snip snip-session" src="assets/m2med/session-card.png" alt="Parallel session card with room picker">
+    <img class="snip snip-event"   src="assets/m2med/event-card.png"   alt="Event card showing CME credits">
+    <img class="snip snip-nav"     src="assets/m2med/bottom-nav.png"   alt="App bottom navigation">
+
+    <p class="case-desc stage1" id="m2medTitle">
+      <b>M2med</b> is a <b>medical events app</b> for healthcare professionals, finding and
+      registering for conferences, tracking CME credits, and managing speaking engagements
+    </p>
+
+    <a class="dive stage1" href="#">Dive in</a>
+
+  </div>
+</section>
 
 <script>
 (function () {
@@ -309,6 +420,96 @@
   });
   wrap.addEventListener('mouseleave', function () { fan(null); });
 })();
+
+  /* ── portrait morph ──────────────────────────────────────────────────
+     The hero portrait and the nav head are ONE element. It is fixed, and
+     every frame we lerp it from wherever its hero slot currently sits to
+     the nav's head position. At t=0 it lands exactly on the slot, at t=1
+     exactly in the nav, and it scrubs backwards when you scroll up.
+     The nav links slide right over the same t to make room, which is the
+     difference between the two nav layouts in the Figma boards.        */
+  (function () {
+    var img   = document.getElementById('portraitMorph');
+    var slot  = document.getElementById('portraitSlot');
+    var nav   = document.querySelector('.nav');
+    var links = document.getElementById('navLinks');
+    if (!img || !slot || !nav) return;
+
+    var TRAVEL   = 420;    // px of scroll the morph takes
+    var HEAD_W   = 77;     // the nav head's size in Figma
+    var HEAD_DX  = 20;     // its offset inside the nav pill
+    var HEAD_DY  = -16;    // it spills above the pill
+    var LINKS_DX = 265.5;  // 285.5 - 20, how far the links slide
+
+    var raf = 0;
+    function paint() {
+      raf = 0;
+      var s = slot.getBoundingClientRect();
+      var n = nav.getBoundingClientRect();
+      if (!s.width) return;
+
+      var t = Math.min(1, Math.max(0, scrollY / TRAVEL));
+      var e = t * t * (3 - 2 * t);          // smoothstep, so it eases at both ends
+
+      var x = s.left + (n.left + HEAD_DX - s.left) * e;
+      var y = s.top  + (n.top  + HEAD_DY - s.top)  * e;
+      var k = (s.width + (HEAD_W - s.width) * e) / 388;
+
+      img.style.transform =
+        'translate3d(' + x.toFixed(2) + 'px,' + y.toFixed(2) + 'px,0) scale(' + k.toFixed(4) + ')';
+      if (links) links.style.transform = 'translateX(' + (LINKS_DX * e).toFixed(2) + 'px)';
+      document.body.classList.toggle('scrolled', t > 0.6);
+    }
+    function onScroll() { if (!raf) raf = requestAnimationFrame(paint); }
+
+    addEventListener('scroll', onScroll, { passive: true });
+    addEventListener('resize', onScroll);
+
+    // paint() reads live rects, so it is always correct WHEN it runs - the
+    // risk is it not running. Anything that can move the slot after load
+    // (webfont swap, late images, a reflow) has to trigger a repaint, or the
+    // portrait sits at a stale position until the next scroll.
+    addEventListener('load', onScroll);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(paint);
+    if (!img.complete) img.addEventListener('load', paint);
+    if ('ResizeObserver' in window) new ResizeObserver(paint).observe(slot);
+
+    window.__morphDebug = function () {
+      var sl = slot.getBoundingClientRect(), nv = nav.getBoundingClientRect();
+      return { scrollY: scrollY, t: Math.min(1, Math.max(0, scrollY / TRAVEL)),
+               slot: { x: sl.left, y: sl.top, w: sl.width },
+               target: { x: nv.left + HEAD_DX, y: nv.top + HEAD_DY, w: HEAD_W } };
+    };
+    paint();
+  })();
+
+  /* ── case section: stage 1, then the snippets bubble ── */
+  (function () {
+    var sec = document.querySelector('.case');
+    if (!sec) return;
+    if (!('IntersectionObserver' in window)) { sec.classList.add('in1', 'in2'); return; }
+    var io = new IntersectionObserver(function (es) {
+      if (!es[0].isIntersecting) return;
+      io.disconnect();                       // one way, like the stamps
+      sec.classList.add('in1');
+      setTimeout(function () { sec.classList.add('in2'); }, 620);
+    }, { threshold: 0.25 });
+    io.observe(sec);
+  })();
+
+  /* ── the 1280 design canvas scales down rather than reflowing ── */
+  (function () {
+    var canvas = document.getElementById('caseCanvas');
+    var sec = document.querySelector('.case');
+    if (!canvas || !sec) return;
+    function fit() {
+      var k = Math.min(1, sec.clientWidth / 1280);
+      canvas.style.transform = 'scale(' + k + ')';
+      sec.style.height = (828 * k) + 'px';
+    }
+    addEventListener('resize', fit);
+    fit();
+  })();
 </script>
 </body>
 </html>
