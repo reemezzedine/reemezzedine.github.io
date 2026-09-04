@@ -6,7 +6,7 @@
 <title>Reem Ezzedine — Product Designer</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inclusive+Sans:wght@600&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   @font-face {
     font-family: "Sans Sara";
@@ -17,7 +17,8 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --ink:   #1f1f1f;
+    --ink:   #000000;
+    --nav-ink: #1a1f1f;
     --pink:  #ff85ba;
     --pill:  #f6f6f6;
     --paper: #ffffff;
@@ -51,7 +52,8 @@
   }
   .nav-links { display: flex; align-items: center; gap: 32px; }
   .nav-links a {
-    font-size: 16px; font-weight: 500; letter-spacing: -.1px;
+    font-size: 16px; font-weight: 600; letter-spacing: -.32px;
+    color: var(--nav-ink);
     position: relative; padding: 4px 0;
   }
   .nav-links a::after {
@@ -66,7 +68,8 @@
     display: inline-flex; align-items: center; justify-content: center;
     height: 39px; padding: 0 20px; border-radius: 999px;
     background: var(--pink); color: #fff;
-    font-size: 16px; font-weight: 600; letter-spacing: -.1px;
+    font-family: "Inclusive Sans", var(--body);
+    font-size: 16px; font-weight: 600; letter-spacing: -.32px;
     transition: transform .4s var(--spring), filter .3s var(--ease);
   }
   .nav-cta:hover { transform: scale(1.05); filter: saturate(1.08); }
@@ -90,29 +93,26 @@
   body.revealed .copy { transform: translateY(0); }
 
   .hello {
-    font-size: 26px; line-height: 37px; font-weight: 500;
-    letter-spacing: -.3px;
+    font-size: 30px; line-height: 37px; font-weight: 400;
+    letter-spacing: -.32px;
   }
   .name {
     font-family: var(--display); font-weight: 400;
-    font-size: 82px; line-height: 96px; letter-spacing: 0;
+    /* 120px at 80% line height = the 96px lines and 192px block in Figma */
+    font-size: 120px; line-height: .8; letter-spacing: -.32px;
     margin-top: 22px; text-transform: lowercase;
   }
   .tagline {
-    font-size: 28px; line-height: 37px; font-weight: 500;
-    letter-spacing: -.4px; margin-top: 22px;
-    /* Measured, not guessed. At 28px the three candidate first lines are
-       461px ("…designer"), 530px (+"with") and 553px (+"with a"). The design
-       breaks after "designer", so the measure has to sit between 461 and 530.
-       496 is the midpoint, which leaves ~34px of slack on either side of the
-       decision. Font size stays 28px because it already matches the 74px
-       block height exactly. */
-    max-width: 496px;
+    font-size: 30px; line-height: 37px; font-weight: 400;
+    letter-spacing: -.32px; margin-top: 22px;
+    /* the Figma box, unmodified: at 30px Regular the first line no longer
+       fits "with a", so it breaks after "designer" on its own */
+    max-width: 555px;
   }
 
   /* the hover target */
   .footprint {
-    color: var(--pink); font-weight: 600;
+    color: var(--pink); font-weight: 600;   /* Montserrat SemiBold */
     cursor: pointer; position: relative;
     padding-bottom: 2px;
   }
@@ -125,10 +125,13 @@
   .footprint:hover::after { opacity: .38; transform: scaleX(1); }
 
   /* ── stamps ────────────────────────────────────────────────────── */
+  /* Positioned absolutely at the coordinates read off the Figma render by
+     template matching. The node metadata could not be used: the children's
+     boxes overflow their own group's bounds, so their x/y are not the
+     placement. 354 = 544 (render) - 190 (column top). */
   .stamps {
-    position: relative;
+    position: absolute; top: 354px; left: 0; right: 0;
     height: 132px;
-    margin-top: 14px;
     pointer-events: none;          /* until revealed */
   }
   body.revealed .stamps { pointer-events: auto; }
@@ -153,22 +156,22 @@
   body.revealed .stamp { opacity: 1; --in: 0; --s: 1; }
 
   /* they arrive one after the other, and never leave again */
-  body.revealed .stamp:nth-child(1) { transition-delay:   0ms, 0ms; }
-  body.revealed .stamp:nth-child(2) { transition-delay:  90ms, 90ms; }
-  body.revealed .stamp:nth-child(3) { transition-delay: 180ms, 180ms; }
-  body.revealed .stamp:nth-child(4) { transition-delay: 270ms, 270ms; }
+  body.revealed .stamp[data-i="0"] { transition-delay:   0ms,   0ms; }
+  body.revealed .stamp[data-i="1"] { transition-delay:  90ms,  90ms; }
+  body.revealed .stamp[data-i="2"] { transition-delay: 180ms, 180ms; }
+  body.revealed .stamp[data-i="3"] { transition-delay: 270ms, 270ms; }
 
-  .stamp img {
-    width: 100%; height: auto;
-    filter: drop-shadow(0 6px 14px rgba(30, 20, 25, .18));
-  }
+  /* No drop-shadow. The exports are opaque white rectangles, not cut-outs, so
+     a drop-shadow traces the RECTANGLE instead of the perforated edge and
+     paints a grey box behind each stamp. The Figma render has no shadow. */
+  .stamp img { width: 100%; height: auto; }
 
   /* Figma coordinates, relative to the left column. Sizes are the node's
      own, so each stamp keeps the tilt baked into its export. */
-  .stamp-dk { --x: 65.0;  --y: 14.2; width: 96.5px; }
-  .stamp-zm { --x: 143.6; --y: 6.0;  width: 83.0px; }
-  .stamp-lb { --x: 225.0; --y: 0;    width: 86.8px; }
-  .stamp-us { --x: 283.6; --y: 13.2; width: 78.9px; }
+  .stamp-dk { --x: 65;  --y: 0; width: 96.5px; }
+  .stamp-zm { --x: 144; --y: 6; width: 83.0px; }
+  .stamp-lb { --x: 216; --y: 0; width: 86.8px; }
+  .stamp-us { --x: 284; --y: 3; width: 78.9px; }
 
   /* ── portrait ──────────────────────────────────────────────────── */
   .portrait { width: 388px; }
@@ -224,10 +227,19 @@
       </div>
 
       <div class="stamps" id="stamps" aria-hidden="true">
-        <figure class="stamp stamp-dk"><img src="assets/stamps/dk.png" alt="Denmark stamp"></figure>
-        <figure class="stamp stamp-zm"><img src="assets/stamps/zm.png" alt="Zambia stamp"></figure>
-        <figure class="stamp stamp-lb"><img src="assets/stamps/lb.png" alt="Lebanon stamp"></figure>
-        <figure class="stamp stamp-us"><img src="assets/stamps/us.png" alt="New York stamp"></figure>
+        <!-- DOM order is PAINT order, bottom to top: Denmark, New York,
+             Lebanon, Zambia. Solved by rendering all 24 stacking orders and
+             scoring each against the Figma export; Zambia on top wins, and the
+             pairwise overlap tests agree. data-i is the left-to-right index,
+             which is what the fan and the stagger use - those must not follow
+             paint order. -->
+        <figure class="stamp stamp-dk" data-i="0"><img src="assets/stamps/dk.png" alt="Denmark stamp"></figure>
+        <figure class="stamp stamp-us" data-i="3"><img src="assets/stamps/us.png" alt="New York stamp"></figure>
+        <figure class="stamp stamp-lb" data-i="2"><img src="assets/stamps/lb.png" alt="Lebanon stamp"></figure>
+        <figure class="stamp stamp-zm" data-i="1"><img src="assets/stamps/zm.png" alt="Zambia stamp"></figure>
+        <figure class="stamp stamp-zm" data-i="1"><img src="assets/stamps/zm.png" alt="Zambia stamp"></figure>
+        <figure class="stamp stamp-dk" data-i="0"><img src="assets/stamps/dk.png" alt="Denmark stamp"></figure>
+        <figure class="stamp stamp-us" data-i="3"><img src="assets/stamps/us.png" alt="New York stamp"></figure>
       </div>
     </div>
 
@@ -270,7 +282,8 @@
   var TILT = 1.6;  // deg of lean on the neighbours
 
   function fan(hover) {
-    stamps.forEach(function (el, j) {
+    stamps.forEach(function (el) {
+      var j = +el.dataset.i;
       if (hover === null) {
         el.style.setProperty('--px', 0);
         el.style.setProperty('--py', 0);
@@ -292,8 +305,10 @@
     });
   }
 
-  stamps.forEach(function (el, i) {
-    el.addEventListener('mouseenter', function () { if (revealed) fan(i); });
+  stamps.forEach(function (el) {
+    el.addEventListener('mouseenter', function () {
+      if (revealed) fan(+el.dataset.i);
+    });
   });
   wrap.addEventListener('mouseleave', function () { fan(null); });
 })();
