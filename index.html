@@ -82,7 +82,7 @@
   .nav-cta:hover { transform: scale(1.05); filter: saturate(1.08); }
 
   /* ── hero ──────────────────────────────────────────────────────── */
-  .hero { padding: 190px 24px 120px; }
+  .hero { padding: 190px 24px 0; }   /* cases sit right under it */
   .hero-inner {
     width: 943px; max-width: 100%; margin: 0 auto;
     display: grid; grid-template-columns: 555px 388px;
@@ -119,17 +119,20 @@
 
   /* the hover target */
   .footprint {
-    color: var(--pink); font-weight: 600;   /* Montserrat SemiBold */
+    color: var(--pink); font-weight: 400;   /* Regular, as in the board */
     cursor: pointer; position: relative;
-    padding-bottom: 2px;
+    padding-bottom: 10px;
   }
+  /* Reem's own squiggle, 234x7. It sits under the phrase permanently - it is
+     part of the design, not a hover state - and only brightens on hover. */
   .footprint::after {
-    content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 2px;
-    background: var(--pink); opacity: .0;
-    transform: scaleX(.3); transform-origin: left;
+    content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 7px;
+    background: url("assets/brand/squiggle.svg") no-repeat left bottom / 100% 7px;
+    opacity: .85;
     transition: opacity .35s var(--ease), transform .5s var(--ease);
+    transform-origin: left bottom;
   }
-  .footprint:hover::after { opacity: .38; transform: scaleX(1); }
+  .footprint:hover::after { opacity: 1; transform: scaleY(1.25); }
 
   /* ── stamps ────────────────────────────────────────────────────── */
   /* Positioned absolutely at the coordinates read off the Figma render by
@@ -214,6 +217,12 @@
     position: absolute; inset: 0;
     --away: 0;                       /* 0 centred, 1 fully off to the side */
     will-change: transform;
+    /* Anchored to the shared device centre, not the card's. Scaling about the
+       card centre pulled each device toward it by a different amount, so the
+       phone and the laptop drifted 19px apart vertically. Anchoring here
+       pins both devices to y=398 whatever the scale, which is what puts them
+       on one line. */
+    transform-origin: 644.5px 398px;
   }
   .card > *, .card-extras > * { position: absolute; }
   .card-extras { position: absolute; inset: 0; }
@@ -227,9 +236,11 @@
     pointer-events: none;
   }
   .card.at-centre .card-extras { pointer-events: auto; }
+  /* The waiting card stays legible - on the board the laptop is near full
+     strength, just smaller and set to the right. Only its extras go. */
   .device {
-    filter: blur(calc(var(--away) * 2.6px));
-    opacity: calc(1 - var(--away) * 0.42);
+    filter: blur(calc(var(--away) * 2.2px));
+    opacity: calc(1 - var(--away) * 0.22);
   }
 
   .tags { left: 563px; top: 160px; display: flex; gap: 10px; }
@@ -548,7 +559,12 @@
       if (!s.width) return;
 
       var t = Math.min(1, Math.max(0, scrollY / TRAVEL));
-      var e = t * t * (3 - 2 * t);          // smoothstep, so it eases at both ends
+
+      /* Damped spring rather than a smoothstep, so she travels with weight and
+         overshoots the nav by about 6% around the middle of the trip before
+         settling into it. e(0) = 0 exactly; the tail is snapped to 1 so she
+         cannot rest a fraction off her mark. */
+      var e = t >= 0.985 ? 1 : 1 - Math.exp(-5.5 * t) * Math.cos(6.2 * t);
 
       var x = s.left + (n.left + HEAD_DX - s.left) * e;
       var y = s.top  + (n.top  + HEAD_DY - s.top)  * e;
@@ -598,14 +614,16 @@
     var cards = [].slice.call(rail.querySelectorAll('.card'));
     var N = cards.length;
 
-    var PITCH  = 380;   // px between card centres at rest
-    var SCALE  = 0.55;  // how much a neighbour shrinks
-    var TRAVEL = 760;   // px of scroll per travel segment
+    /* Proportions measured off board 762:1576, where the M2Med block is
+       517x563 (identical to this canvas) and the waiting laptop is 308x172.
+       Centre to centre is 599.5px, and both sit on y 302.5 - the shared line. */
+    var PITCH  = 600;    // centre-to-centre, from the board
+    var SCALE  = 0.41;   // neighbour lands at 0.59, ie 308/520 like the board
+    var TRAVEL = 700;    // px of scroll per card
 
-    // N segments, not N-1: the first one carries the cases IN from the right
-    // as you leave the hero, so hero -> case studies is itself a horizontal
-    // move rather than the first card simply being there already.
-    var SEGS = N;
+    // N-1 segments: M2Med is already composed the moment the deck pins, so
+    // there is no extra scrolling before the cases appear.
+    var SEGS = N - 1;
 
     var k = 1, snapTimer = 0, lenis = window.__lenis || null;
 
@@ -621,8 +639,7 @@
       if (total <= 0) return 0;
       return Math.min(1, Math.max(0, -r.top / total));
     }
-    // index runs -1 .. N-1, so at the very start every card is off to the right
-    function index() { return progress() * SEGS - 1; }
+    function index() { return progress() * SEGS; }
 
     function paint() {
       var c = index();
@@ -657,7 +674,7 @@
       var c = index();
       var target = Math.max(0, Math.min(N - 1, Math.round(c)));
       if (Math.abs(c - target) < 0.02) return;
-      var y = wrap.offsetTop + ((target + 1) / SEGS) * (SEGS * TRAVEL);
+      var y = wrap.offsetTop + (target / SEGS) * (SEGS * TRAVEL);
       if (lenis) lenis.scrollTo(y, { duration: 0.55 });
       else scrollTo({ top: y, behavior: 'smooth' });
     }
