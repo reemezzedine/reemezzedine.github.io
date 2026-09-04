@@ -101,11 +101,13 @@
   .tagline {
     font-size: 28px; line-height: 37px; font-weight: 500;
     letter-spacing: -.4px; margin-top: 22px;
-    /* 540, not the box's 555: at 28px "…designer with a" measures 553px and
-       squeaks onto one line, which breaks the line where the design breaks it.
-       Trimming the measure restores the Figma wrap without touching the size,
-       which already matches the 74px block height exactly. */
-    max-width: 540px;
+    /* Measured, not guessed. At 28px the three candidate first lines are
+       461px ("…designer"), 530px (+"with") and 553px (+"with a"). The design
+       breaks after "designer", so the measure has to sit between 461 and 530.
+       496 is the midpoint, which leaves ~34px of slack on either side of the
+       decision. Font size stays 28px because it already matches the 74px
+       block height exactly. */
+    max-width: 496px;
   }
 
   /* the hover target */
