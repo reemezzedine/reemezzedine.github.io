@@ -205,13 +205,13 @@
      once she snaps to the nav it plays itself out regardless of the scroll. */
   @keyframes navJiggle {
     0%   { transform: scale(1)    rotate(0deg); }
-    20%  { transform: scale(1.20) rotate(-5deg); }
-    42%  { transform: scale(0.92) rotate(3.5deg); }
-    64%  { transform: scale(1.07) rotate(-1.8deg); }
-    82%  { transform: scale(0.98) rotate(0.7deg); }
+    22%  { transform: scale(1.075) rotate(-2deg); }
+    46%  { transform: scale(0.965) rotate(1.4deg); }
+    70%  { transform: scale(1.025) rotate(-0.6deg); }
+    86%  { transform: scale(0.993) rotate(0.2deg); }
     100% { transform: scale(1)    rotate(0deg); }
   }
-  .portrait-morph.jiggle > img { animation: navJiggle 640ms cubic-bezier(.32,.82,.34,1); }
+  .portrait-morph.jiggle > img { animation: navJiggle 780ms cubic-bezier(.28,.7,.3,1); }
 
   .portrait-morph {
     position: fixed; top: 0; left: 0; width: 388px; height: auto;
@@ -628,7 +628,7 @@
        and catches up. Near the end she stops negotiating with the scroll
        entirely: past SNAP_AT she locks onto the nav and plays a one-shot
        jiggle, so the landing does not depend on the scroll finishing. */
-    var SNAP_AT = 0.88, RELEASE = 0.78, TAU = 0.14;
+    var SNAP_AT = 0.94, RELEASE = 0.86, TAU = 0.20;
     var cur = 0, docked = false, last = 0;
 
     function frame(now) {
@@ -726,6 +726,13 @@
     function index() { return progress() * SEGS; }
 
     function paint() {
+      /* Nothing composes until the deck has actually arrived. Without this the
+         first card ran its entry sequence on page load, so by the time you
+         scrolled down from the hero the snippets were already sitting there
+         and only ever animated when you came BACK from Samsung. */
+      var wr = wrap.getBoundingClientRect();
+      var arrived = wr.top <= innerHeight * 0.35;
+
       var c = index();
       cards.forEach(function (el, i) {
         var d = i - c;
@@ -737,13 +744,13 @@
         el.classList.toggle('at-centre', a < 0.2);
 
         // a card animates its contents in only once it has taken the stage
-        if (a < 0.16) {
+        if (a < 0.16 && arrived) {
           if (!el.classList.contains('in1')) {
             el.classList.add('in1');
             clearTimeout(el.__t);
             el.__t = setTimeout(function () { el.classList.add('in2'); }, 620);
           }
-        } else if (a > 0.4) {
+        } else if (a > 0.4 || !arrived) {
           clearTimeout(el.__t);
           el.classList.remove('in1', 'in2');   // replays next time it centres
         }
