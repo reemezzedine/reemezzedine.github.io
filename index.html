@@ -198,6 +198,21 @@
   /* One element the whole way. It is fixed, and JS lerps it from the hero
      slot into the nav's head position as you scroll, so the hero portrait
      and the nav head are literally the same object rather than a crossfade. */
+  .portrait-morph > img { width: 100%; height: 100%; object-fit: contain; display: block; }
+
+  /* The landing jiggle. It runs on the INNER image so it can never collide
+     with the scroll-driven transform on the wrapper, and it is time-based -
+     once she snaps to the nav it plays itself out regardless of the scroll. */
+  @keyframes navJiggle {
+    0%   { transform: scale(1)    rotate(0deg); }
+    20%  { transform: scale(1.20) rotate(-5deg); }
+    42%  { transform: scale(0.92) rotate(3.5deg); }
+    64%  { transform: scale(1.07) rotate(-1.8deg); }
+    82%  { transform: scale(0.98) rotate(0.7deg); }
+    100% { transform: scale(1)    rotate(0deg); }
+  }
+  .portrait-morph.jiggle > img { animation: navJiggle 640ms cubic-bezier(.32,.82,.34,1); }
+
   .portrait-morph {
     position: fixed; top: 0; left: 0; width: 388px; height: auto;
     transform-origin: 0 0; z-index: 60; pointer-events: none;
@@ -226,8 +241,11 @@
        phone and the laptop drifted 19px apart vertically. Anchoring here
        pins both devices to y=398 whatever the scale, which is what puts them
        on one line. */
-    transform-origin: 644.5px 398px;
+    transform-origin: 644.5px 398px;   /* the phone's centre */
   }
+  #cardSamsung { transform-origin: 640px 420px; }   /* the laptop's centre */
+  #cardSamsung .case-desc { top: 635px; left: 372px; }
+  #cardSamsung .dive      { top: 692px; left: 529px; }
   .card > *, .card-extras > * { position: absolute; }
   .card-extras { position: absolute; inset: 0; }
 
@@ -260,12 +278,31 @@
      (644.5, 398) so both cards sit on one optical line, and sized to the
      width of the copy beneath it. The earlier export was a 1.164 crop that
      cut the laptop in half. */
-  .laptop { left: 384.5px; top: 253px; width: 520px; height: 290px; object-fit: contain; }
+  /* Board 763:1597 exactly: laptop 534x298 at 373,271, so its centre is
+     (640, 420) - a different line from the phone's (644.5, 398), which is why
+     each card anchors its own origin below. */
+  .laptop { left: 373px; top: 271px; width: 534px; height: 298px; object-fit: contain; }
+  .pill-spotify { left: 356px; top: 308px; width: 173px; height: 66px; }
+  .pill-strava  { left: 744px; top: 250px; width: 163px; height: 65px; }
+  .soon-dot {
+    left: 1123px; top: 354px; width: 66px; height: 66px;
+    border-radius: 50%; background: #d9d9d9;
+  }
+  .soon-label {
+    left: 1102px; top: 452px; width: 109px;
+    font-family: Inter, var(--body); font-size: 12px; line-height: 16px;
+    font-weight: 400; color: #000; text-align: center;
+  }
 
-  .snip { transform-origin: 50% 50%; }
+  /* object-fit guarantees no snippet can ever be stretched by its box again,
+     whatever the box ends up being. */
+  .snip { transform-origin: 50% 50%; object-fit: contain; }
   .snip-session { left: 435px; top: 278px; width: 144px; height: 142px; }
   .snip-event   { left: 737px; top: 240px; width: 157px; height: 139px; }
-  .snip-nav     { left: 673px; top: 431px; width: 177px; height: 35px;  }
+  /* 177x35 stretched this 40% wide: the artwork's real aspect is 3.606, so at
+     177 across it is 49 tall. Height corrected and re-centred on the board's
+     own centre line (448.5) rather than its top edge. */
+  .snip-nav     { left: 673px; top: 423px; width: 177px; height: 51px;  }
 
   .case-desc {
     left: 381px; top: 611px; width: 517px;
@@ -273,6 +310,7 @@
     font-weight: 500; letter-spacing: 0; color: #000;
   }
   .case-desc b { font-weight: 700; }
+  .sam-desc { font-weight: 400; }   /* board has Regular here, not Medium */
 
   .dive {
     left: 538px; top: 668px;
@@ -305,8 +343,8 @@
                 transform .62s cubic-bezier(.34, 1.56, .64, 1);
   }
   .card.in2 .snip-session { transition-delay:   0ms; }
-  .card.in2 .snip-event   { transition-delay: 130ms; }
-  .card.in2 .snip-nav     { transition-delay: 260ms; }
+  .card.in2 .snip-event   { transition-delay: 200ms; }
+  .card.in2 .snip-nav     { transition-delay: 400ms; }
   .card.in2 .snip:hover {
     transform: scale(1.055);
     transition: transform .42s cubic-bezier(.34, 1.5, .64, 1);
@@ -314,6 +352,7 @@
 
   @media (prefers-reduced-motion: reduce) {
     .portrait-morph { transition: none; }
+    .portrait-morph.jiggle > img { animation: none; }
     .case-canvas .stage1, .snip { opacity: 1 !important; transform: none !important; }
   }
 
@@ -352,7 +391,9 @@
   <a class="nav-cta" href="mailto:reem.ezzedine36@gmail.com">Contact</a>
 </nav>
 
-<img class="portrait-morph" id="portraitMorph" src="assets/portrait.png" alt="Reem Ezzedine">
+<div class="portrait-morph" id="portraitMorph">
+  <img src="assets/portrait.png" alt="Reem Ezzedine">
+</div>
 
 <header class="hero">
   <div class="hero-inner">
@@ -424,12 +465,18 @@
           <span class="tag">CRM Design</span>
         </div>
 
-        <p class="case-desc stage1">
-          <b>Samsung</b> is <b>CRM product design</b> across five markets and three languages,
-          covering pod layouts, localisation, and partner campaigns
+        <img class="snip pill-spotify" src="assets/samsung/pill-spotify.svg" alt="Spotify Premium">
+        <img class="snip pill-strava"  src="assets/samsung/pill-strava.svg"  alt="Strava">
+
+        <p class="case-desc sam-desc stage1">
+          <b>Samsung CRM product design</b> across five markets and three languages,
+          covering layouts, localisation, and partner campaigns
         </p>
 
         <a class="dive stage1" href="samsung-case.html">Dive in</a>
+
+        <div class="soon-dot stage1" aria-hidden="true"></div>
+        <p class="soon-label stage1">more coming soon!</p>
         </div>
       </article>
 
@@ -564,13 +611,7 @@
       var n = nav.getBoundingClientRect();
       if (!s.width) return;
 
-      var t = Math.min(1, Math.max(0, scrollY / TRAVEL));
-
-      /* Damped spring rather than a smoothstep, so she travels with weight and
-         overshoots the nav by about 6% around the middle of the trip before
-         settling into it. e(0) = 0 exactly; the tail is snapped to 1 so she
-         cannot rest a fraction off her mark. */
-      var e = t >= 0.985 ? 1 : 1 - Math.exp(-5.5 * t) * Math.cos(6.2 * t);
+      var e = cur * cur * (3 - 2 * cur);    // smoothstep on the LAGGED value
 
       var x = s.left + (n.left + HEAD_DX - s.left) * e;
       var y = s.top  + (n.top  + HEAD_DY - s.top)  * e;
@@ -581,7 +622,39 @@
       if (links) links.style.transform = 'translateX(' + (LINKS_DX * e).toFixed(2) + 'px)';
       document.body.classList.toggle('scrolled', t > 0.6);
     }
-    function onScroll() { if (!raf) raf = requestAnimationFrame(paint); }
+    /* Friction, then a snap.
+       `cur` chases the scroll-derived target instead of tracking it exactly,
+       which is where the weight comes from - she lags the cursor of the scroll
+       and catches up. Near the end she stops negotiating with the scroll
+       entirely: past SNAP_AT she locks onto the nav and plays a one-shot
+       jiggle, so the landing does not depend on the scroll finishing. */
+    var SNAP_AT = 0.88, RELEASE = 0.78, TAU = 0.14;
+    var cur = 0, docked = false, last = 0;
+
+    function frame(now) {
+      raf = 0;
+      var dt = last ? Math.min((now - last) / 1000, 0.05) : 1 / 60;
+      last = now;
+      var t = Math.min(1, Math.max(0, scrollY / TRAVEL));
+
+      if (t >= SNAP_AT) {
+        cur = 1;
+        if (!docked) {
+          docked = true;
+          img.classList.remove('jiggle');
+          void img.offsetWidth;               // restart the keyframe
+          img.classList.add('jiggle');
+        }
+      } else {
+        if (docked && t < RELEASE) { docked = false; img.classList.remove('jiggle'); }
+        cur += (t - cur) * (1 - Math.exp(-dt / TAU));
+      }
+
+      paint();
+      if (Math.abs(t - cur) > 0.0006) queue();
+    }
+    function queue() { if (!raf) raf = requestAnimationFrame(frame); }
+    function onScroll() { last = 0; queue(); }
 
     addEventListener('scroll', onScroll, { passive: true });
     addEventListener('resize', onScroll);
@@ -595,7 +668,11 @@
     if (!img.complete) img.addEventListener('load', paint);
     if ('ResizeObserver' in window) new ResizeObserver(paint).observe(slot);
 
-    window.__morphDebug = function () {
+    // test hook: step the loop by hand, since rAF does not run in a hidden tab
+    window.__morphStep = function (ms) { last = performance.now() - (ms || 16); frame(performance.now()); };
+    window.__morphState = function () { return { cur: cur, docked: docked }; };
+    window.__morphDebug = function (t) {
+      if (typeof t === 'number') { cur = t; }
       var sl = slot.getBoundingClientRect(), nv = nav.getBoundingClientRect();
       return { scrollY: scrollY, t: Math.min(1, Math.max(0, scrollY / TRAVEL)),
                slot: { x: sl.left, y: sl.top, w: sl.width },
@@ -634,7 +711,8 @@
     var k = 1, snapTimer = 0, lenis = window.__lenis || null;
 
     function fit() {
-      k = Math.min(1, innerWidth / 1320, innerHeight / 880);
+      // a touch larger than before: was capped at 1 against 1320/880
+      k = Math.min(1.1, innerWidth / 1200, innerHeight / 800);
       rail.style.transform = 'scale(' + k + ')';
       wrap.style.height = (innerHeight + SEGS * TRAVEL) + 'px';
     }
