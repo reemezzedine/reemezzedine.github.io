@@ -225,7 +225,11 @@
 
   .portrait-morph {
     position: fixed; top: 0; left: 0; width: 388px; height: auto;
-    transform-origin: 0 0; z-index: 60; pointer-events: none;
+    /* Above the nav's 200, so she lands ON the pill rather than behind it -
+       the head is meant to spill over its top edge. Safe to sit above the
+       whole nav: she occupies x20-97 and the links do not start until 286,
+       so she never covers anything interactive. */
+    transform-origin: 0 0; z-index: 210; pointer-events: none;
     will-change: transform;
   }
 
