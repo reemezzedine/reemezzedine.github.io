@@ -263,63 +263,62 @@
     .rail-item { transform: none; }
   }
 
-  /* ── nav, matching the portfolio ─────────────────────────────────────
-     The portrait is static here: there is no hero for it to travel from, so
-     it simply sits at the docked position the morph lands on - 77x104, 20px
-     in from the pill's left edge and spilling 16px above it. Links sit at
-     285.5 to clear it, the same offset the morph slides them to. */
+  /* ── nav ─────────────────────────────────────────────────────────────
+     Same glass template as the portfolio. The head is static here - there is
+     no hero for it to travel from - so it sits in normal flow at the position
+     the morph lands on, and space-between then puts the links at 285.5, which
+     is where the case-studies board has them. */
   .nav, nav.nav.glass {
     position: fixed; top: 47px; left: 50%; transform: translateX(-50%);
-    z-index: 50;
-    width: min(871px, calc(100vw - 48px)); height: 72px;
-    border-radius: 36px; background: #f6f6f6;
-    display: flex; align-items: center;
-    padding: 0 16px 0 20px;
-    box-shadow: 0 10px 30px -18px rgba(20, 20, 20, .35);
-    backdrop-filter: none; -webkit-backdrop-filter: none;
+    z-index: 200; width: min(871px, calc(100vw - 48px)); height: 72px;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 16px 0 20px; border-radius: 100px;
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(18px) saturate(150%);
+    -webkit-backdrop-filter: blur(18px) saturate(150%);
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.10);
     border: 0; opacity: 1; animation: none;
   }
+
+  /* Taller than the 72px pill on purpose, so the top of the head and the ends
+     of the hair spill outside it, exactly as in the Figma. */
   .nav-head {
-    position: absolute; left: 20px; top: -16px;
-    width: 77px; height: 104px; display: block;
-    transition: transform .5s cubic-bezier(.22,1,.36,1);
+    width: 77px; height: 104px; flex: none; display: block;
+    margin: -16px 0; overflow: visible; background: none;
+    transform-origin: center;
+    transition: transform .55s cubic-bezier(.34, 1.42, .64, 1);
   }
   .nav-head img { width: 100%; height: 100%; object-fit: contain; display: block; }
-  .nav-head:hover { transform: scale(1.06); }
+  .nav-head:hover { transform: scale(1.08); }
 
-  .nav .nav-links {
-    display: flex; align-items: center; gap: 32px;
-    margin-left: 265.5px;
-  }
+  .nav .nav-links { display: flex; align-items: center; gap: 32px; }
   .nav .nav-links a {
-    font-family: "Montserrat", sans-serif;
-    font-size: 16px; font-weight: 600; letter-spacing: -.32px;
-    color: #1a1f1f; text-decoration: none;
-    position: relative; padding: 4px 0;
+    font-family: "Montserrat", sans-serif; font-size: 16px; font-weight: 600;
+    letter-spacing: -0.32px; color: #1a1f1f; text-decoration: none;
+    position: relative; padding: 6px 2px; transition: opacity .3s ease;
   }
   .nav .nav-links a::after {
     content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1.5px;
     background: #ff85ba; transform: scaleX(0); transform-origin: left;
-    transition: transform .4s cubic-bezier(.22,1,.36,1);
+    transition: transform .35s cubic-bezier(.22, 1, .36, 1);
   }
-  .nav .nav-links a:hover::after { transform: scaleX(1); }
-  .nav .nav-links a.active::after { transform: scaleX(0); }
+  .nav .nav-links a:hover { opacity: .62; }
+  .nav .nav-links a.active::after { transform: scaleX(1); }
 
   .nav .nav-cta {
-    margin-left: auto;
-    display: inline-flex; align-items: center; justify-content: center;
-    height: 39px; padding: 0 20px; border-radius: 999px;
+    width: 99px; height: 39px; border-radius: 100px; flex: none;
+    display: grid; place-items: center;
     background: #ff85ba; color: #fff; text-decoration: none;
     font-family: "Inclusive Sans", "Montserrat", sans-serif;
-    font-size: 16px; font-weight: 600; letter-spacing: -.32px;
-    transition: transform .4s cubic-bezier(.34,1.42,.64,1);
+    font-size: 16px; font-weight: 600; letter-spacing: -0.32px;
+    transition: transform .45s cubic-bezier(.34, 1.42, .64, 1);
   }
-  .nav .nav-cta:hover { transform: scale(1.05); }
+  .nav .nav-cta:hover { transform: scale(1.06); }
 
   @media (max-width: 700px) {
-    .nav .nav-links { margin-left: 96px; gap: 18px; }
+    .nav .nav-links { gap: 18px; }
     .nav .nav-links a { font-size: 13.5px; }
-    .nav-head { width: 58px; height: 78px; top: -10px; left: 14px; }
+    .nav-head { width: 58px; height: 78px; margin: -3px 0; }
   }
 </style>
 </head>
