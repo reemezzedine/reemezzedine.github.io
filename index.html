@@ -120,8 +120,25 @@
     text-transform: lowercase; margin: 0;
     pointer-events: none;
   }
-  .name-fill   { z-index: 1; color: #000; }
-  .name-stroke { z-index: 3; color: transparent; -webkit-text-stroke: 3px #fff; }
+  .name-fill { z-index: 1; color: #000; }
+
+  /* The white-stroke copy is STATIC, at the same spot as the black fill, and
+     sits above her. She travels between the two layers, so whichever letters
+     she is crossing show the white outline with the black hidden behind her.
+
+     It is masked with her own silhouette, and the mask is moved every frame to
+     wherever she currently is. Two reasons. Without the mask, a centred stroke
+     also paints a 1.5px white rim INSIDE every black letter she is not
+     covering. And with it, the outline only exists where she is, so it follows
+     her across the name instead of being a fixed decoration on 'ine'. */
+  .name-stroke {
+    z-index: 3; color: transparent; -webkit-text-stroke: 3px #fff;
+    -webkit-mask-image: url("assets/portrait.png");
+            mask-image: url("assets/portrait.png");
+    -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+    -webkit-mask-size: 365px 492px; mask-size: 365px 492px;
+    -webkit-mask-position: 310px -143px; mask-position: 310px -143px;   /* at rest */
+  }
 
   /* her slot in the hero. The morphing portrait is a separate fixed element
      that starts exactly here. */
@@ -176,6 +193,7 @@
   }
   .portrait-morph > img {
     width: 100%; height: 100%; object-fit: contain; display: block;
+    position: relative; z-index: 1;
     transform-origin: 50% 60%;
     transition: transform .55s var(--spring);
   }
@@ -376,7 +394,7 @@
     <div class="portrait" id="portraitSlot" aria-hidden="true"></div>
 
     <h1 class="name name-fill">reem<br>ezzedine</h1>
-    <p  class="name name-stroke" aria-hidden="true">reem<br>ezzedine</p>
+    <p  class="name name-stroke" id="nameStroke" aria-hidden="true">reem<br>ezzedine</p>
 
     <p class="tagline">
       I&rsquo;m an experienced product designer with a
@@ -504,6 +522,7 @@
        proportion the old nav head had. */
     var HEAD_W   = 60;
     var about    = document.getElementById('navAbout');
+    var stroke   = document.getElementById('nameStroke');
 
     var raf = 0;
     function paint() {
@@ -524,6 +543,18 @@
       img.style.transform =
         'translate3d(' + x.toFixed(2) + 'px,' + y.toFixed(2) + 'px,0) scale(' + k.toFixed(4) + ')';
       document.body.classList.toggle('docked', docked);
+
+      /* Keep the stroke layer's mask on her. The layer lives in the hero canvas
+         (which scrolls, and may be scaled below 1320), while she is fixed, so
+         convert her screen rect into the layer's own local coordinates. */
+      if (stroke) {
+        var sr = stroke.getBoundingClientRect();
+        var hs = sr.width / 651 || 1;                 // hero canvas scale
+        var w  = 365 * k / hs, h = 492 * k / hs;
+        stroke.style.maskSize = stroke.style.webkitMaskSize = w.toFixed(2) + 'px ' + h.toFixed(2) + 'px';
+        stroke.style.maskPosition = stroke.style.webkitMaskPosition =
+          ((x - sr.left) / hs).toFixed(2) + 'px ' + ((y - sr.top) / hs).toFixed(2) + 'px';
+      }
     }
     /* Friction, then a snap.
        `cur` chases the scroll-derived target instead of tracking it exactly,
