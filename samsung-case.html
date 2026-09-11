@@ -205,14 +205,13 @@
 
   section.seg { padding-bottom: clamp(90px, 9vw, 150px); }
 
-  footer {
-    max-width: 1440px; margin: 0 auto; padding: 44px 24px 64px;
-    border-top: 1px solid rgba(255,255,255,0.09);
-    color: rgba(255,255,255,0.45); font-size: 14px; font-weight: 300;
-    display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap;
-  }
-  footer a { color: rgba(255,255,255,0.72); text-decoration: none; }
-  footer a:hover { color: #fff; }
+  /* the same Back to top pill as M2Med, no footer bar */
+  .foot { display: flex; justify-content: center; padding: 0 0 72px; }
+  .totop { display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 20px 0 16px; border-radius: 999px;
+           background: #F6F8FC; color: #0A0F2D; font: inherit; font-size: 14px; font-weight: 600; border: 0; cursor: pointer;
+           transition: transform .45s var(--bubble), background .3s var(--ios); }
+  .totop svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+  .totop:hover { transform: translateY(-3px); background: #E1EBFA; }
 
   @media (max-width: 980px) {
     .body-wrap { grid-template-columns: 1fr; }
@@ -343,9 +342,10 @@
   </main>
 </div>
 
-<footer>
-  <span>Reem Ezzedine © 2026</span>
-  <a href="index.html">Return home</a>
+<footer class="foot">
+  <button class="totop" type="button" data-top>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>Back to top
+  </button>
 </footer>
 
 <script src="assets/lenis.min.js"></script>
@@ -460,7 +460,32 @@
     current = id;
     railItems.forEach(function (r) { r.classList.toggle('active', r.getAttribute('data-rail') === id); });
     navLinks.forEach(function (a) { a.classList.toggle('active', a.getAttribute('data-spy') === id); });
+    fitRail();
   }
+
+  /* The rail is sticky at --stick. When the open paragraph makes it taller
+     than the room below that line, its sticky top is lifted just enough for
+     the whole rail to fit - so the last paragraph is fully visible the moment
+     it opens, not only once the page is scrolled to the bottom. The target
+     height is measured with the accordion forced open (the transition is
+     still running), so the lift lands before the paragraph does.          */
+  var rail = document.querySelector('.rail');
+  function fitRail() {
+    if (!rail || getComputedStyle(rail).position !== 'sticky') { if (rail) rail.style.top = ''; return; }
+    var h = 0;
+    railItems.forEach(function (r) {
+      var body = r.querySelector('.rail-body');
+      var open = r.classList.contains('active');
+      var inner = body && body.firstElementChild;
+      h += r.offsetHeight - (body ? body.getBoundingClientRect().height : 0) + (open && inner ? inner.scrollHeight : 0);
+    });
+    h += 17 * (railItems.length - 1);
+    var stick = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--stick')) || 128;
+    /* may go negative on a short screen: the open paragraph wins over the rail's head */
+    rail.style.top = Math.min(stick, window.innerHeight - h - 24) + 'px';
+  }
+  window.addEventListener('resize', fitRail);
+  fitRail();
 
   function pick() {
     var line = window.scrollY + window.innerHeight * 0.42;
@@ -476,6 +501,11 @@
       if (!t) return;
       goTo(t.offsetTop - 96);
     });
+  });
+
+  /* the Back to top pill glides home */
+  [].forEach.call(document.querySelectorAll('[data-top]'), function (el) {
+    el.addEventListener('click', function (e) { e.preventDefault(); goTo(0); });
   });
 
   navLinks.forEach(function (a) {
