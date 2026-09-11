@@ -128,8 +128,15 @@
      The stroke export is 3.5 wider and 3 taller on each side. */
   .name { position: absolute; margin: 0; pointer-events: none; }
   .name img { display: block; width: 100%; height: auto; }
-  .name-fill   { left: 303.27px; top: 252.33px; width: 549px; z-index: 1; }
-  .name-stroke { left: 299.77px; top: 249.33px; width: 556px; z-index: 3; }
+  .name-fill { left: 303.27px; top: 252.33px; width: 549px; z-index: 1; }
+
+  /* the topmost layer of the sandwich: above the travelling portrait (210) */
+  .name-stroke {
+    position: absolute; left: 0; top: 0; width: 556px; margin: 0;
+    z-index: 220; pointer-events: none;
+    transform-origin: 0 0;
+  }
+  .name-stroke img { display: block; width: 100%; height: auto; }
 
   /* her slot in the hero. The morphing portrait is a separate fixed element
      that starts exactly here. */
@@ -361,6 +368,12 @@
   <img src="assets/portrait.png" alt="Reem Ezzedine">
 </a>
 
+<!-- The white-stroke name. A body-level sibling of the portrait, NOT a child
+     of the hero canvas: the portrait you see is the fixed travelling element
+     at z210, so anything inside the hero (whatever its z) paints under her.
+     Positioned by script to the hero canvas's current place and scale. -->
+<div class="name-stroke" id="nameStroke" aria-hidden="true"><img src="assets/name/stroke.svg" alt=""></div>
+
 <header class="hero">
   <div class="hero-inner">
     <p class="hello">Hello, my name is</p>
@@ -368,7 +381,6 @@
     <div class="portrait" id="portraitSlot" aria-hidden="true"></div>
 
     <h1 class="name name-fill"><img src="assets/name/fill.svg" alt="Reem Ezzedine"></h1>
-    <div class="name name-stroke" aria-hidden="true"><img src="assets/name/stroke.svg" alt=""></div>
 
     <p class="tagline">
       I&rsquo;m an experienced product designer with a
@@ -496,6 +508,20 @@
        proportion the old nav head had. */
     var HEAD_W   = 60;
     var about    = document.getElementById('navAbout');
+    var stroke   = document.getElementById('nameStroke');
+
+    /* The stroke layer follows the hero canvas: same offset from her slot as
+       on the board (299.77-609, 249.33-94), scaled by whatever the canvas is
+       scaled to. Document coordinates, so it scrolls with the page. */
+    function placeStroke() {
+      if (!stroke) return;
+      var r = slot.getBoundingClientRect();
+      if (!r.width) return;
+      var hs = r.width / 365;
+      stroke.style.left = (r.left + scrollX + (299.77 - 609) * hs).toFixed(2) + 'px';
+      stroke.style.top  = (r.top  + scrollY + (249.33 - 94)  * hs).toFixed(2) + 'px';
+      stroke.style.transform = 'scale(' + hs.toFixed(4) + ')';
+    }
 
     var raf = 0;
     function paint() {
@@ -562,8 +588,10 @@
     // risk is it not running. Anything that can move the slot after load
     // (webfont swap, late images, a reflow) has to trigger a repaint, or the
     // portrait sits at a stale position until the next scroll.
-    addEventListener('load', onScroll);
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(paint);
+    addEventListener('load', function () { placeStroke(); onScroll(); });
+    addEventListener('resize', placeStroke);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { placeStroke(); paint(); });
+    placeStroke();
     if (!img.complete) img.addEventListener('load', paint);
     if ('ResizeObserver' in window) new ResizeObserver(paint).observe(slot);
 
