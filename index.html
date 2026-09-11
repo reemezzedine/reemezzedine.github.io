@@ -207,16 +207,61 @@
     margin-top: -100vh;               /* start while the deck is still pinned */
     min-height: 100vh;
     background: #fff;
-    border-radius: 44px 44px 0 0;
+    border-radius: 50px 50px 0 0;
     box-shadow: 0 -18px 50px -30px rgba(0, 0, 0, .25);
   }
-  .page-inner { width: 1100px; max-width: calc(100% - 48px); margin: 0 auto; padding: 120px 0; }
-  .eyebrow { font-size: 12px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--pink); }
-  .page-title {
-    font-family: var(--display); font-weight: 400; font-size: 96px; line-height: .9;
-    letter-spacing: -.32px; text-transform: lowercase; margin: 18px 0 28px;
+
+  /* ── Work with me, board 1004:231 (1280x803) ──────────────────────
+     Section label 108 tall with the title centred; a 640 form at y118
+     with 32 between fields; the footer line 32 in from the bottom-left. */
+  .page-work {
+    background: #e3f2ff; color: #000;
+    display: flex; flex-direction: column;
   }
-  .page-copy { font-size: 20px; line-height: 1.6; max-width: 640px; }
+  .work-label {
+    height: 108px; padding: 24px 0; display: flex; align-items: center; justify-content: center;
+  }
+  .work-label h2 {
+    font-family: var(--display); font-weight: 400; font-size: 40px; line-height: 60px;
+    letter-spacing: 2px; text-transform: uppercase; white-space: nowrap;
+  }
+  .work-form {
+    width: 640px; max-width: calc(100% - 48px); margin: 10px auto 0;
+    display: flex; flex-direction: column; gap: 32px;
+  }
+  .field { display: flex; flex-direction: column; gap: 16px; }
+  .field label { font-family: var(--body); font-size: 16px; font-weight: 600; line-height: 20px; color: #000; }
+  .field input, .field textarea {
+    font-family: var(--body); font-size: 16px; font-weight: 500; line-height: 20px; color: #000;
+    background: transparent; border: 0; outline: 0; border-radius: 0; width: 100%;
+    -webkit-appearance: none; appearance: none;
+  }
+  .field input::placeholder, .field textarea::placeholder { color: #999; opacity: 1; }
+  /* the 1px underline is black at 12%, 16 under the placeholder */
+  .field input { padding: 0 0 16px; border-bottom: 1px solid rgba(0, 0, 0, .12); transition: border-color .3s var(--ease); }
+  .field input:focus { border-bottom-color: rgba(0, 0, 0, .6); }
+  .field textarea {
+    height: 140px; padding: 20px; resize: none;
+    border: 2px solid #fff; border-radius: 12px; transition: border-color .3s var(--ease);
+  }
+  .field textarea:focus { border-color: #000; }
+  .work-submit {
+    align-self: flex-start;
+    height: 44px; padding: 12px 24px; border: 0; border-radius: 100px; cursor: pointer;
+    background: #000; color: #fff; font-family: var(--body); font-size: 16px; font-weight: 600; line-height: 20px;
+    transition: transform .45s var(--spring);
+  }
+  .work-submit:hover { transform: scale(1.04); }
+  .work-foot {
+    margin-top: auto; padding: 32px 32px 24px;   /* board: text bottom sits 24 above the edge */
+    font-family: var(--display); font-weight: 400; font-size: 25px; line-height: normal; color: #000;
+  }
+  /* the section is at least the board's 803, and never shorter than the screen */
+  .page-work { min-height: max(100vh, 803px); }
+
+  /* Contact wears the pink pill once Work with me is reached */
+  .nav-cta { transition: transform .45s var(--spring), background .35s var(--ease); }
+  .nav-cta.active { background: var(--pink); }
 
   /* ── case studies: a pinned horizontal deck ────────────────────────
      The wrapper is tall; the stage inside it sticks to the viewport, so
@@ -375,7 +420,7 @@
     <a class="nav-about" href="#about" id="navAbout">About</a>
     <a href="#case-studies" id="navCases">Case Studies</a>
   </div>
-  <a class="nav-cta" href="mailto:reem.ezzedine36@gmail.com">Contact</a>
+  <a class="nav-cta" href="#work-with-me" id="navContact">Contact</a>
 </nav>
 
 <!-- The portrait. Fixed, so it can travel from the hero into the nav and
@@ -472,11 +517,27 @@
      as the previous portfolio. This is the Work with me section; content is
      a shell until Reem sends its board. -->
 <section class="page page-work" id="work-with-me">
-  <div class="page-inner">
-    <p class="eyebrow">Work with me</p>
-    <h2 class="page-title">work with me</h2>
-    <p class="page-copy">Shell section. Send me the board for this and I'll build it.</p>
-  </div>
+  <div class="work-label"><h2>Work with me</h2></div>
+  <form class="work-form" id="workForm" novalidate>
+    <div class="field">
+      <label for="wfName">Name</label>
+      <input id="wfName" name="name" type="text" placeholder="Jane Smith" autocomplete="name">
+    </div>
+    <div class="field">
+      <label for="wfEmail">Email</label>
+      <input id="wfEmail" name="email" type="email" placeholder="jane@example.com" autocomplete="email">
+    </div>
+    <div class="field">
+      <label for="wfTitle">Message Title</label>
+      <input id="wfTitle" name="title" type="text" placeholder="Let's work together">
+    </div>
+    <div class="field">
+      <label for="wfMsg">Message</label>
+      <textarea id="wfMsg" name="message" placeholder="Tell me about the project..."></textarea>
+    </div>
+    <button class="work-submit" type="submit">Send me a message</button>
+  </form>
+  <p class="work-foot">Reem Ezzedine 2026 portfolio</p>
 </section>
 
 <script src="assets/lenis.min.js"></script>
@@ -660,6 +721,7 @@
     var PITCH  = 600;    // centre-to-centre, from the board
     var SCALE  = 0.41;   // neighbour lands at 0.59, ie 308/520 like the board
     var TRAVEL = 700;    // px of scroll per card
+    var DWELL  = 0;      // px of scroll Samsung holds the stage before the next page rides up
 
     // N-1 segments: M2Med is already composed the moment the deck pins, so
     // there is no extra scrolling before the cases appear.
@@ -671,9 +733,11 @@
       // a touch larger than before: was capped at 1 against 1320/880
       k = Math.min(1.1, innerWidth / 1200, innerHeight / 800);
       rail.style.transform = 'scale(' + k + ')';
+      // + a dwell, so Samsung sits centred for a beat before anything moves,
       // + one extra viewport: the stage stays pinned while the next section
       // rides up over it, instead of being pushed off in lockstep with it
-      wrap.style.height = (innerHeight + SEGS * TRAVEL + innerHeight) + 'px';
+      DWELL = Math.round(innerHeight * 0.75);
+      wrap.style.height = (innerHeight + SEGS * TRAVEL + DWELL + innerHeight) + 'px';
     }
 
     function progress() {
@@ -741,18 +805,46 @@
     addEventListener('load', function () { fit(); paint(); });
     fit(); paint();
 
-    // The pink pill follows the section. About wears it on the hero; once
-    // the deck holds the screen it moves to Case Studies.
+    // The pink pill follows the section: About on the hero, Case Studies
+    // while the deck holds the screen, Contact once Work with me has risen
+    // over it - and only ever one of them.
     var cases = document.getElementById('navCases');
     var about = document.getElementById('navAbout');
-    if (about) about.classList.add('active');
-    if (cases && 'IntersectionObserver' in window) {
-      new IntersectionObserver(function (es) {
-        var on = es[0].isIntersecting;
-        cases.classList.toggle('active', on);
-        if (about) about.classList.toggle('active', !on);
-      }, { threshold: 0, rootMargin: '-40% 0px -40% 0px' }).observe(wrap);
+    var contact = document.getElementById('navContact');
+    var work = document.getElementById('work-with-me');
+    function navPill() {
+      var who = 'about';
+      if (work && work.getBoundingClientRect().top <= innerHeight * 0.45) who = 'contact';
+      else {
+        var r = wrap.getBoundingClientRect();
+        if (r.top <= innerHeight * 0.6 && r.bottom >= innerHeight * 0.4) who = 'cases';
+      }
+      if (about) about.classList.toggle('active', who === 'about');
+      if (cases) cases.classList.toggle('active', who === 'cases');
+      if (contact) contact.classList.toggle('active', who === 'contact');
     }
+    addEventListener('scroll', function () { requestAnimationFrame(navPill); }, { passive: true });
+    addEventListener('resize', navPill);
+    navPill();
+
+    // Contact glides down to the form
+    if (contact) contact.addEventListener('click', function (e) {
+      if (!work) return;
+      e.preventDefault();
+      var y = work.offsetTop;
+      if (lenis) lenis.scrollTo(y, { duration: 1.4 });
+      else scrollTo({ top: y, behavior: 'smooth' });
+    });
+
+    // The form opens a ready-addressed email with what was typed
+    var form = document.getElementById('workForm');
+    if (form) form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var v = function (id) { return (document.getElementById(id).value || '').trim(); };
+      var subject = v('wfTitle') || 'Let\'s work together';
+      var body = (v('wfName') ? v('wfName') + '\n' : '') + (v('wfEmail') ? v('wfEmail') + '\n\n' : '\n') + v('wfMsg');
+      location.href = 'mailto:reem.ezzedine36@gmail.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+    });
 
     window.__deck = { progress: progress, index: index, cards: cards,
                       PITCH: PITCH, SEGS: SEGS, fitScale: function () { return k; } };
