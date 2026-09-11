@@ -72,7 +72,7 @@
     background: var(--pink); color: #fff; font-weight: 700; opacity: 1;
   }
   /* board spacing: About pill ends at 158, Case Studies text starts at 190,
-     Resume at 324. Gaps absorb the 12px pill padding. */
+     Gaps absorb the 12px pill padding. */
   .nav-about { min-width: 75px; justify-content: center; }
   .nav-links a + a { margin-left: 20px; }
 
@@ -200,6 +200,23 @@
   .portrait-morph:hover > img { transform: scale(1.045) rotate(2.2deg); }
   .portrait-morph.jiggle > img { animation: navJiggle 780ms cubic-bezier(.28,.7,.3,1); }
   .portrait-morph.jiggle:hover > img { animation: none; }
+
+  /* ── stacked pages after the deck ─────────────────────────────────── */
+  .page {
+    position: relative; z-index: 20;
+    margin-top: -100vh;               /* start while the deck is still pinned */
+    min-height: 100vh;
+    background: #fff;
+    border-radius: 44px 44px 0 0;
+    box-shadow: 0 -18px 50px -30px rgba(0, 0, 0, .25);
+  }
+  .page-inner { width: 1100px; max-width: calc(100% - 48px); margin: 0 auto; padding: 120px 0; }
+  .eyebrow { font-size: 12px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--pink); }
+  .page-title {
+    font-family: var(--display); font-weight: 400; font-size: 96px; line-height: .9;
+    letter-spacing: -.32px; text-transform: lowercase; margin: 18px 0 28px;
+  }
+  .page-copy { font-size: 20px; line-height: 1.6; max-width: 640px; }
 
   /* ── case studies: a pinned horizontal deck ────────────────────────
      The wrapper is tall; the stage inside it sticks to the viewport, so
@@ -357,7 +374,6 @@
   <div class="nav-links" id="navLinks">
     <a class="nav-about" href="#about" id="navAbout">About</a>
     <a href="#case-studies" id="navCases">Case Studies</a>
-    <a href="#resume">Resume</a>
   </div>
   <a class="nav-cta" href="mailto:reem.ezzedine36@gmail.com">Contact</a>
 </nav>
@@ -446,6 +462,20 @@
       </article>
 
     </div>
+  </div>
+</section>
+
+<!-- ── after the deck: this rides UP over the pinned last card ──────────
+     The deck wrapper is one viewport taller than its travel needs, so its
+     stage stays stuck at the top while this section, pulled up by a negative
+     margin and sitting above it in z, slides over it. Same stacking pattern
+     as the previous portfolio. Content is a shell until Reem says what goes
+     here. -->
+<section class="page page-about" id="about">
+  <div class="page-inner">
+    <p class="eyebrow">About</p>
+    <h2 class="page-title">A little about me</h2>
+    <p class="page-copy">Shell section. Tell me what lives here and I'll build it.</p>
   </div>
 </section>
 
@@ -641,7 +671,9 @@
       // a touch larger than before: was capped at 1 against 1320/880
       k = Math.min(1.1, innerWidth / 1200, innerHeight / 800);
       rail.style.transform = 'scale(' + k + ')';
-      wrap.style.height = (innerHeight + SEGS * TRAVEL) + 'px';
+      // + one extra viewport: the stage stays pinned while the next section
+      // rides up over it, instead of being pushed off in lockstep with it
+      wrap.style.height = (innerHeight + SEGS * TRAVEL + innerHeight) + 'px';
     }
 
     function progress() {
