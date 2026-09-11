@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>M2Med — Founding Design · Reem Ezzedine</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inclusive+Sans:wght@600&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy: #0A0F2D;
+    --blue: #2832B4;
+    --sky: #AAD2FA;
+    --tint: #E1EBFA;
+    --mint: #99FFCC;
+    --mint-deep: #007E41;
+    --mint-live: #17D490;
+    --ink2: #48494B;
+    --ink3: #646569;
+    --card: #F6F8FC;
+    --page: #FAFAFB;
+    --line: #DCDDE1;
+
+    --ui-scale: .88;          /* one knob: shrink the whole page, nav stays put */
+    --stick: 140px;           /* rail + stage pin, in page px (≈123 on screen): just under the portrait */
+    --sec: 88px;              /* one vertical rhythm between blocks */
+    --spy: .5;               /* scroll-spy line, as a fraction of the viewport */
+
+    --ios: cubic-bezier(.32,.72,0,1);
+    --bubble: cubic-bezier(.34,1.56,.64,1);
+    --soft: cubic-bezier(.22,1,.36,1);
+    --weight: cubic-bezier(.16,.84,.24,1.04);
+  }
+
+  /* Lenis owns scrolling */
+  html.lenis, html.lenis body { height: auto; }
+  .lenis:not(.lenis-autoToggle).lenis-smooth { scroll-behavior: auto !important; }
+  .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+  .lenis.lenis-stopped { overflow: clip; }
+  .lenis.lenis-autoToggle { transition-property: scroll-behavior; transition-duration: 0s; transition-behavior: allow-discrete; }
+
+  html { -webkit-font-smoothing: antialiased; }
+  body {
+    background: #fff; color: var(--navy);
+    font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-weight: 400; overflow-x: hidden;
+  }
+  img { display: block; max-width: 100%; }
+  button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+  :focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; border-radius: 4px; }
+
+  .wrap { width: 100%; max-width: 1280px; margin: 0 auto; padding: 0 clamp(20px, 7.6vw, 97px); }
+  .page { zoom: var(--ui-scale); }
+
+  /* ══════════ HEADER: the portrait top-left, Contact top-right, no bar ══════════ */
+  .top { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; align-items: center; justify-content: space-between;
+         padding: 22px 32px 0; pointer-events: none; opacity: 0; transform: translateY(-10px); animation: topIn .8s var(--ios) .12s forwards; }
+  @keyframes topIn { to { opacity: 1; transform: none; } }
+  .top > * { pointer-events: auto; }
+  .head { width: 72px; height: 97px; display: block; transform-origin: center; transition: transform .55s cubic-bezier(.34, 1.42, .64, 1); }
+  .head img { width: 100%; height: 100%; object-fit: contain; display: block; }
+  .head:hover { transform: scale(1.08); }
+  .cta {
+    width: 99px; height: 39px; border-radius: 100px; display: grid; place-items: center;
+    background: #111; color: #fff; text-decoration: none;
+    font-family: "Inclusive Sans", "Montserrat", sans-serif; font-size: 16px; font-weight: 600; letter-spacing: -0.32px;
+    box-shadow: 0 6px 20px -8px rgba(0,0,0,.45);
+    transition: transform .45s cubic-bezier(.34, 1.42, .64, 1);
+  }
+  .cta:hover { transform: scale(1.06); }
+  @media (max-width: 700px) { .top { padding: 14px 18px 0; } .head { width: 54px; height: 73px; } }
+
+  :focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; border-radius: 4px; }
+
+  .wrap { width: 100%; max-width: 1280px; margin: 0 auto; padding: 0 clamp(20px, 7.6vw, 97px); }
+  .page { zoom: var(--ui-scale); }
+
+  /* ══════════ NAV — identical to the Samsung case study ══════════ */
+  .nav, nav.nav.glass {
+    position: fixed; top: 47px; left: 50%; transform: translateX(-50%);
+    z-index: 200; width: min(871px, calc(100vw - 48px)); height: 72px;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 16px 0 20px; border-radius: 100px;
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(18px) saturate(150%);
+    -webkit-backdrop-filter: blur(18px) saturate(150%);
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.10);
+    border: 0; opacity: 0; transform: translateX(-50%) translateY(-14px);
+    animation: navIn .8s var(--ios) .12s forwards;
+  }
+  @keyframes navIn { to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+  .nav-head {
+    width: 77px; height: 104px; flex: none; display: block;
+    margin: -16px 0; overflow: visible; background: none;
+    transform-origin: center;
+    transition: transform .55s cubic-bezier(.34, 1.42, .64, 1);
+  }
+  .nav-head img { width: 100%; height: 100%; object-fit: contain; display: block; }
+  .nav-head:hover { transform: scale(1.08); }
+  .nav .nav-links { display: flex; align-items: center; gap: 32px; }
+  .nav .nav-links a {
+    font-family: "Montserrat", sans-serif; font-size: 16px; font-weight: 600;
+    letter-spacing: -0.32px; color: #1a1f1f; text-decoration: none;
+    position: relative; padding: 6px 2px; transition: opacity .3s ease;
+  }
+  .nav .nav-links a::after {
+    content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1.5px;
+    background: #ff85ba; transform: scaleX(0); transform-origin: left;
+    transition: transform .35s cubic-bezier(.22, 1, .36, 1);
+  }
+  .nav .nav-links a:hover { opacity: .62; }
+  .nav .nav-links a.active::after { transform: scaleX(1); }
+  .nav .nav-cta {
+    width: 99px; height: 39px; border-radius: 100px; flex: none;
+    display: grid; place-items: center;
+    background: #ff85ba; color: #fff; text-decoration: none;
+    font-family: "Inclusive Sans", "Montserrat", sans-serif;
+    font-size: 16px; font-weight: 600; letter-spacing: -0.32px;
+    transition: transform .45s cubic-bezier(.34, 1.42, .64, 1);
+  }
+  .nav .nav-cta:hover { transform: scale(1.06); }
+  @media (max-width: 700px) {
+    .nav .nav-links { gap: 18px; }
+    .nav .nav-links a { font-size: 13.5px; }
+    .nav-head { width: 58px; height: 78px; margin: -3px 0; }
+  }
+
+  :focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; border-radius: 6px; }
+  .rail-item:focus-visible { outline-offset: -4px; border-radius: 20px; }
+
+  /* ══════════ 1 · HERO ══════════ */
+  .hero {
+    position: relative;
+    background: linear-gradient(180deg, #AAD2FA 0%, #FFFFFF 65%);
+    padding: 216px 0 0;
+  }
+  .hero-logo { width: min(432px, 60vw); margin: 0 auto; }
+  .hero-logo img { width: 100%; }
+
+  .hero-phone { position: relative; width: min(431px, 78vw); margin: -38px auto 0; }
+  .hero-phone .phone { width: 100%; position: relative; z-index: 1; }
+
+  /* the three snippets sit in the phone's own coordinate space, so they scale with it */
+  .snip { position: absolute; z-index: 2; object-fit: contain; transform-origin: 50% 50%;
+          opacity: 0; transform: scale(.82); pointer-events: none; }
+  /* Figma: phone at 424,272 (431×550); session 268,344 · event 766,347 · nav 702,602 */
+  .snip-session { left: -36.2%; top: 13.1%; width: 33.4%; }
+  .snip-event   { left: 79.4%;  top: 13.6%; width: 36.4%; }
+  .snip-nav     { left: 64.5%;  top: 60%;   width: 41.1%; }
+  /* narrow screens: keep the snippets inside the viewport, overlapping the phone edges */
+  @media (max-width: 760px) {
+    .snip-session { left: -14%; top: 16%; width: 36%; }
+    .snip-event   { left: 74%;  top: 17%; width: 38%; }
+    .snip-nav     { left: 56%;  top: 62%; width: 44%; }
+    .hero { padding-top: 168px; }
+  }
+  .hero.in2 .snip {
+    opacity: 1; transform: scale(1); pointer-events: auto;
+    transition: opacity .42s var(--soft), transform .62s var(--bubble);
+  }
+  .hero.in2 .snip-session { transition-delay: 0ms; }
+  .hero.in2 .snip-event   { transition-delay: 200ms; }
+  .hero.in2 .snip-nav     { transition-delay: 400ms; }
+  .hero.in2 .snip:hover { transform: scale(1.055); transition: transform .42s cubic-bezier(.34,1.5,.64,1); }
+
+  /* Figma "Rectangle 75": a white band with a progressive layer blur, 136 tall, starting 68px above the
+     phone's bottom edge. Lives inside the phone box so it can never reach the chips; the mask ramps the
+     blur in from nothing, the gradient takes the wrist to white. */
+  .hero-fade {
+    position: absolute; left: -30%; right: -30%; top: 74%; height: 34%; z-index: 3; pointer-events: none;
+    /* solid white by 70% of the band = 97.8% of the image, so its edge is never on screen */
+    background: linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,.55) 38%, #fff 70%, #fff 100%);
+    -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, #000 45%, #000 100%);
+            mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, #000 45%, #000 100%);
+  }
+
+  /* stage 1: logo + phone rise on load */
+  .hero .stage1 { opacity: 0; transform: translateY(22px); }
+  .hero.in1 .stage1 { opacity: 1; transform: none; transition: opacity .7s var(--soft), transform .7s var(--soft); }
+  .hero.in1 .hero-phone { transition-delay: 90ms; }
+
+  /* ── info chips ── */
+  .pills { position: relative; z-index: 4; margin: 84px auto 0; display: flex; flex-direction: column; align-items: center; gap: 20px; padding-bottom: 96px; }
+  .pill-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 21px; }
+  .pill {
+    display: flex; flex-direction: column; align-items: center; gap: 2px;
+    padding: 7px 24px 8px; border-radius: 42px; border: 2px solid var(--sky);
+    text-align: center; color: var(--navy);
+    opacity: 0; filter: blur(13px); transform: scale(1.11) translateY(14px);
+    will-change: transform, opacity, filter;
+  }
+  .pill .k, .pill .v { transition: opacity .7s var(--ios) .22s; opacity: 0; }
+  .pill.in .k, .pill.in .v { opacity: 1; }
+  .pill .k { font-size: 14px; line-height: 18px; text-transform: capitalize; white-space: nowrap; }
+  .pill .v { font-size: 14px; line-height: 25px; font-weight: 600; letter-spacing: -.04px; white-space: nowrap; }
+
+  /* ══════════ 2 · INTRO ══════════ */
+  .intro {
+    background: var(--navy); color: #fff; border-radius: 24px;
+    padding: 74px clamp(24px, 14.9vw, 191px) 50px;
+  }
+  .intro { text-align: center; }
+  .intro .lead { font-size: clamp(22px, 2.35vw, 30px); line-height: 1.5; font-weight: 700; max-width: 906px; margin: 0 auto; }
+  /* the fill is scroll-linked: a navy copy of the sentence sits on top of the white one and is
+     revealed left to right, so the tint and the colour change arrive together */
+  .hl { position: relative; display: inline-block; padding: 0 5px; color: #fff; }
+  .hl-n { position: absolute; inset: 0; padding: 0 5px; box-sizing: border-box; color: var(--navy);
+          background: var(--tint); border-radius: 6px; clip-path: inset(0 100% 0 0 round 6px); }
+  .intro .sub { margin: 16px auto 0; max-width: 720px; font-size: 16px; line-height: 1.62; color: rgba(255,255,255,.86); }
+
+  .ba { position: relative; width: min(528px, 100%); margin: 40px auto 0; }
+  .ba img { width: 100%; }
+  .ba-tag {
+    position: absolute; top: 13.7%; padding: 8px 10px; border-radius: 8px;
+    background: var(--mint); color: var(--navy); font-size: 16px; font-weight: 700; line-height: 1.2;
+  }
+  .ba-tag.before { right: calc(100% + 10px); }
+  .ba-tag.after  { left: calc(100% - 6px); }
+  @media (max-width: 760px) { .ba-tag.before { right: auto; left: 0; top: -44px; } .ba-tag.after { left: auto; right: 0; top: -44px; } }
+
+  /* ══════════ 3 · HOW I RECEIVED ══════════ */
+  .received { padding: var(--sec) 0; }
+  .received h2, .did-head h2, .system h2, .outcome h2 { font-size: 36px; line-height: 44px; font-weight: 700; letter-spacing: -.9px; }
+  .received .note { font-size: 14px; line-height: 22px; color: var(--ink3); margin-top: 4px; }
+  .problems { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; margin: 41px calc(35px - clamp(20px, 7.6vw, 97px)) 0; }
+  @media (max-width: 900px) { .problems { grid-template-columns: 1fr; margin-left: 0; margin-right: 0; } }
+  .problem {
+    background: var(--tint); border-radius: 40px; padding: 25px 31px 24px;
+    display: flex; flex-direction: column; gap: 15px;
+  }
+  .problem h3 { font-size: 18px; line-height: 24px; font-weight: 700; letter-spacing: -.6px; }
+  .problem p, .problem li { font-size: 16.5px; line-height: 22px; color: var(--ink2); }
+  .problem ul { padding-left: 24px; }
+  .problem li + li { margin-top: 6px; }
+  .problem b { font-weight: 600; }
+  .problem figure { margin-top: auto; padding-top: 4px; }
+  .problem figure img { width: 304px; max-width: 100%; margin: 0 auto; border-radius: 16px; }
+
+  /* ══════════ 4 · WHAT I DID ══════════ */
+  .did { background: var(--navy); color: #fff; border-radius: 24px; padding: var(--sec) 0 96px; }
+  .did-head p { margin-top: 12px; max-width: 760px; font-size: 16px; line-height: 24px; color: rgba(255,255,255,.88); }
+
+  /* Samsung's model: the rail stays put, the image sets scroll past it on the right,
+     and the set nearest the spy line decides which title is open.
+     Figma: the heading sits on the 97px gutter, the decision rows on a 35px one. */
+  .did-grid { margin: 88px calc(35px - clamp(20px, 7.6vw, 97px)) 0; display: grid; grid-template-columns: 401px minmax(0, 1fr); gap: 37px; align-items: start; }
+  .rail { position: sticky; top: var(--stick); display: flex; flex-direction: column; gap: 14px; }
+  /* the track is tall (JS: one band of scroll per step); the stage pins inside it and the image sets
+     share one cell, so each step fades out exactly where the next one fades in */
+  .track { min-width: 0; }
+  .stage { position: sticky; top: var(--stick); min-width: 0; }
+  .stage-in { display: grid; }
+  .set { grid-area: 1 / 1; opacity: 0; transform: translateY(18px); pointer-events: none;
+         transition: opacity .45s var(--ios), transform .6s var(--ios); }
+  .set.on { opacity: 1; transform: none; pointer-events: auto; }
+  .set.out { transform: translateY(-18px); }
+  @media (max-width: 1000px) {
+    .did-grid { margin: 72px 0 0; grid-template-columns: minmax(0, 1fr); gap: 24px; }
+    .rail { display: none; }                      /* JS moves each title above its own images */
+    .track { height: auto !important; }
+    .stage { position: static; }
+    .stage-in { display: flex; flex-direction: column; gap: 72px; zoom: 1 !important; }
+    .stage .rail-item { margin-bottom: 20px; padding: 24px; }
+    .stage .rail-item .rail-body { grid-template-rows: 1fr; opacity: 1; }
+    .set, .set.out { opacity: 1; transform: none; pointer-events: auto; }   /* phones: every step is laid out in full */
+  }
+
+  /* waiting titles sit small and greyed; the open one grows to the full card */
+  .rail-item {
+    width: 348px; max-width: 100%; text-align: left;
+    background: var(--card); color: var(--navy); border-radius: 20px;
+    padding: 14px 24px; overflow: hidden; opacity: .58;
+    transition: width .7s var(--ios), transform .5s var(--ios), padding .5s var(--ios), opacity .45s var(--ios), border-radius .5s var(--ios);
+    transform: scale(.985); transform-origin: left center;
+  }
+  .rail-item.active { width: 401px; transform: scale(1); padding: 32px; opacity: 1; border-radius: 24px; }
+  .rail-item:not(.active):hover { transform: scale(1); opacity: .85; }
+  @media (max-width: 1000px) { .rail-item, .rail-item.active { width: 100%; transform: none; opacity: 1; } }
+  .rail-item h3 { font-size: 17px; line-height: 24px; font-weight: 700; letter-spacing: -.4px; color: #5B6473;
+                  transition: font-size .45s var(--ios), line-height .45s var(--ios), color .45s var(--ios); }
+  .rail-item.active h3 { font-size: 22px; line-height: 30px; letter-spacing: -.5px; color: var(--navy); }
+  @media (max-width: 1000px) { .rail-item h3 { font-size: 22px; line-height: 30px; color: var(--navy); } }
+  .rail-item h3 em { font-style: normal; margin-right: 8px; }
+  .rail-body { display: grid; grid-template-rows: 0fr; opacity: 0; transition: grid-template-rows 1.1s var(--weight), opacity .72s var(--ios); }
+  .rail-item.active .rail-body { grid-template-rows: 1fr; opacity: 1; }
+  .rail-inner { overflow: hidden; }
+  .rail-pad { padding-top: 16px; display: flex; flex-direction: column; gap: 16px; }
+  .rail-pad h4 { font-size: 15px; line-height: 16px; font-weight: 600; text-transform: capitalize; }
+  .rail-pad p { font-size: 14px; line-height: 21px; color: var(--ink2); }
+
+  .shots { display: flex; gap: 57px; align-items: flex-start; flex-wrap: wrap; min-width: 0; }
+  .shots > div { min-width: 0; max-width: 100%; }
+  .phone-col { width: 325px; max-width: 100%; flex: none; }
+  .phone-col img { width: 100%; }
+  .stage-lab { font-size: 24px; line-height: 30px; font-weight: 700; text-align: center; margin-bottom: 17px; }
+
+  /* ── panel 3: program before / after (built, not screenshots) ── */
+  .prog-before { width: 345px; max-width: 100%; background: #fff; color: #1b2733; border-radius: 12px; padding: 15px 0 0; font-family: Inter, "Montserrat", sans-serif; box-shadow: 0 6px 24px -10px rgba(0,0,0,.25); }
+  .pb-tag { display: inline-block; margin: 0 0 12px 10px; padding: 4px 8px; border-radius: 6px; background: #E4EEF7; color: #1B70B3; font-size: 11px; font-weight: 600; }
+  .pb-row { display: grid; grid-template-columns: 50px 2px 1fr; gap: 0 8px; padding: 8px 10px 14px; }
+  .pb-row + .pb-row { border-top: 1px solid #EEF2F6; }
+  .pb-time { font-size: 11px; line-height: 15px; color: #8A96A3; }
+  .pb-bar { background: #1B70B3; border-radius: 2px; }
+  .pb-info h5 { font-size: 13px; line-height: 16px; font-weight: 600; }
+  .pb-info .loc { font-size: 10.5px; color: #8A96A3; margin-top: 4px; }
+  .pb-info .desc { font-size: 11px; line-height: 15px; color: #4B5563; margin-top: 6px; }
+  .pb-chip { display: flex; align-items: center; gap: 5px; margin-top: 8px; font-size: 10.5px; color: #4B5563; }
+  .pb-chip i { width: 18px; height: 18px; border-radius: 4px; background: #E4EEF7; color: #1B70B3; font-style: normal; font-size: 10px; font-weight: 700; display: grid; place-items: center; }
+  .pb-file { display: flex; align-items: center; gap: 6px; margin-top: 8px; padding: 8px; border-radius: 8px; background: #F5F8FB; font-size: 10.5px; color: #1B2733; }
+  .pb-file .ext { margin-left: auto; padding: 1px 5px; border-radius: 4px; background: #E4EEF7; color: #1B70B3; font-size: 9px; font-weight: 700; }
+
+  .prog-after { width: 358px; max-width: 100%; color: var(--navy); }
+  .pa-lab { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--mint-deep); padding: 16px 0 6px 28px; }
+  .pa-rows { position: relative; padding-left: 28px; }
+  .pa-rail { position: absolute; left: 7px; top: 10px; bottom: 30px; width: 2px; border-radius: 2px; background: var(--line); }
+  .pa-rail i { position: absolute; left: 0; top: 0; width: 2px; height: 55%; background: var(--mint-live); border-radius: 2px; }
+  .pa-dot { position: absolute; left: 3px; width: 10px; height: 10px; border-radius: 999px; background: var(--mint-live); }
+  .pa-dot.live::before { content: ""; position: absolute; inset: -4px; border-radius: 999px; border: 2px solid var(--blue); opacity: .55; }
+  .pa-card { background: #fff; border-radius: 16px; padding: 16px; margin-bottom: 12px; box-shadow: 0 8px 24px -12px rgba(10,15,45,.25); }
+  .pa-time { font-size: 13px; font-weight: 700; color: var(--ink3); display: flex; align-items: center; justify-content: space-between; }
+  .pa-time .live { font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 999px; background: var(--mint); color: var(--mint-deep); }
+  .pa-card h5 { font-size: 16px; line-height: 24px; font-weight: 700; margin-top: 8px; }
+  .pa-meta { font-size: 13.5px; color: var(--ink2); margin-top: 6px; display: flex; align-items: center; gap: 8px; }
+  .pa-meta svg { width: 16px; height: 16px; stroke: var(--ink3); fill: none; stroke-width: 2; }
+  .pa-btn { margin-top: 12px; height: 36px; border-radius: 8px; border: 2px solid var(--blue); color: var(--blue); font-size: 13px; font-weight: 700; display: grid; place-items: center; }
+  .picker { background: var(--tint); border-radius: 12px; padding: 12px; margin-bottom: 12px; }
+  .picker .k { font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--blue); }
+  .picker .h { font-size: 12.5px; color: var(--ink2); margin-top: 6px; }
+  .picker .seg { display: flex; gap: 4px; background: #fff; border-radius: 8px; padding: 4px; margin-top: 10px; }
+  .picker .seg button { flex: 1; height: 36px; border-radius: 4px; font-size: 13px; font-weight: 700; color: var(--ink3); transition: background .22s var(--ios), color .22s var(--ios); }
+  .picker .seg button[aria-pressed="true"] { background: var(--blue); color: #fff; }
+
+  /* ── panel 5: modals (built) ── */
+  .modals { display: grid; grid-template-columns: 342px 342px; gap: 39px; align-items: start; }
+  .mcol { display: flex; flex-direction: column; gap: 24px; min-width: 0; }
+  @media (max-width: 1000px) { .modals { grid-template-columns: minmax(0, 1fr); } }
+  .modal { background: #fff; color: var(--navy); border-radius: 20px; padding: 20px; box-shadow: 0 18px 44px -14px rgba(0,0,0,.35); }
+  .modal h5 { font-size: 20px; line-height: 26px; font-weight: 700; }
+  .modal .sub { font-size: 14px; line-height: 20px; color: var(--ink2); margin-top: 8px; }
+  .modal .line { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+  .modal .line:last-of-type { border-bottom: 0; }
+  .modal .line .t { flex: 1; }
+  .modal .line b { display: block; font-size: 15px; font-weight: 600; }
+  .modal .line span { display: block; font-size: 12.5px; color: var(--ink3); margin-top: 2px; }
+  .modal .line .p { font-size: 15px; font-weight: 700; white-space: nowrap; }
+  .modal .line .p.free { color: var(--mint-deep); }
+  .cb { width: 22px; height: 22px; border-radius: 6px; border: 2px solid var(--line); display: grid; place-items: center; flex: none; transition: background .2s, border-color .2s; }
+  .cb svg { width: 14px; height: 14px; stroke: #fff; fill: none; stroke-width: 3; opacity: 0; transition: opacity .15s; }
+  .line[aria-checked="true"] .cb { background: var(--blue); border-color: var(--blue); }
+  .line[aria-checked="true"] .cb svg { opacity: 1; }
+  .modal .line[role="checkbox"] { cursor: pointer; }
+  .modal .total { margin-top: 12px; background: var(--card); border-radius: 12px; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; font-size: 15px; font-weight: 600; }
+  .modal .total b { font-size: 20px; font-weight: 700; }
+  .modal .total b.free { color: var(--mint-deep); }
+  .modal .note { margin-top: 12px; font-size: 12.5px; line-height: 16px; color: var(--ink3); }
+  .modal .note.tint { background: var(--tint); color: var(--navy); padding: 12px 14px; border-radius: 10px; font-weight: 500; text-align: center; }
+  .modal .acts { display: flex; gap: 12px; margin-top: 16px; }
+  .modal .acts button { flex: 1; height: 44px; border-radius: 8px; font-size: 14px; font-weight: 700; }
+  .btn-p { background: var(--blue); color: #fff; }
+  .btn-s { background: #fff; color: var(--blue); border: 2px solid var(--blue); }
+  .modal .icon { width: 52px; height: 52px; border-radius: 999px; background: var(--tint); margin: 0 auto 12px; display: grid; place-items: center; }
+  .modal .icon svg { width: 26px; height: 26px; stroke: var(--blue); fill: none; stroke-width: 2; }
+  .modal.center { text-align: center; }
+
+  /* ══════════ 5 · THE SYSTEM ══════════ */
+  .system { background: var(--tint); border-radius: 24px; padding: var(--sec) 0; margin-top: var(--sec); }
+  .system .inner { width: 100%; max-width: 1280px; margin: 0 auto; padding: 0 clamp(20px, 7.6vw, 97px); }
+  .system .lede { font-size: 16px; line-height: 28px; color: var(--blue); margin-top: 12px; }
+  .sys-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; margin-top: 32px; }
+  @media (max-width: 900px) { .sys-cols { grid-template-columns: 1fr; } }
+  .sys-col h3 { font-size: 16px; line-height: 22px; font-weight: 700; }
+  .sys-col > p { font-size: 15px; line-height: 22px; color: var(--ink2); margin-top: 16px; }
+
+  .map { background: #fff; border-radius: 16px; padding: 24px; margin-top: 16px; }
+  .map h4 { font-size: 14px; font-weight: 600; margin-bottom: 16px; }
+  .map-row { position: relative; display: flex; align-items: center; gap: 12px; padding: 8px 0; font-size: 14px; color: var(--ink2); cursor: default; }
+  .map-row i { width: 12px; height: 12px; border-radius: 999px; flex: none; transition: transform .35s var(--bubble); }
+  .map-row:hover i { transform: scale(1.9); }
+  .map-row:hover { color: var(--navy); }
+
+  .inv { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+  .inv span { position: relative; padding: 8px 18px; border-radius: 8px; background: #fff; font-size: 14px; color: var(--navy); cursor: default; transition: transform .35s var(--bubble), box-shadow .35s var(--ios); }
+  .inv span:hover { transform: translateY(-3px); box-shadow: 0 8px 20px -10px rgba(10,15,45,.35); }
+
+  .sem { background: var(--navy); color: #fff; border-radius: 16px; padding: 24px; margin-top: 16px; }
+  .sem h4 { font-size: 16px; font-weight: 600; }
+  .sem p { font-size: 14px; color: rgba(255,255,255,.8); margin-top: 8px; }
+  .sem .chips { display: flex; gap: 12px; margin-top: 16px; }
+  .chip { position: relative; padding: 5px 12px; border-radius: 999px; background: var(--mint); color: var(--mint-deep); font-size: 12px; font-weight: 700; cursor: default; }
+  .chip.fee { background: #FFE9D2; color: #844A00; }
+
+  /* generic tooltip */
+  [data-tip]::after {
+    content: attr(data-tip); position: absolute; left: 50%; bottom: calc(100% + 10px); transform: translateX(-50%) translateY(6px);
+    background: var(--navy); color: #fff; font-size: 12px; font-weight: 500; line-height: 1.4; padding: 8px 12px; border-radius: 8px;
+    white-space: nowrap; pointer-events: none; opacity: 0; transition: opacity .2s var(--ios), transform .3s var(--bubble); z-index: 5;
+  }
+  .sem [data-tip]::after { background: #fff; color: var(--navy); }
+  [data-tip]:hover::after { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  .navforms { margin-top: 40px; }
+  .nf-title { font-size: 16px; line-height: 22px; font-weight: 700; }
+  .navforms > p { font-size: 15px; line-height: 23px; color: var(--ink2); margin-top: 12px; max-width: 720px; }
+  .nf-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 24px; align-items: stretch; }
+  @media (max-width: 900px) { .nf-cols { grid-template-columns: 1fr; } }
+  .nf-lab { font-size: 13px; line-height: 18px; font-weight: 700; color: var(--ink2); margin-bottom: 12px; }
+  .shells { background: #fff; border-radius: 16px; padding: 24px; }
+
+  .shell { position: relative; display: flex; gap: 4px; width: 100%; max-width: 360px; background: var(--card); border: 1px solid rgba(10,15,45,.07); border-radius: 20px; padding: 12px 8px 8px; transition: filter .4s var(--ios); margin-bottom: 16px; }
+  .shell.mono { filter: grayscale(1); }
+  .shell button { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 0 0 9px; position: relative; color: #828487; }
+  .shell svg { width: 21px; height: 21px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: color .3s; }
+  .shell .t { font-size: 10.5px; line-height: 14px; transition: color .3s, font-weight 0s; }
+  .shell button[aria-current="true"] { color: var(--blue); }
+  .shell button[aria-current="true"] .t { font-weight: 700; }
+  .shell .bar { position: absolute; bottom: 8px; height: 3px; width: 20px; border-radius: 999px; background: var(--blue); transition: left .45s var(--bubble); }
+  .shell-note { font-size: 13px; line-height: 20px; color: var(--ink2); margin-top: 4px; }
+  .sw { display: inline-flex; align-items: center; gap: 9px; margin-top: 14px; padding: 8px 14px 8px 10px; border-radius: 999px; background: var(--card); border: 1px solid rgba(10,15,45,.07); font-size: 13px; color: var(--ink2); text-align: left; }
+  .sw i { width: 34px; height: 20px; border-radius: 999px; background: #C3C4C9; position: relative; flex: none; transition: background .22s var(--ios); }
+  .sw i::after { content: ""; position: absolute; top: 2.5px; left: 2.5px; width: 15px; height: 15px; border-radius: 999px; background: #fff; transition: transform .22s var(--ios); }
+  .sw[aria-pressed="true"] i { background: var(--blue); }
+  .sw[aria-pressed="true"] i::after { transform: translateX(14px); }
+
+  .form { background: #fff; border-radius: 16px; padding: 24px; }
+  .field { margin-bottom: 18px; }
+  .field label { display: block; font-size: 12px; font-weight: 700; margin-bottom: 6px; }
+  .field label i { color: #C53B35; font-style: normal; }
+  .field input { width: 100%; font: inherit; font-size: 15px; color: var(--navy); border: 0; border-bottom: 1.5px solid #C3C4C9; padding: 8px 0 10px; background: none; outline: none; transition: border-color .25s; }
+  .field input:focus { border-bottom-color: var(--blue); border-bottom-width: 2px; }
+  .field select { width: 100%; font: inherit; font-size: 15px; font-weight: 700; color: var(--navy); border: 0; border-radius: 12px; background: var(--tint); padding: 14px 16px; appearance: none; -webkit-appearance: none; outline: none; cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232832B4' stroke-width='2.5' stroke-linecap='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; background-size: 18px; }
+  .field select:focus { box-shadow: 0 0 0 2px var(--blue); }
+  .choices { display: flex; gap: 8px; }
+  .choices button { padding: 7px 16px; border-radius: 999px; background: #F4F4F6; color: var(--navy); font-size: 13px; font-weight: 700; transition: background .2s var(--ios), color .2s var(--ios); }
+  .choices button[aria-pressed="true"] { background: var(--blue); color: #fff; }
+
+  /* ══════════ 6 · OUTCOME ══════════ */
+  .outcome { padding: var(--sec) 0 64px; }
+  .foot { display: flex; justify-content: center; padding: 0 0 72px; }
+  .totop { display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 20px 0 16px; border-radius: 999px; background: var(--card); color: var(--navy); font-size: 14px; font-weight: 600; transition: transform .45s var(--bubble), background .3s var(--ios); }
+  .totop svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+  .totop:hover { transform: translateY(-3px); background: var(--tint); }
+  .outcome .inner { width: 100%; max-width: 1280px; margin: 0 auto; padding: 0 clamp(20px, 7.6vw, 97px); }
+  .outcome .lede { font-size: 18px; line-height: 28px; margin-top: 12px; }
+  .outcome .sub { font-size: 14px; line-height: 24px; color: var(--ink2); margin-top: 12px; }
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; margin-top: 26px; }
+  @media (max-width: 900px) { .stats { grid-template-columns: 1fr; } }
+  .stat { background: var(--navy); color: #fff; border-radius: 24px; padding: 28px; display: flex; flex-direction: column; gap: 8px;
+          opacity: 0; transform: translateY(24px); transition: opacity .7s var(--soft), transform .8s var(--soft); }
+  .stat.in { opacity: 1; transform: none; }
+  .stat .n { font-size: 40px; line-height: 48px; font-weight: 700; letter-spacing: -1.5px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .stat .l { font-size: 14px; line-height: 20px; font-weight: 400; }
+
+  /* ══════════ rises (stagger via --d) ══════════ */
+  .rise { opacity: 0; transform: translateY(18px); transition: opacity .7s var(--soft) var(--d, 0ms), transform .7s var(--soft) var(--d, 0ms); }
+  .rise.in { opacity: 1; transform: none; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .top { animation: none; opacity: 1; transform: none; }
+    .hero .stage1, .snip, .pill, .rise, .stat { opacity: 1 !important; transform: none !important; filter: none !important; transition: none !important; }
+    .pill .k, .pill .v { opacity: 1 !important; }
+    .hl-n { clip-path: none; }
+    .set { transition: none; }
+    *, *::before, *::after { transition-duration: 0s !important; animation: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <a class="head" href="index.html" aria-label="Reem Ezzedine, home"><img src="assets/portrait.png" alt="Reem Ezzedine"></a>
+  <a class="cta" href="mailto:reem.ezzedine36@gmail.com">Contact</a>
+</header>
+
+<main class="page">
+<!-- ══ 1 · HERO ═══════════════════════════════════════════════════════ -->
+<header class="hero" id="hero">
+  <div class="hero-logo stage1"><img src="assets/m2med-case/m2med-logo.svg" alt="M2Med"></div>
+  <div class="hero-phone stage1">
+    <img class="phone" src="assets/m2med-case/hero-phone.png" alt="The M2Med app on an iPhone, held in a hand">
+    <img class="snip snip-session" src="assets/m2med-case/snip-session.png" alt="Parallel session card with a room picker">
+    <img class="snip snip-event"   src="assets/m2med-case/snip-event.png"   alt="Event card showing CME credits and sessions">
+    <img class="snip snip-nav"     src="assets/m2med-case/snip-nav.png"     alt="Bottom navigation with Events, QR and Profile">
+    <div class="hero-fade" aria-hidden="true"></div>
+  </div>
+
+  <div class="pills" aria-label="Project details">
+    <div class="pill-row">
+      <div class="pill"><span class="k">client</span><span class="v">M2Med</span></div>
+      <div class="pill"><span class="k">channels</span><span class="v">App store, Play Store</span></div>
+      <div class="pill"><span class="k">My role</span><span class="v">Founding Designer</span></div>
+      <div class="pill"><span class="k">Tools</span><span class="v">Figma</span></div>
+    </div>
+    <div class="pill-row">
+      <div class="pill"><span class="k">Via</span><span class="v">Contract</span></div>
+      <div class="pill"><span class="k">team</span><span class="v">Solo product designer</span></div>
+      <div class="pill"><span class="k">Date</span><span class="v">May 2026 - Present</span></div>
+    </div>
+  </div>
+</header>
+
+<!-- ══ 2 · INTRO ══════════════════════════════════════════════════════ -->
+<section class="intro">
+  <p class="lead"><span class="hl" id="hl"><span class="hl-w">M2Connect is a medical events platform.</span><span class="hl-n" aria-hidden="true">M2Connect is a medical events platform.</span></span> Medical professionals use it to find conferences, register, track their CME credits, and manage speaking engagements.</p>
+  <p class="sub">The clients came to me with a built MVP, done only by a developer and no designer, or design thinking. I joined as the founding designer. There was no research, no design system, and no clear path through the app. I defined the scope of the work myself.</p>
+  <div class="ba rise">
+    <span class="ba-tag before">Before</span>
+    <span class="ba-tag after">After</span>
+    <img src="assets/m2med-case/intro-phones.png" alt="The developer build on the left, the redesign on the right">
+  </div>
+</section>
+
+<!-- ══ 3 · HOW I RECEIVED ═════════════════════════════════════════════ -->
+<section class="received">
+  <div class="wrap">
+    <h2>How I received M2med</h2>
+    <p class="note">(The abridged edition)</p>
+    <div class="problems" id="problems">
+      <article class="problem rise" style="--d:0ms">
+        <h3>The interface didn't answer the question a doctor opens it to ask.</h3>
+        <p>Choosing whether to go to an event asks the following questions: <b>what it awards, what it costs, what it takes.</b></p>
+        <div>
+          <p>The cards didn't have:</p>
+          <ul>
+            <li>A CME badge with no number on it</li>
+            <li>No price, on the card or anywhere in the registration path</li>
+            <li>No session count, so no sense of the time it takes</li>
+            <li>A photo takes nearly half the card, and sponsor logos sit above the fold</li>
+          </ul>
+        </div>
+        <figure><img src="assets/m2med-case/problem-card.png" alt="The original event card"></figure>
+      </article>
+      <article class="problem rise" style="--d:140ms">
+        <h3>The interface didn't represent what actually happens at an event.</h3>
+        <ul>
+          <li>Two sessions could run at the same hour. The program has no way to show that</li>
+          <li>A speaker attends three events and uploads the same passport three times</li>
+          <li>The design was crammed with no color hierarchy and spacing. Buttons were not distinguishable and had no accessibility accommodations</li>
+        </ul>
+        <figure><img src="assets/m2med-case/problem-program.png" alt="The original program as a flat list"></figure>
+      </article>
+      <article class="problem rise" style="--d:280ms">
+        <h3>The end product had commercial rules the interface did not factor in.</h3>
+        <p>Registration never shows the price, refund policies are invisible, and events sell out without a waitlist.</p>
+        <ul>
+          <li>Events have prices, but registration never shows one.</li>
+          <li>Events have refund policies, but there's no refund handling.</li>
+          <li>Events have capacity limits, but there's no waitlist.</li>
+        </ul>
+        <figure><img src="assets/m2med-case/problem-dialog.png" alt="The original registration dialog"></figure>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 4 · WHAT I DID ═════════════════════════════════════════════════ -->
+<section class="did" id="did">
+  <div class="wrap">
+    <div class="did-head">
+      <h2>What I did</h2>
+      <p>After researching with medical professionals, mapping user flows, comparing competitor apps, and understanding the commercial needs of business clients, I got to work. Here's a snapshot of a few of the changes I made.</p>
+    </div>
+
+    <div class="did-grid">
+      <aside class="rail" id="rail">
+      <button class="rail-item active" data-step="0" type="button">
+        <h3><em>01</em>Registration</h3>
+        <div class="rail-body"><div class="rail-inner"><div class="rail-pad">
+          <h4>Problem</h4><p>There was one registration screen, with roughly 11 stacked fields. Same path for all user types. No validation anywhere.</p>
+          <h4>Solution</h4><p>Split the form into steps. Branched Professional and Student paths. Added searchable pickers and validation. Split verification into four screens. And most importantly, added a visual hierarchy through colors, spacing, grouping etc</p>
+        </div></div></div>
+      </button>
+      <button class="rail-item" data-step="1" type="button">
+        <h3><em>02</em>The CME goal</h3>
+        <div class="rail-body"><div class="rail-inner"><div class="rail-pad">
+          <h4>Problem</h4><p>The profile shows CME Credits 3/30. The target of 30 is hardcoded. The tracker repeats the same number three ways.</p>
+          <h4>Solution</h4><p>The doctor sets their own annual goal, from 10 to 100. One progress view, split into verified and pending. A filterable record list.</p>
+        </div></div></div>
+      </button>
+      <button class="rail-item" data-step="2" type="button">
+        <h3><em>03</em>Parallel sessions</h3>
+        <div class="rail-body"><div class="rail-inner"><div class="rail-pad">
+          <h4>Problem</h4><p>The program is a flat list. Two sessions at the same hour can't be shown as a choice. No way to resolve conflicts. Text is crammed. Buttons are too thin to be tapped with ease. Cognitive overload - user doesn't know where to look first.</p>
+          <h4>Solution</h4><p>A card with the same time slot and two segments dividing the sessions, asking the doctor to pick a room. Enhanced visual hierarchy using spacing, colors &amp; UI principles.</p>
+        </div></div></div>
+      </button>
+      <button class="rail-item" data-step="3" type="button">
+        <h3><em>04</em>Speaker documents</h3>
+        <div class="rail-body"><div class="rail-inner"><div class="rail-pad">
+          <h4>Problem</h4><p>A speaker attending three events uploads the same passport three times. Documents move one way only; the speaker gives, and gets nothing back.</p>
+          <h4>Solution</h4><p>Moved reusable documents to a personal library, uploaded once. Added the return direction: visa letter, hotel booking, venue map, speaker guide.</p>
+        </div></div></div>
+      </button>
+      <button class="rail-item" data-step="4" type="button">
+        <h3><em>05</em>The money path</h3>
+        <div class="rail-body"><div class="rail-inner"><div class="rail-pad">
+          <h4>Problem</h4><p>Events have prices, capacity limits and refund policies. None of it existed in the interface. Registration is Cancel and Confirm with no price consideration.</p>
+          <h4>Solution</h4><p>Three registration confirmations with itemised lines. Three cancellation states per refund outcome. A waitlist that states its terms on screen.</p>
+        </div></div></div>
+      </button>
+      </aside>
+      <div class="track" id="track">
+      <div class="stage" id="stage">
+      <div class="stage-in" id="stageIn">
+      <div class="set" data-step="0">
+      <div class="shots">
+        <div class="phone-col"><img src="assets/m2med-case/d01-a.png" alt="Create your account, stepped with a segmented control"></div>
+        <div class="phone-col"><img src="assets/m2med-case/d01-b.png" alt="Choose your interests"></div>
+      </div>
+      </div>
+      <div class="set" data-step="1">
+      <div class="shots">
+        <div class="phone-col"><p class="stage-lab">Before</p><img src="assets/m2med-case/d02-before.png" alt="The original CME tracker"></div>
+        <div class="phone-col"><p class="stage-lab">After</p><img src="assets/m2med-case/d02-after.png" alt="The redesigned CME tracker with a settable goal"></div>
+      </div>
+      </div>
+      <div class="set" data-step="2">
+      <div class="shots">
+      <div>
+        <p class="stage-lab">Before</p>
+        <div class="prog-before">
+          <span class="pb-tag">Morning Session</span>
+          <div class="pb-row">
+            <div class="pb-time">09:00<br>10:00</div><div class="pb-bar"></div>
+            <div class="pb-info">
+              <h5>Advances in Stent Technology</h5>
+              <div class="loc">Ballroom A – Main Hall</div>
+              <div class="desc">An overview of next-generation drug-eluting stents and long-term clinical outcomes.</div>
+              <div class="pb-chip"><i>H</i>Dr. Rami Haddad · Interventional Cardiologist</div>
+              <div class="pb-file">Stent_Innovations_Slides.pdf <span class="ext">PDF</span></div>
+              <div class="pb-file">Stent_Data_2026.pptx <span class="ext">PPTX</span></div>
+            </div>
+          </div>
+          <div class="pb-row">
+            <div class="pb-time">10:30<br>11:30</div><div class="pb-bar"></div>
+            <div class="pb-info">
+              <h5>Prevention Strategies in 2026</h5>
+              <div class="loc">Ballroom A – Main Hall</div>
+              <div class="desc">Updated guidelines for hypertension, dyslipidemia, and lifestyle interventions.</div>
+              <div class="pb-chip"><i>K</i>Dr. Sara Khalil · Preventive Cardiologist</div>
+              <div class="pb-file">Prevention_Guidelines_2026.pdf <span class="ext">PDF</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <p class="stage-lab">After</p>
+        <div class="prog-after">
+  <p class="pa-lab">Morning session</p>
+  <div class="pa-rows">
+    <div class="pa-rail"><i></i></div>
+    <span class="pa-dot" style="top:12px"></span>
+    <div class="pa-card">
+      <div class="pa-time">09:00 – 10:00</div>
+      <h5>Advances in stent technology</h5>
+      <div class="pa-meta"><svg viewBox="0 0 24 24"><path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>Ballroom 4 · Main hall</div>
+      <div class="pa-meta"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a8 8 0 0 1 16 0v1"/></svg>Dr. Rami Haddad</div>
+      <div class="pa-btn">Download docs</div>
+    </div>
+    <span class="pa-dot live" style="top:212px"></span>
+    <div class="pa-card">
+      <div class="picker" id="picker">
+        <p class="k">Parallel session</p>
+        <p class="h">Two sessions run at this time. Pick a room</p>
+        <div class="seg" role="group" aria-label="Choose a room">
+          <button type="button" data-room="a" aria-pressed="true">Ballroom 4</button>
+          <button type="button" data-room="b" aria-pressed="false">Room 201</button>
+        </div>
+      </div>
+      <div class="pa-time"><span>10:30 – 11:30</span><span class="live">Live now</span></div>
+      <h5 id="pkTitle">Prevention strategies in 2026</h5>
+      <div class="pa-meta"><svg viewBox="0 0 24 24"><path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg><span id="pkRoom">Ballroom 4 · Main hall</span></div>
+      <div class="pa-meta"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a8 8 0 0 1 16 0v1"/></svg><span id="pkWho">Dr. Sara Khalil</span></div>
+      <div class="pa-btn">Download docs</div>
+    </div>
+  </div>
+</div>
+        </div>
+      </div>
+      </div>
+      <div class="set" data-step="3">
+      <div class="shots">
+        <div class="phone-col"><img src="assets/m2med-case/d04-a.png" alt="Speaker portal"></div>
+        <div class="phone-col"><img src="assets/m2med-case/d04-b.png" alt="My documents, the personal library"></div>
+      </div>
+      </div>
+      <div class="set" data-step="4">
+      <div class="modals">
+        <div class="mcol">
+        <div class="modal center">
+          <div class="icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg></div>
+          <h5>This event is full</h5>
+          <p class="sub">All standard seats are booked. Join the waitlist and we will hold a place for you if one opens.</p>
+          <p class="note tint">Joining is free. If a spot opens we secure your ticket and ask you to confirm.</p>
+          <div class="acts"><button class="btn-s" type="button">Not now</button><button class="btn-p" type="button">Join waitlist</button></div>
+        </div>
+        <div class="modal">
+          <h5>Confirm your registration</h5>
+          <p class="sub">Lebanese Cardiology Conference 2026 · 10 June 2026</p>
+          <div class="line" style="margin-top:8px"><div class="t"><b>Conference pass</b><span>All sessions and workshops</span></div><div class="p free">Free</div></div>
+          <div class="line"><div class="t"><b>CME credits</b><span>Awarded after attendance</span></div><div class="p">5</div></div>
+          <div class="total">Total to pay <b class="free">Free</b></div>
+          <p class="note">Your place is held as soon as you confirm. You can cancel any time before the event.</p>
+          <div class="acts"><button class="btn-s" type="button">Cancel</button><button class="btn-p" type="button">Confirm</button></div>
+        </div>
+        </div>
+        <div class="mcol">
+        <div class="modal" id="optional">
+          <h5>Add optional sessions</h5>
+          <p class="sub">Choose any extras to include with your pass.</p>
+          <div class="line" style="margin-top:8px"><div class="t"><b>Conference pass</b><span>Included</span></div><div class="p">$500</div></div>
+          <div class="line" role="checkbox" aria-checked="true" data-price="75" tabindex="0"><span class="cb"><svg viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></svg></span><div class="t"><b>Prevention strategies in 2026</b><span>10:30 – 11:30 · Ballroom 4</span></div><div class="p">$75</div></div>
+          <div class="line" role="checkbox" aria-checked="false" data-price="120" tabindex="0"><span class="cb"><svg viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></svg></span><div class="t"><b>Hands-on stent workshop</b><span>14:00 – 16:00 · Workshop room 1</span></div><div class="p">$120</div></div>
+          <div class="line" role="checkbox" aria-checked="false" data-price="60" tabindex="0"><span class="cb"><svg viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></svg></span><div class="t"><b>Faculty dinner</b><span>20:00 · Phoenicia Hotel</span></div><div class="p">$60</div></div>
+          <div class="total">Total to pay <b id="optTotal">$575</b></div>
+          <p class="note">Optional sessions have limited places and are confirmed on payment.</p>
+          <div class="acts"><button class="btn-s" type="button">Cancel</button><button class="btn-p" type="button" id="optPay">Pay $575</button></div>
+        </div>
+        </div>
+      </div>
+      </div>
+      </div>
+      </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 5 · THE SYSTEM ═══════════════════════════════════════════════ -->
+<section class="system">
+  <div class="inner">
+    <h2>The system</h2>
+    <p class="lede">I built a design system from nothing so the developer could build against it.</p>
+
+    <div class="sys-cols">
+      <div class="sys-col">
+        <h3>Foundations</h3>
+        <p>I translated the brand into reusable foundations so every blue accent and neutral surface has one source of truth.</p>
+        <div class="map">
+          <h4>Brand mapping</h4>
+          <div class="map-row" data-tip="#2832B4 · every interactive element"><i style="background:#2832B4"></i>Chrome Accent (#2832b4)</div>
+          <div class="map-row" data-tip="#FAFAFB · the app ground, a step below cards"><i style="background:#FAFAFB; box-shadow:inset 0 0 0 1px #DCDDE1"></i>Surface Page (#fafafb)</div>
+          <div class="map-row" data-tip="#99FFCC · state and progress, never a button"><i style="background:#99FFCC"></i>Mint Green (#9FC)</div>
+          <div class="map-row" data-tip="#E1EBFA · tinted rows and header zones"><i style="background:#E1EBFA"></i>Sky Blue (#E1EBFA)</div>
+        </div>
+      </div>
+      <div class="sys-col">
+        <h3>Components</h3>
+        <p>I created clearly named components and variants that map to code.</p>
+        <div class="inv">
+          <span data-tip="Underlined input, 5 states">Text field</span>
+          <span data-tip="Selectable, carries a selected state">Choice chip</span>
+          <span data-tip="3-up and 4-up, nested radius">Segmented control</span>
+          <span data-tip="Paid / Free × Saved">Event card</span>
+          <span data-tip="With and without an action">Empty state</span>
+          <span data-tip="Mint, because it isn't a control">Progress ring</span>
+          <span data-tip="Blue, because it is one">Toggle</span>
+          <span data-tip="Events · QR · Profile">Bottom nav (attendee)</span>
+          <span data-tip="Adds Portal">Bottom nav (speaker)</span>
+          <span data-tip="Lucide, strokes bound to tokens">Icon set</span>
+        </div>
+        <div class="sem">
+          <h4>Semantic chips</h4>
+          <p>Credits, sessions, and fees each hold one meaning across the product.</p>
+          <div class="chips">
+            <span class="chip" data-tip="What the event awards">3 CME credits</span>
+            <span class="chip" data-tip="How much time it takes">2 sessions</span>
+            <span class="chip fee" data-tip="A cost beyond the pass">Additional fees</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="navforms">
+      <h3 class="nf-title">Navigation &amp; Forms</h3>
+      <p>Navigation was disambiguated into attendee and speaker shells. Attendees focus on events and QR tracking, while speakers access the portal for document management. Form patterns were standardized using the ComponentTextField and ComponentChoiceChip components. The active tab uses both colour and a bar under the icon, so the selected state does not rely on colour alone.</p>
+      <div class="nf-cols">
+        <div class="shells">
+          <p class="nf-lab">Attendee shell</p>
+          <div class="shell" data-shell></div>
+          <p class="nf-lab">Speaker shell</p>
+          <div class="shell" data-shell="speaker"></div>
+          <p class="shell-note">Adds a Portal tab for speaker-specific document and schedule management. Tap any tab.</p>
+          <button class="sw" id="swMono" type="button" aria-pressed="false"><i></i>Remove colour. The bar still shows which tab is active</button>
+        </div>
+        <div class="form">
+          <p class="nf-lab">Form patterns</p>
+          <div class="field"><label for="fn">First name <i>*</i></label><input id="fn" type="text" value="John"></div>
+          <div class="field"><label for="ut">User type <i>*</i></label>
+            <select id="ut"><option value="" selected>Choose user type</option><option>Licensed medical professional</option><option>Student on an accredited programme</option><option>Pharmacist</option><option>Medical company</option></select>
+          </div>
+          <div class="field" style="margin-bottom:0"><label>Title <i>*</i></label>
+            <div class="choices" role="group" aria-label="Title">
+              <button type="button" aria-pressed="true">Dr.</button><button type="button" aria-pressed="false">Mr.</button><button type="button" aria-pressed="false">Mrs.</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 6 · OUTCOME ════════════════════════════════════════════════════ -->
+<section class="outcome" id="outcome">
+  <div class="inner">
+    <h2>Outcome</h2>
+    <p class="lede">Launching soon, in testing now.</p>
+    <p class="sub">The product is in testing on TestPilot. No usage metrics yet, because it hasn't shipped to users.</p>
+    <div class="stats" id="stats">
+      <div class="stat"><p class="n">25 → <span data-count="68" data-from="25">25</span></p><p class="l">screens</p></div>
+      <div class="stat"><p class="n">3 → <span data-count="25" data-from="3">3</span>+</p><p class="l">edge and system states</p></div>
+      <div class="stat"><p class="n"><span data-count="5" data-from="0">0</span></p><p class="l">product areas defined from scratch</p></div>
+    </div>
+  </div>
+</section>
+
+<footer class="foot">
+  <button class="totop" type="button" data-top>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>Back to top
+  </button>
+</footer>
+
+</main>
+
+<script src="assets/lenis.min.js"></script>
+<script>
+(function () {
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var ON = !reduce;
+
+  /* ── scroll: Lenis, same settings as the Samsung page ── */
+  var lenis = null;
+  if (!reduce && typeof Lenis !== 'undefined') {
+    lenis = new Lenis({ lerp: 0.1, smoothWheel: true, wheelMultiplier: 1, touchMultiplier: 1, autoToggle: true });
+    window.__lenis = lenis;
+    (function raf(t) { lenis.raf(t); requestAnimationFrame(raf); })(0);
+  }
+  function goTo(y) {
+    if (lenis) lenis.scrollTo(y, { duration: 1.1 });
+    else window.scrollTo({ top: y, behavior: reduce ? 'auto' : 'smooth' });
+  }
+
+  /* ── spring (Apple model, mass 1) ── */
+  function Spring(duration, bounce, start) {
+    var w = 2 * Math.PI / duration;
+    this.k = w * w; this.c = 2 * (1 - bounce) * w;
+    this.x = start || 0; this.t = start || 0; this.v = 0;
+  }
+  Spring.prototype.step = function (dt) {
+    var f = -this.k * (this.x - this.t) - this.c * this.v;
+    this.v += f * dt; this.x += this.v * dt;
+    if (Math.abs(this.v) < 0.0015 && Math.abs(this.x - this.t) < 0.0008) { this.x = this.t; this.v = 0; return false; }
+    return true;
+  };
+
+  /* ── 1 · hero: logo + phone rise, then the snippets bubble ── */
+  var hero = document.getElementById('hero');
+  requestAnimationFrame(function () {
+    hero.classList.add('in1');
+    setTimeout(function () { hero.classList.add('in2'); }, reduce ? 0 : 420);
+  });
+
+  /* ── info chips: bubble in on the first real scroll, 85ms apart ── */
+  var pills = [].slice.call(document.querySelectorAll('.pill'));
+  var pillSprings = pills.map(function () { return new Spring(0.5, 0.30, 0); });
+  var pillLive = false, fired = false;
+  function firePills() {
+    if (fired) return; fired = true; pillLive = true;
+    pills.forEach(function (p, i) {
+      setTimeout(function () { p.classList.add('in'); pillSprings[i].t = 1; kick(); }, i * 85);
+    });
+    window.removeEventListener('scroll', onFirst);
+  }
+  function onFirst() { if (window.scrollY > 28) firePills(); }
+  if (!ON) {
+    pills.forEach(function (p) { p.classList.add('in'); p.style.opacity = 1; p.style.filter = 'none'; p.style.transform = 'none'; });
+    fired = true;
+  } else {
+    window.addEventListener('scroll', onFirst, { passive: true });
+    if (lenis) lenis.on('scroll', onFirst);
+    /* tall screens show the chips without scrolling — bubble them in once they are well in view */
+    if ('IntersectionObserver' in window) {
+      var po = new IntersectionObserver(function (es) { if (es[0].isIntersecting) { firePills(); po.disconnect(); } }, { threshold: 0.6 });
+      po.observe(document.querySelector('.pills'));
+    }
+  }
+
+  /* ── 2 · highlight: fills with the scroll. Starts as the sentence enters from the bottom,
+        complete by the time it reaches 55% of the viewport, and runs back when you scroll up ── */
+  var hlN = document.querySelector('.hl-n');
+  function paintHl() {
+    if (!hlN || reduce) return;
+    var r = hlN.getBoundingClientRect(), vh = window.innerHeight;
+    var p = (vh - r.top) / (vh * 0.45);
+    p = Math.max(0, Math.min(1, p));
+    hlN.style.clipPath = 'inset(0 ' + ((1 - p) * 100).toFixed(2) + '% 0 0 round 6px)';
+  }
+
+  /* ── rises: one trigger per element, staggered by --d ── */
+  var risers = [].slice.call(document.querySelectorAll('.rise'));
+  if (reduce || !('IntersectionObserver' in window)) {
+    risers.forEach(function (r) { r.classList.add('in'); });
+  } else {
+    var ro = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); ro.unobserve(e.target); } });
+    }, { threshold: 0.12, rootMargin: '0px 0px -6% 0px' });
+    risers.forEach(function (r) { ro.observe(r); });
+  }
+
+  /* ── 4 · what I did: the stage pins beside the rail; how far you are through the track picks the step ── */
+  var segs = [].slice.call(document.querySelectorAll('.set'));
+  var railItems = [].slice.call(document.querySelectorAll('.rail-item'));
+  var rail = document.getElementById('rail'), track = document.getElementById('track'), stage = document.getElementById('stage');
+  var current = -1, N = segs.length;
+  var BAND = 0.62;                               /* one step = 62% of a viewport of scroll */
+  function zoomOf() { return parseFloat(getComputedStyle(document.querySelector('.page')).zoom) || 1; }
+  function stickTop() { return parseFloat(getComputedStyle(stage).top) * zoomOf(); }   /* screen px */
+  var stageIn = document.getElementById('stageIn');
+  function sizeTrack() {
+    if (window.innerWidth <= 1000) { track.style.height = ''; stageIn.style.zoom = ''; return; }
+    stageIn.style.zoom = '';
+    var natural = stage.getBoundingClientRect().height, avail = window.innerHeight - stickTop() - 24;
+    if (natural > avail) stageIn.style.zoom = Math.max(0.6, avail / natural).toFixed(3);
+    track.style.height = Math.round((N * window.innerHeight * BAND + stage.getBoundingClientRect().height) / zoomOf()) + 'px';
+  }
+  function setStep(i) {
+    if (i === current) return;
+    current = i;
+    railItems.forEach(function (r, k) { r.classList.toggle('active', k === i); });
+    segs.forEach(function (g, k) { g.classList.toggle('on', k === i); g.classList.toggle('out', k < i); });
+  }
+  function pickRow() {
+    if (window.innerWidth <= 1000) { setStep(0); return; }
+    var t = track.getBoundingClientRect(), range = t.height - stage.getBoundingClientRect().height;
+    var p = range > 0 ? (stickTop() - t.top) / range : 0;
+    p = Math.max(0, Math.min(1, p));
+    setStep(Math.min(N - 1, Math.floor(p * N)));
+  }
+  railItems.forEach(function (r, i) {
+    r.addEventListener('click', function () {
+      var t = track.getBoundingClientRect(), range = t.height - stage.getBoundingClientRect().height;
+      goTo(window.scrollY + t.top - stickTop() + range * (i + 0.08) / N);
+    });
+  });
+  /* phones: put each title directly above its own images instead of a rail that scrolls away */
+  var interleaved = false;
+  function layoutRail() {
+    var narrow = window.innerWidth <= 1000;
+    if (narrow && !interleaved) { railItems.forEach(function (r, i) { segs[i].parentNode.insertBefore(r, segs[i]); }); interleaved = true; }
+    else if (!narrow && interleaved) { railItems.forEach(function (r) { rail.appendChild(r); }); interleaved = false; }
+    sizeTrack();
+  }
+  layoutRail();
+
+  /* parallel session picker */
+  var ROOMS = { a: ['Prevention strategies in 2026', 'Ballroom 4 · Main hall', 'Dr. Sara Khalil'],
+                b: ['Imaging in acute coronary care', 'Room 201 · Level 2', 'Dr. Nadia Fares'] };
+  var picker = document.getElementById('picker');
+  if (picker) {
+    [].forEach.call(picker.querySelectorAll('button'), function (b) {
+      b.addEventListener('click', function () {
+        var r = ROOMS[b.getAttribute('data-room')];
+        [].forEach.call(picker.querySelectorAll('button'), function (o) { o.setAttribute('aria-pressed', String(o === b)); });
+        document.getElementById('pkTitle').textContent = r[0];
+        document.getElementById('pkRoom').textContent = r[1];
+        document.getElementById('pkWho').textContent = r[2];
+      });
+    });
+  }
+
+  /* optional sessions: the total follows the checkboxes */
+  var opt = document.getElementById('optional');
+  if (opt) {
+    function retotal() {
+      var t = 500;
+      [].forEach.call(opt.querySelectorAll('[role="checkbox"]'), function (l) {
+        if (l.getAttribute('aria-checked') === 'true') t += parseInt(l.getAttribute('data-price'), 10);
+      });
+      document.getElementById('optTotal').textContent = '$' + t;
+      document.getElementById('optPay').textContent = 'Pay $' + t;
+    }
+    [].forEach.call(opt.querySelectorAll('[role="checkbox"]'), function (l) {
+      function toggle() { l.setAttribute('aria-checked', l.getAttribute('aria-checked') === 'true' ? 'false' : 'true'); retotal(); }
+      l.addEventListener('click', toggle);
+      l.addEventListener('keydown', function (e) { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); toggle(); } });
+    });
+  }
+
+  /* ── 5 · navigation shells: tap a tab and the bar slides under it ── */
+  var ICONS = {
+    Events: '<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
+    QR: '<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3z"/><path d="M20 14v3M14 20h3"/>',
+    Profile: '<circle cx="12" cy="8" r="4"/><path d="M4 21v-1a8 8 0 0 1 16 0v1"/>',
+    Portal: '<rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 17v5"/>'
+  };
+  [].forEach.call(document.querySelectorAll('[data-shell]'), function (shell) {
+    var tabs = shell.getAttribute('data-shell') === 'speaker' ? ['Events', 'QR', 'Profile', 'Portal'] : ['Events', 'QR', 'Profile'];
+    shell.innerHTML = tabs.map(function (t, i) {
+      return '<button type="button" aria-current="' + (i === 0) + '"><svg viewBox="0 0 24 24" aria-hidden="true">' + ICONS[t] + '</svg><span class="t">' + t + '</span></button>';
+    }).join('') + '<span class="bar" aria-hidden="true"></span>';
+    var bar = shell.querySelector('.bar');
+    /* layout units, not screen units: the page is zoomed, so client rects would land the bar short */
+    function moveBar(btn) { bar.style.left = (btn.offsetLeft + btn.offsetWidth / 2 - 10) + 'px'; }
+    var btns = [].slice.call(shell.querySelectorAll('button'));
+    btns.forEach(function (b) {
+      b.addEventListener('click', function () {
+        btns.forEach(function (o) { o.setAttribute('aria-current', String(o === b)); });
+        moveBar(b);
+      });
+    });
+    requestAnimationFrame(function () { moveBar(btns[0]); });
+    window.addEventListener('resize', function () { moveBar(shell.querySelector('[aria-current="true"]')); });
+  });
+  var swMono = document.getElementById('swMono');
+  if (swMono) swMono.addEventListener('click', function () {
+    var on = swMono.getAttribute('aria-pressed') !== 'true';
+    swMono.setAttribute('aria-pressed', String(on));
+    [].forEach.call(document.querySelectorAll('[data-shell]'), function (s) { s.classList.toggle('mono', on); });
+  });
+  [].forEach.call(document.querySelectorAll('.choices button'), function (b) {
+    b.addEventListener('click', function () {
+      [].forEach.call(b.parentNode.querySelectorAll('button'), function (o) { o.setAttribute('aria-pressed', String(o === b)); });
+    });
+  });
+
+  /* ── 6 · outcome: cards rise in sequence, numbers count up ── */
+  var stats = [].slice.call(document.querySelectorAll('.stat'));
+  function countUp(el) {
+    var to = parseInt(el.getAttribute('data-count'), 10), from = parseInt(el.getAttribute('data-from'), 10) || 0;
+    if (reduce) { el.textContent = to; return; }
+    var t0 = null, dur = 1100;
+    (function tick(now) {
+      if (!t0) t0 = now;
+      var p = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - p, 3);
+      el.textContent = Math.round(from + (to - from) * e);
+      if (p < 1) requestAnimationFrame(tick);
+    })(performance.now());
+  }
+  var statsBox = document.getElementById('stats'), statsFired = false;
+  function fireStats() {
+    statsFired = true;
+    stats.forEach(function (s, i) {
+      setTimeout(function () { s.classList.add('in'); [].forEach.call(s.querySelectorAll('[data-count]'), countUp); }, i * 150);
+    });
+  }
+  /* the cards' top edge has to be inside the lower 80% of the viewport, i.e. genuinely visible */
+  function checkStats() {
+    if (statsFired || !statsBox) return;
+    var r = statsBox.getBoundingClientRect();
+    if (r.top <= window.innerHeight * 0.8 && r.bottom > 0) fireStats();
+  }
+  if (reduce) {
+    stats.forEach(function (s) { s.classList.add('in'); [].forEach.call(s.querySelectorAll('[data-count]'), function (el) { el.textContent = el.getAttribute('data-count'); }); });
+    statsFired = true;
+  }
+
+  /* ── paint loop (pills only need per-frame physics) ── */
+  var looping = false, lastT = 0;
+  function paint(dt) {
+    var moving = false;
+    if (pillLive) {
+      for (var i = 0; i < pills.length; i++) {
+        var s = pillSprings[i]; if (s.step(dt)) moving = true; var p = s.x;
+        pills[i].style.opacity = Math.min(1, p * 1.35).toFixed(3);
+        pills[i].style.filter = 'blur(' + ((1 - p) * 13).toFixed(2) + 'px)';
+        pills[i].style.transform = 'scale(' + (1.11 - 0.11 * p).toFixed(4) + ') translateY(' + ((1 - p) * 14).toFixed(2) + 'px)';
+      }
+    }
+    return moving;
+  }
+  function loop(now) {
+    var dt = lastT ? (now - lastT) / 1000 : 1 / 60; lastT = now;
+    if (dt > 1 / 30) dt = 1 / 30;
+    if (paint(dt)) requestAnimationFrame(loop); else { looping = false; lastT = 0; }
+  }
+  function kick() { if (!ON || looping) return; looping = true; requestAnimationFrame(loop); }
+
+  /* the step is a handful of DOM reads — run it on the scroll event itself so
+     the rail never lags the scroll by a frame */
+  function onScroll() { pickRow(); paintHl(); checkStats(); kick(); }
+  if (lenis) lenis.on('scroll', onScroll);
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', function () { layoutRail(); pickRow(); paintHl(); checkStats(); kick(); }, { passive: true });
+  window.addEventListener('load', function () { sizeTrack(); pickRow(); paintHl(); checkStats(); });
+  pickRow(); paintHl(); checkStats(); kick();
+
+  /* the footer glides back to the top */
+  [].forEach.call(document.querySelectorAll('[data-top]'), function (el) {
+    el.addEventListener('click', function (e) { e.preventDefault(); goTo(0); });
+  });
+})();
+</script>
+</body>
+</html>

@@ -19,7 +19,7 @@
   :root {
     --ink:   #000000;
     --nav-ink: #1a1f1f;
-    --pink:  #ff85ba;
+    --pink:  #ff2d55;      /* board 976:356 - the deeper red-pink */
     --pink-active: #ff70ae;   /* the nav's in-view state, a shade deeper */
     --pill:  #f6f6f6;
     --paper: #ffffff;
@@ -46,192 +46,142 @@
   a { color: inherit; text-decoration: none; }
 
   /* ── nav ─────────────────────────────────────────────────────────────
-     The template from the previous portfolio: a glass pill, the head spilling
-     16px above and below it, links in the middle, a fixed 99x39 CTA.
-
-     Worth recording why the numbers line up. With the head present, that nav's
-     space-between puts the links at 20 + 77 + (835 - 77 - 282 - 99)/2 = 285.5,
-     which is exactly where the case-studies board has them. The hero board has
-     them at 20, with no head. So the two states are the same layout with and
-     without the head, and the morph just slides between them. */
+     Board 976:356. No pill behind the nav any more: bare links on white,
+     and the ACTIVE link is what gets a pill - #ff2d55, radius 24, white
+     Bold text. Positions are the board's: links frame at 83,44; Contact
+     99x39 at 1122,45. The About slot is where the portrait docks. */
   .nav {
-    position: fixed; top: 47px; left: 50%; transform: translateX(-50%);
-    z-index: 200; width: min(871px, calc(100vw - 48px)); height: 72px;
-    display: flex; align-items: center;
-    padding: 0 16px 0 20px; border-radius: 100px;
-    background: rgba(255, 255, 255, 0.75);
-    backdrop-filter: blur(18px) saturate(150%);
-    -webkit-backdrop-filter: blur(18px) saturate(150%);
-    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.10);
+    position: fixed; top: 0; left: 50%; transform: translateX(-50%);
+    z-index: 200; width: 1280px; max-width: 100vw; height: 124px;
+    pointer-events: none;
   }
-
-  .nav-links { display: flex; align-items: center; gap: 32px; }
+  .nav > * { pointer-events: auto; }
+  .nav-links {
+    position: absolute; left: 83px; top: 44px; height: 36px;
+    display: flex; align-items: center;
+  }
   .nav-links a {
     font-family: var(--body); font-size: 16px; font-weight: 600;
     letter-spacing: -0.32px; color: var(--nav-ink); text-decoration: none;
-    position: relative; padding: 6px 2px;
-    transition: opacity .3s var(--ease);
-  }
-  .nav-links a::after {
-    content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1.5px;
-    background: var(--pink); transform: scaleX(0); transform-origin: left;
-    transition: transform .35s var(--ease);
+    height: 36px; display: inline-flex; align-items: center;
+    padding: 0 12px; border-radius: 24px;
+    transition: background .35s var(--ease), color .35s var(--ease), opacity .3s var(--ease);
   }
   .nav-links a:hover { opacity: .62; }
-  .nav-links a.active::after { transform: scaleX(1); }
+  .nav-links a.active {
+    background: var(--pink); color: #fff; font-weight: 700; opacity: 1;
+  }
+  /* board spacing: About pill ends at 158, Case Studies text starts at 190,
+     Resume at 324. Gaps absorb the 12px pill padding. */
+  .nav-about { min-width: 75px; justify-content: center; }
+  .nav-links a + a { margin-left: 20px; }
+
+  /* when the portrait has docked it IS the About link, so the pill text goes */
+  body.docked .nav-about { color: transparent; background: transparent; }
 
   .nav-cta {
-    width: 99px; height: 39px; border-radius: 100px; flex: none;
-    margin-left: auto;
+    position: absolute; left: 1122px; top: 45px;
+    width: 99px; height: 39px; border-radius: 100px;
     display: grid; place-items: center;
-    background: var(--pink); color: #fff; text-decoration: none;
+    background: #000; color: #fff; text-decoration: none;
     font-family: "Inclusive Sans", var(--body);
     font-size: 16px; font-weight: 600; letter-spacing: -0.32px;
     transition: transform .45s var(--spring);
   }
   .nav-cta:hover { transform: scale(1.06); }
 
-  /* ── hero ──────────────────────────────────────────────────────── */
-  /* The hero is a PAGE. Without min-height it was 713px against an 860px
-     viewport, so the case studies crowded onto the same screen instead of
-     following it. 'Right under' means no gap between the two pages, not the
-     two sharing one. */
-  .hero { padding: 190px 24px 0; min-height: 100vh; }
+  /* ── hero ────────────────────────────────────────────────────────────
+     Board 976:356, a 1280x776 frame. Elements overlap - the name runs under
+     her hair - so this is an absolute canvas at the board's own coordinates,
+     scaled to fit narrower viewports, rather than a flowed layout. */
+  .hero { min-height: 100vh; display: grid; place-items: start center; overflow: hidden; }
   .hero-inner {
-    width: 943px; max-width: 100%; margin: 0 auto;
-    display: grid; grid-template-columns: 555px 388px;
-    align-items: start;
+    position: relative; width: 1280px; height: 776px; flex: none;
+    transform-origin: top center;
   }
-
-  .copy-col { position: relative; }
-
-  /* Lifts to make room for the stamps on first hover. */
-  .copy {
-    transform: translateY(30px);
-    transition: transform 780ms var(--ease);
-    will-change: transform;
-  }
-  body.revealed .copy { transform: translateY(0); }
+  .hero-inner > * { position: absolute; }
 
   .hello {
-    font-size: 30px; line-height: 37px; font-weight: 400;
-    letter-spacing: -.32px;
+    left: 299px; top: 169px; width: 682px;
+    font-size: 30px; line-height: 37px; font-weight: 400; letter-spacing: -.32px;
   }
   .name {
+    left: 299px; top: 228px; width: 651px;
     font-family: var(--display); font-weight: 400;
-    /* 120px at 80% line height = the 96px lines and 192px block in Figma */
-    font-size: 120px; line-height: .8; letter-spacing: -.32px;
-    margin-top: 22px; text-transform: lowercase;
+    font-size: 200px; line-height: .8; letter-spacing: -.32px;
+    text-transform: lowercase; margin: 0;
+    z-index: 3;                        /* over her hair */
+    pointer-events: none;
   }
+  /* the letters under her hair: a 3px white stroke and no fill, so the
+     portrait shows through them */
+  .name .outline {
+    color: transparent;
+    -webkit-text-stroke: 3px #fff;
+    paint-order: stroke fill;
+  }
+
+  /* her slot in the hero. The morphing portrait is a separate fixed element
+     that starts exactly here. */
+  .portrait { left: 609px; top: 85px; width: 365px; height: 492px; z-index: 2; }
+
   .tagline {
-    font-size: 30px; line-height: 37px; font-weight: 400;
-    letter-spacing: -.32px; margin-top: 22px;
-    /* the Figma box, unmodified: at 30px Regular the first line no longer
-       fits "with a", so it breaks after "designer" on its own */
-    max-width: 555px;
+    left: 179px; top: 597px; width: 922px;
+    font-size: 30px; line-height: 37px; font-weight: 400; letter-spacing: -.32px;
+    text-align: center; z-index: 3;
   }
-
-  /* the hover target */
   .footprint {
-    color: var(--pink); font-weight: 400;   /* Regular, as in the board */
-    cursor: pointer; position: relative;
-    padding-bottom: 10px;
+    color: var(--pink); font-weight: 600; cursor: pointer;
+    position: relative; display: inline-block;
   }
-  /* Reem's own squiggle, 234x7. It sits under the phrase permanently - it is
-     part of the design, not a hover state - and only brightens on hover. */
-  .footprint::after {
-    content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 7px;
-    background: url("assets/brand/squiggle.svg") no-repeat left bottom / 100% 7px;
-    opacity: .85;
-    transition: opacity .35s var(--ease), transform .5s var(--ease);
-    transform-origin: left bottom;
+
+  /* ── postcards: only while the pointer is on "global footprint" ── */
+  .postcard {
+    position: absolute; opacity: 0; pointer-events: none;
+    --in: 26;                                   /* entry drop, px */
+    transform: translateY(calc(var(--in) * 1px)) scale(.9);
+    transition: opacity .38s var(--ease), transform .55s var(--spring);
+    z-index: 4;
   }
-  .footprint:hover::after { opacity: 1; transform: scaleY(1.25); }
+  .postcard img { width: 100%; height: auto; display: block; }
+  /* board bboxes for the four groups */
+  .pc-usa     { left: 1089px; top: 308px; width: 199px; }
+  .pc-zambia  { left: 1015px; top: 433px; width: 171px; }
+  .pc-lebanon { left: 1115px; top: 530px; width: 153px; }
+  .pc-denmark { left: 1019px; top: 651px; width: 152px; }
 
-  /* ── stamps ────────────────────────────────────────────────────── */
-  /* Positioned absolutely at the coordinates read off the Figma render by
-     template matching. The node metadata could not be used: the children's
-     boxes overflow their own group's bounds, so their x/y are not the
-     placement. 354 = 544 (render) - 190 (column top). */
-  .stamps {
-    position: absolute; top: 354px; left: 0; right: 0;
-    height: 150px;
-    pointer-events: none;          /* until revealed */
+  body.cards .postcard { opacity: 1; --in: 0; transform: translateY(0) scale(1); }
+  /* deal out one after another; pack back in the same order reversed */
+  body.cards .pc-usa     { transition-delay:   0ms; }
+  body.cards .pc-zambia  { transition-delay: 110ms; }
+  body.cards .pc-lebanon { transition-delay: 220ms; }
+  body.cards .pc-denmark { transition-delay: 330ms; }
+  body:not(.cards) .pc-denmark { transition-delay:   0ms; }
+  body:not(.cards) .pc-lebanon { transition-delay:  70ms; }
+  body:not(.cards) .pc-zambia  { transition-delay: 140ms; }
+  body:not(.cards) .pc-usa     { transition-delay: 210ms; }
+
+  @media (max-width: 1320px) {
+    .hero-inner { transform: scale(calc(100vw / 1320)); }
+    .hero { min-height: calc(776px * 100vw / 1320 + 40px); }
   }
-  body.revealed .stamps { pointer-events: auto; }
 
-  .stamp {
-    position: absolute; top: 0; left: 0;
-    opacity: 0;
-    /* --px / --py are the parting offsets, written by JS on hover */
-    --px: 0; --py: 0; --pr: 0;
-    transform:
-      translate(calc(var(--x) * 1px + var(--px) * 1px),
-                calc(var(--y) * 1px + var(--py) * 1px + var(--in) * 1px))
-      rotate(calc(var(--pr) * 1deg))
-      scale(var(--s));
-    transition:
-      transform 620ms var(--spring),
-      opacity 520ms var(--ease);
-    will-change: transform, opacity;
-    --in: 16;                      /* entry offset, removed on reveal */
-    --s: .94;
-  }
-  body.revealed .stamp { opacity: 1; --in: 0; --s: 1; }
-
-  /* they arrive one after the other, and never leave again */
-  body.revealed .stamp[data-i="0"] { transition-delay:   0ms,   0ms; }
-  body.revealed .stamp[data-i="1"] { transition-delay:  90ms,  90ms; }
-  body.revealed .stamp[data-i="2"] { transition-delay: 180ms, 180ms; }
-  body.revealed .stamp[data-i="3"] { transition-delay: 270ms, 270ms; }
-
-  /* No drop-shadow. The exports are opaque white rectangles, not cut-outs, so
-     a drop-shadow traces the RECTANGLE instead of the perforated edge and
-     paints a grey box behind each stamp. The Figma render has no shadow. */
-  .stamp img { width: 100%; height: auto; }
-
-  /* Figma coordinates, relative to the left column. Sizes are the node's
-     own, so each stamp keeps the tilt baked into its export. */
-  /* 1.25x, scaled about the group's horizontal centre with its top pinned -
-     which is exactly how it moved in Figma. Positions come from the template
-     match against the render, not the node metadata: metadata puts Liban at
-     x393, and testing that against the export scores 25.41 error versus 9.56
-     for the measured 384. */
-  .stamp-dk { --x: 27.8;  --y: 0;    width: 120.6px; }
-  .stamp-zm { --x: 126.6; --y: 7.5;  width: 103.8px; }
-  .stamp-lb { --x: 216.6; --y: 0;    width: 108.5px; }
-  .stamp-us { --x: 301.6; --y: 3.75; width: 98.6px;  }
-
-  /* ── portrait ──────────────────────────────────────────────────── */
-  .portrait { width: 388px; aspect-ratio: 388 / 523; }
-
-  /* One element the whole way. It is fixed, and JS lerps it from the hero
-     slot into the nav's head position as you scroll, so the hero portrait
-     and the nav head are literally the same object rather than a crossfade. */
-  .portrait-morph > img { width: 100%; height: 100%; object-fit: contain; display: block; }
-
-  /* The landing jiggle. It runs on the INNER image so it can never collide
-     with the scroll-driven transform on the wrapper, and it is time-based -
-     once she snaps to the nav it plays itself out regardless of the scroll. */
-  @keyframes navJiggle {
-    0%   { transform: scale(1)    rotate(0deg); }
-    22%  { transform: scale(1.075) rotate(-2deg); }
-    46%  { transform: scale(0.965) rotate(1.4deg); }
-    70%  { transform: scale(1.025) rotate(-0.6deg); }
-    86%  { transform: scale(0.993) rotate(0.2deg); }
-    100% { transform: scale(1)    rotate(0deg); }
-  }
-  .portrait-morph.jiggle > img { animation: navJiggle 780ms cubic-bezier(.28,.7,.3,1); }
-
+  /* ── the travelling portrait ── */
   .portrait-morph {
-    position: fixed; top: 0; left: 0; width: 388px; height: auto;
-    /* Above the nav's 200, so she lands ON the pill rather than behind it -
-       the head is meant to spill over its top edge. Safe to sit above the
-       whole nav: she occupies x20-97 and the links do not start until 286,
-       so she never covers anything interactive. */
-    transform-origin: 0 0; z-index: 210; pointer-events: none;
+    position: fixed; top: 0; left: 0; width: 365px; height: 492px;
+    transform-origin: 0 0; z-index: 210; display: block;
     will-change: transform;
   }
+  .portrait-morph > img {
+    width: 100%; height: 100%; object-fit: contain; display: block;
+    transform-origin: 50% 60%;
+    transition: transform .55s var(--spring);
+  }
+  /* hover: a small swell and a slight tilt, on the inner image so it never
+     collides with the wrapper's travel transform or the landing jiggle */
+  .portrait-morph:hover > img { transform: scale(1.045) rotate(-2.2deg); }
+  .portrait-morph.jiggle > img { animation: navJiggle 780ms cubic-bezier(.28,.7,.3,1); }
+  .portrait-morph.jiggle:hover > img { animation: none; }
 
   /* ── case studies: a pinned horizontal deck ────────────────────────
      The wrapper is tall; the stage inside it sticks to the viewport, so
@@ -386,7 +336,6 @@
     .nav-links { gap: 16px; }
     .nav-links a { font-size: 13.5px; }
     .nav-cta { font-size: 14px; padding: 0 15px; }
-    .stamps { transform: scale(.82); transform-origin: left top; }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -398,49 +347,37 @@
 
 <nav class="nav">
   <div class="nav-links" id="navLinks">
-    <a href="#case-studies">Case Studies</a>
-    <a href="#about">About</a>
+    <a class="nav-about" href="#about" id="navAbout">About</a>
+    <a href="#case-studies" id="navCases">Case Studies</a>
     <a href="#resume">Resume</a>
   </div>
   <a class="nav-cta" href="mailto:reem.ezzedine36@gmail.com">Contact</a>
 </nav>
 
-<div class="portrait-morph" id="portraitMorph">
+<!-- The portrait. Fixed, so it can travel from the hero into the nav and
+     replace "About". Hover on her: a small swell and a slight tilt. -->
+<a class="portrait-morph" id="portraitMorph" href="#about" aria-label="About Reem">
   <img src="assets/portrait.png" alt="Reem Ezzedine">
-</div>
+</a>
 
 <header class="hero">
   <div class="hero-inner">
+    <p class="hello">Hello, my name is</p>
 
-    <div class="copy-col">
-      <div class="copy">
-        <p class="hello">Hello, I&rsquo;m</p>
-        <h1 class="name">reem<br>ezzedine</h1>
-        <p class="tagline">
-          an experienced product designer with a
-          <span class="footprint" id="footprint" tabindex="0" role="button"
-                aria-label="Reveal stamps from places I have worked">global footprint.</span>
-        </p>
-      </div>
-
-      <div class="stamps" id="stamps" aria-hidden="true">
-        <!-- DOM order is PAINT order, bottom to top: Denmark, New York,
-             Lebanon, Zambia. Solved by rendering all 24 stacking orders and
-             scoring each against the Figma export; Zambia on top wins, and the
-             pairwise overlap tests agree. data-i is the left-to-right index,
-             which is what the fan and the stagger use - those must not follow
-             paint order. -->
-        <figure class="stamp stamp-dk" data-i="0"><img src="assets/stamps/dk.png" alt="Denmark stamp"></figure>
-        <figure class="stamp stamp-us" data-i="3"><img src="assets/stamps/us.png" alt="New York stamp"></figure>
-        <figure class="stamp stamp-lb" data-i="2"><img src="assets/stamps/lb.png" alt="Lebanon stamp"></figure>
-        <figure class="stamp stamp-zm" data-i="1"><img src="assets/stamps/zm.png" alt="Zambia stamp"></figure>
-      </div>
-    </div>
-
-    <!-- Spacer holds the hero's layout slot. The portrait itself is fixed and
-         lerps from this slot into the nav, so it is one object the whole way. -->
     <div class="portrait" id="portraitSlot" aria-hidden="true"></div>
 
+    <h1 class="name">reem<br>ezzed<span class="outline">ine</span></h1>
+
+    <p class="tagline">
+      I&rsquo;m an experienced product designer with a
+      <span class="footprint" id="footprint" tabindex="0"
+            aria-label="Places I have lived and worked">global footprint.</span>
+    </p>
+
+    <figure class="postcard pc-usa"><img src="assets/postcards/usa.png" alt="USA, 1 year"></figure>
+    <figure class="postcard pc-zambia"><img src="assets/postcards/zambia.png" alt="Zambia, 16 years"></figure>
+    <figure class="postcard pc-lebanon"><img src="assets/postcards/lebanon.png" alt="Lebanon, 6 years"></figure>
+    <figure class="postcard pc-denmark"><img src="assets/postcards/denmark.png" alt="Denmark, 3 years"></figure>
   </div>
 </header>
 
@@ -520,82 +457,20 @@
 (function () {
   var body    = document.body;
   var trigger = document.getElementById('footprint');
-  var wrap    = document.getElementById('stamps');
-  var stamps  = [].slice.call(wrap.querySelectorAll('.stamp'));
+  if (!trigger) return;
 
-  /* ── the one-way reveal ───────────────────────────────────────────
-     First hover on "global footprint." lifts the copy and deals the
-     stamps out one after another. It latches: once they are out they
-     never go back, so this only ever runs once.                     */
-  var revealed = false;
-  function reveal() {
-    if (revealed) return;
-    revealed = true;
-    body.classList.add('revealed');
-    wrap.setAttribute('aria-hidden', 'false');
-  }
-  function hide() {
-    revealed = false;
-    body.classList.remove('revealed');
-    wrap.setAttribute('aria-hidden', 'true');
-    fan(null);
-  }
-  trigger.addEventListener('mouseenter', reveal);
-  trigger.addEventListener('focus', reveal);
-  trigger.addEventListener('click', reveal);
-
-  // Replays: leaving the hero resets the stamps, so hovering "global
-  // footprint." deals them out again next time.
-  //
-  // Keyed to the hero being MOSTLY gone, not entirely gone. The page is only
-  // ~800px taller than the viewport, so the hero never fully clears the
-  // screen and a threshold-0 observer would never fire at all.
-  if ('IntersectionObserver' in window) {
-    new IntersectionObserver(function (es) {
-      if (es[0].intersectionRatio < 0.25) hide();
-    }, { threshold: [0, 0.25, 0.5] }).observe(document.querySelector('.hero'));
-  }
-  window.__stampsHide = hide;
-
-  /* ── the fan ──────────────────────────────────────────────────────
-     Hovering one stamp pushes its neighbours away, the nearest moving
-     most, and everything settles back when the pointer leaves. Same
-     grammar as the card fan: distance in INDEX, not in pixels.      */
-  var PART = 20;   // px the immediate neighbour steps aside
-  var STEP = 9;    // each further neighbour adds this much
-  var RISE = 7;    // px the hovered stamp lifts
-  var TILT = 1.6;  // deg of lean on the neighbours
-
-  function fan(hover) {
-    stamps.forEach(function (el) {
-      var j = +el.dataset.i;
-      if (hover === null) {
-        el.style.setProperty('--px', 0);
-        el.style.setProperty('--py', 0);
-        el.style.setProperty('--pr', 0);
-        return;
-      }
-      var d = j - hover;
-      if (d === 0) {
-        el.style.setProperty('--px', 0);
-        el.style.setProperty('--py', -RISE);
-        el.style.setProperty('--pr', 0);
-        return;
-      }
-      var dir = d < 0 ? -1 : 1;
-      var n = Math.abs(d);
-      el.style.setProperty('--px', dir * (PART + (n - 1) * STEP));
-      el.style.setProperty('--py', n * 3);
-      el.style.setProperty('--pr', dir * TILT * n);
-    });
-  }
-
-  stamps.forEach(function (el) {
-    el.addEventListener('mouseenter', function () {
-      if (revealed) fan(+el.dataset.i);
-    });
-  });
-  wrap.addEventListener('mouseleave', function () { fan(null); });
+  /* ── postcards ────────────────────────────────────────────────────
+     Only while the pointer is on "global footprint." They deal out one
+     after another on enter and pack back in reverse on leave. Not latched:
+     moving away puts them away. A short grace stops a one-pixel slip off
+     the phrase from collapsing them mid-deal. */
+  var away = 0;
+  function show() { clearTimeout(away); body.classList.add('cards'); }
+  function hide() { clearTimeout(away); away = setTimeout(function () { body.classList.remove('cards'); }, 160); }
+  trigger.addEventListener('mouseenter', show);
+  trigger.addEventListener('focus', show);
+  trigger.addEventListener('mouseleave', hide);
+  trigger.addEventListener('blur', hide);
 })();
 
   /* ── portrait morph ──────────────────────────────────────────────────
@@ -613,28 +488,32 @@
     if (!img || !slot || !nav) return;
 
     var TRAVEL   = 420;    // px of scroll the morph takes
-    var HEAD_W   = 77;     // the nav head's size in Figma
-    var HEAD_DX  = 20;     // its offset inside the nav pill
-    var HEAD_DY  = -16;    // it spills above the pill
-    var LINKS_DX = 265.5;  // 285.5 - 20, how far the links slide
+    /* She docks INTO the About slot and becomes the About link. The pill is
+       75x36 at 83,44 - centre 120.5,62. At 60px wide she keeps the 365:492
+       aspect (81 tall) and spills ~22px above and below the pill, the same
+       proportion the old nav head had. */
+    var HEAD_W   = 60;
+    var about    = document.getElementById('navAbout');
 
     var raf = 0;
     function paint() {
       raf = 0;
       var s = slot.getBoundingClientRect();
-      var n = nav.getBoundingClientRect();
+      var n = about ? about.getBoundingClientRect() : nav.getBoundingClientRect();
       if (!s.width) return;
+      var HEAD_H  = HEAD_W * (492 / 365);
+      var HEAD_DX = (n.width  - HEAD_W) / 2;       // centred on the About pill
+      var HEAD_DY = (n.height - HEAD_H) / 2;
 
       var e = cur * cur * (3 - 2 * cur);    // smoothstep on the LAGGED value
 
       var x = s.left + (n.left + HEAD_DX - s.left) * e;
       var y = s.top  + (n.top  + HEAD_DY - s.top)  * e;
-      var k = (s.width + (HEAD_W - s.width) * e) / 388;
+      var k = (s.width + (HEAD_W - s.width) * e) / 365;
 
       img.style.transform =
         'translate3d(' + x.toFixed(2) + 'px,' + y.toFixed(2) + 'px,0) scale(' + k.toFixed(4) + ')';
-      if (links) links.style.transform = 'translateX(' + (LINKS_DX * e).toFixed(2) + 'px)';
-      document.body.classList.toggle('scrolled', t > 0.6);
+      document.body.classList.toggle('docked', docked);
     }
     /* Friction, then a snap.
        `cur` chases the scroll-derived target instead of tracking it exactly,
@@ -687,10 +566,10 @@
     window.__morphState = function () { return { cur: cur, docked: docked }; };
     window.__morphDebug = function (t) {
       if (typeof t === 'number') { cur = t; }
-      var sl = slot.getBoundingClientRect(), nv = nav.getBoundingClientRect();
+      paint();
+      var sl = slot.getBoundingClientRect();
       return { scrollY: scrollY, t: Math.min(1, Math.max(0, scrollY / TRAVEL)),
-               slot: { x: sl.left, y: sl.top, w: sl.width },
-               target: { x: nv.left + HEAD_DX, y: nv.top + HEAD_DY, w: HEAD_W } };
+               slot: { x: sl.left, y: sl.top, w: sl.width } };
     };
     paint();
   })();
@@ -796,11 +675,16 @@
     addEventListener('load', function () { fit(); paint(); });
     fit(); paint();
 
-    // 'Case Studies' is pink only while the deck holds the screen
-    var link = document.querySelector('.nav-links a[href="#case-studies"]');
-    if (link && 'IntersectionObserver' in window) {
+    // The pink pill follows the section. About wears it on the hero; once
+    // the deck holds the screen it moves to Case Studies.
+    var cases = document.getElementById('navCases');
+    var about = document.getElementById('navAbout');
+    if (about) about.classList.add('active');
+    if (cases && 'IntersectionObserver' in window) {
       new IntersectionObserver(function (es) {
-        link.classList.toggle('active', es[0].isIntersecting);
+        var on = es[0].isIntersecting;
+        cases.classList.toggle('active', on);
+        if (about) about.classList.toggle('active', !on);
       }, { threshold: 0, rootMargin: '-40% 0px -40% 0px' }).observe(wrap);
     }
 
