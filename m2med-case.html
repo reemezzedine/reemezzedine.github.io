@@ -71,6 +71,9 @@
     transition: transform .45s cubic-bezier(.34, 1.42, .64, 1);
   }
   .cta:hover { transform: scale(1.06); }
+  /* over a navy section the pill flips to white; the script below drives it */
+  .cta { transition: transform .45s cubic-bezier(.34,1.42,.64,1), background .35s cubic-bezier(.22,1,.36,1), color .35s cubic-bezier(.22,1,.36,1); }
+  .cta.on-dark { background: #fff; color: #111; }
   @media (max-width: 700px) { .top { padding: 14px 18px 0; } .head { width: 54px; height: 73px; } }
 
   :focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; border-radius: 4px; }
@@ -218,8 +221,9 @@
     position: absolute; top: 13.7%; padding: 8px 10px; border-radius: 8px;
     background: var(--mint); color: var(--navy); font-size: 16px; font-weight: 700; line-height: 1.2;
   }
-  .ba-tag.before { right: calc(100% + 10px); }
-  .ba-tag.after  { left: calc(100% - 6px); }
+  /* the tags sit well clear of the picture on either side (were 10px / -6px) */
+  .ba-tag.before { right: calc(100% + 44px); }
+  .ba-tag.after  { left: calc(100% + 44px); }
   @media (max-width: 760px) { .ba-tag.before { right: auto; left: 0; top: -44px; } .ba-tag.after { left: auto; right: 0; top: -44px; } }
 
   /* ══════════ 3 · HOW I RECEIVED ══════════ */
@@ -247,12 +251,19 @@
   /* Samsung's model: the rail stays put, the image sets scroll past it on the right,
      and the set nearest the spy line decides which title is open.
      Figma: the heading sits on the 97px gutter, the decision rows on a 35px one. */
-  .did-grid { margin: 88px calc(35px - clamp(20px, 7.6vw, 97px)) 0; display: grid; grid-template-columns: 401px minmax(0, 1fr); gap: 37px; align-items: start; }
-  .rail { position: sticky; top: var(--stick); display: flex; flex-direction: column; gap: 14px; }
+  /* The head is sticky: it pins just under the portrait and the steps scroll
+     beneath it, so the title and its paragraph stay in view whichever step is
+     open. The rail and stage pin below it - --did-stick is set by script from
+     the head's real height. 88px of air before the grid became 36. */
+  .did-head { position: sticky; top: 104px; z-index: 6; background: var(--navy); padding-bottom: 22px; }
+  /* a navy shelf above the stuck head, so nothing scrolls through the gap under the portrait */
+  .did-head::before { content: ''; position: absolute; left: -50vw; right: -50vw; bottom: 100%; height: 104px; background: var(--navy); }
+  .did-grid { margin: 36px calc(35px - clamp(20px, 7.6vw, 97px)) 0; display: grid; grid-template-columns: 401px minmax(0, 1fr); gap: 37px; align-items: start; }
+  .rail { position: sticky; top: var(--did-stick, var(--stick)); display: flex; flex-direction: column; gap: 14px; }
   /* the track is tall (JS: one band of scroll per step); the stage pins inside it and the image sets
      share one cell, so each step fades out exactly where the next one fades in */
   .track { min-width: 0; }
-  .stage { position: sticky; top: var(--stick); min-width: 0; }
+  .stage { position: sticky; top: var(--did-stick, var(--stick)); min-width: 0; }
   .stage-in { display: grid; }
   .set { grid-area: 1 / 1; opacity: 0; transform: translateY(18px); pointer-events: none;
          transition: opacity .45s var(--ios), transform .6s var(--ios); }
@@ -338,28 +349,32 @@
   .modals { display: grid; grid-template-columns: 342px 342px; gap: 39px; align-items: start; }
   .mcol { display: flex; flex-direction: column; gap: 24px; min-width: 0; }
   @media (max-width: 1000px) { .modals { grid-template-columns: minmax(0, 1fr); } }
-  .modal { background: #fff; color: var(--navy); border-radius: 20px; padding: 20px; box-shadow: 0 18px 44px -14px rgba(0,0,0,.35); }
-  .modal h5 { font-size: 20px; line-height: 26px; font-weight: 700; }
+  /* board 938:994: radius 24, padding 24, Extra Bold weights, 14/12 type */
+  .modal { background: #fff; color: var(--navy); border-radius: 24px; padding: 24px; box-shadow: 0 18px 44px -14px rgba(0,0,0,.35); }
+  .modal h5 { font-size: 20px; line-height: 26px; font-weight: 800; }
   .modal .sub { font-size: 14px; line-height: 20px; color: var(--ink2); margin-top: 8px; }
-  .modal .line { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+  .modal .line { display: flex; align-items: center; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--line); }
   .modal .line:last-of-type { border-bottom: 0; }
   .modal .line .t { flex: 1; }
-  .modal .line b { display: block; font-size: 15px; font-weight: 600; }
-  .modal .line span { display: block; font-size: 12.5px; color: var(--ink3); margin-top: 2px; }
-  .modal .line .p { font-size: 15px; font-weight: 700; white-space: nowrap; }
-  .modal .line .p.free { color: var(--mint-deep); }
+  .modal .line b { display: block; font-size: 14px; font-weight: 800; }
+  .modal .line span { display: block; font-size: 12px; color: var(--ink3); margin-top: 2px; }
+  .modal .line .p { font-size: 14px; font-weight: 800; white-space: nowrap; }
+  .modal .line .p.free { color: #00b971; }
   .cb { width: 22px; height: 22px; border-radius: 6px; border: 2px solid var(--line); display: grid; place-items: center; flex: none; transition: background .2s, border-color .2s; }
   .cb svg { width: 14px; height: 14px; stroke: #fff; fill: none; stroke-width: 3; opacity: 0; transition: opacity .15s; }
   .line[aria-checked="true"] .cb { background: var(--blue); border-color: var(--blue); }
   .line[aria-checked="true"] .cb svg { opacity: 1; }
   .modal .line[role="checkbox"] { cursor: pointer; }
-  .modal .total { margin-top: 12px; background: var(--card); border-radius: 12px; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; font-size: 15px; font-weight: 600; }
-  .modal .total b { font-size: 20px; font-weight: 700; }
-  .modal .total b.free { color: var(--mint-deep); }
-  .modal .note { margin-top: 12px; font-size: 12.5px; line-height: 16px; color: var(--ink3); }
+  /* the total sits in a MINT box, not the grey card - the part that had drifted */
+  .modal .total { margin-top: 16px; background: #e7fff3; border-radius: 12px; padding: 16px; display: flex; align-items: center; justify-content: space-between; font-size: 14px; font-weight: 400; color: var(--ink2); }
+  .modal .total b { font-size: 20px; font-weight: 800; color: var(--navy); }
+  .modal .total b.free { color: #00b971; }
+  .modal .note { margin-top: 16px; font-size: 12px; line-height: 16px; color: var(--ink3); }
+  /* 8. the refund disclaimer, only on the modal with a real fee */
+  .modal .terms { margin-top: 10px; font-size: 11px; line-height: 15px; color: var(--ink3); }
   .modal .note.tint { background: var(--tint); color: var(--navy); padding: 12px 14px; border-radius: 10px; font-weight: 500; text-align: center; }
   .modal .acts { display: flex; gap: 12px; margin-top: 16px; }
-  .modal .acts button { flex: 1; height: 44px; border-radius: 8px; font-size: 14px; font-weight: 700; }
+  .modal .acts button { flex: 1; height: 44px; border-radius: 8px; font-size: 14px; font-weight: 800; }
   .btn-p { background: var(--blue); color: #fff; }
   .btn-s { background: #fff; color: var(--blue); border: 2px solid var(--blue); }
   .modal .icon { width: 52px; height: 52px; border-radius: 999px; background: var(--tint); margin: 0 auto 12px; display: grid; place-items: center; }
@@ -718,6 +733,7 @@
           <div class="line" role="checkbox" aria-checked="false" data-price="60" tabindex="0"><span class="cb"><svg viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></svg></span><div class="t"><b>Faculty dinner</b><span>20:00 · Phoenicia Hotel</span></div><div class="p">$60</div></div>
           <div class="total">Total to pay <b id="optTotal">$575</b></div>
           <p class="note">Optional sessions have limited places and are confirmed on payment.</p>
+          <p class="terms">By paying you accept the event's terms. Optional sessions are non-refundable once confirmed; the conference pass follows the organiser's cancellation policy, shown before you cancel.</p>
           <div class="acts"><button class="btn-s" type="button">Cancel</button><button class="btn-p" type="button" id="optPay">Pay $575</button></div>
         </div>
         </div>
@@ -1092,6 +1108,39 @@
   [].forEach.call(document.querySelectorAll('[data-top]'), function (el) {
     el.addEventListener('click', function (e) { e.preventDefault(); goTo(0); });
   });
+})();
+</script>
+<script>
+/* ── background-aware Contact ─────────────────────────────────────────
+   While a navy section (.intro or .did) sits under the pill's own midline,
+   the pill is white on black; the moment it leaves, black on white. ── */
+(function () {
+  var cta = document.querySelector('.cta');
+  var navy = [].slice.call(document.querySelectorAll('.intro, .did'));
+  if (!cta || !navy.length) return;
+  var raf = 0;
+  function check() {
+    raf = 0;
+    var r = cta.getBoundingClientRect(), mid = r.top + r.height / 2;
+    cta.classList.toggle('on-dark', navy.some(function (n) {
+      var b = n.getBoundingClientRect(); return b.top <= mid && b.bottom >= mid;
+    }));
+  }
+  addEventListener('scroll', function () { if (!raf) raf = requestAnimationFrame(check); }, { passive: true });
+  addEventListener('resize', check);
+  check();
+})();
+
+/* ── the sticky What I did head: pin the rail and stage below its real height ── */
+(function () {
+  var head = document.querySelector('.did-head');
+  if (!head) return;
+  function fit() {
+    var top = parseFloat(getComputedStyle(head).top) || 104;
+    document.documentElement.style.setProperty('--did-stick', (top + head.offsetHeight + 16) + 'px');
+  }
+  if ('ResizeObserver' in window) new ResizeObserver(fit).observe(head);
+  addEventListener('resize', fit); addEventListener('load', fit); fit();
 })();
 </script>
 </body>
