@@ -495,7 +495,7 @@
     .phone-gate .anyway { margin-top: 14px; font-size: 13px; color: #646569; text-decoration: underline; text-underline-offset: 3px; background: none; border: 0; font: inherit; font-size: 13px; cursor: pointer; }
   }
 
-  /* ── loading screen: three sheets, the middle one hot pink, until the page's images are in ── */
+  /* ── loading screen: a hot-pink drop that fills as the page's images arrive ── */
   .loading {
     position: fixed; inset: 0; z-index: 10000; background: #fff;
     display: flex; align-items: center; justify-content: center;
@@ -503,28 +503,30 @@
   }
   html.ready .loading { opacity: 0; visibility: hidden; pointer-events: none; }
   .loader {
-    --color-1: #ff2d55;                 /* the middle sheet */
-    --color-2: #ffd9e6;                 /* the bottom sheet, light pink so it shows on white */
-    --color-3: rgba(255, 255, 255, .7); /* the top sheet */
+    --color-1: #ff2d55;                  /* the liquid */
+    --color-2: rgba(0, 0, 0, .5);
+    --color-3: rgba(0, 0, 0, .15);
+    --color-4: #fff;
+    --color-5: rgba(255, 255, 255, .4);
     --size: 1px;
-    position: relative;
-    width: calc(48 * var(--size)); height: calc(48 * var(--size));
-    background: var(--color-1);
-    transform: rotateX(65deg) rotate(45deg);
-    color: var(--color-2);
-    animation: layers1 1s linear infinite alternate;
+    --level: 8%;                         /* how full: set by script as images land */
+    width: calc(150 * var(--size)); height: calc(150 * var(--size));
+    background-color: var(--color-1);
+    border-radius: 50%; position: relative; overflow: hidden;
+    box-shadow: 0 0 calc(30 * var(--size)) calc(4 * var(--size)) var(--color-2) inset,
+                0 calc(5 * var(--size)) calc(12 * var(--size)) var(--color-3);
   }
-  .loader::after {
-    content: ''; position: absolute; inset: 0; background: var(--color-3);
-    animation: layerTr 1s linear infinite alternate;
+  /* the two white shapes are the air above the liquid: they sit lower when
+     the drop is empty and slide up out of the circle as it fills */
+  .loader::before, .loader::after {
+    content: ''; position: absolute; width: 100%; height: 100%;
+    border-radius: 45%; top: calc(-1 * var(--level));
+    background-color: var(--color-4);
+    animation: wave 5s linear infinite;
+    transition: top .6s cubic-bezier(.22, 1, .36, 1);
   }
-  @keyframes layers1 {
-    0% { box-shadow: 0 0 0 0; }
-    90%, 100% { box-shadow: calc(20 * var(--size)) calc(20 * var(--size)) 0 calc(-4 * var(--size)); }
-  }
-  @keyframes layerTr {
-    0% { transform: translate(0, 0) scale(1); }
-    100% { transform: translate(calc(-25 * var(--size)), calc(-25 * var(--size))) scale(1); }
+  .loader::before { border-radius: 30%; background: var(--color-5); }
+  @keyframes wave { 0% { transform: rotate(0); } 100% { transform: rotate(360deg); } }
   }
 </style>
 </head>
@@ -536,14 +538,28 @@
 (function () {
   var root = document.documentElement; root.classList.add('loading');
   var t0 = Date.now(), done = false;
+  var loader = document.querySelector('.loader');
+  function level(p) { if (loader) loader.style.setProperty('--level', Math.round(p * 100) + '%'); }
+  /* the drop fills with the page's images: each one that lands lifts the level */
+  function track() {
+    var imgs = [].filter.call(document.images, function (i) { return i.loading !== 'lazy'; });
+    var n = imgs.length, k = 0;
+    function bump() { k++; level(0.08 + 0.9 * (k / Math.max(1, n))); }
+    imgs.forEach(function (i) {
+      if (i.complete) bump();
+      else { i.addEventListener('load', bump, { once: true }); i.addEventListener('error', bump, { once: true }); }
+    });
+  }
   function ready() {
     if (done) return; done = true;
-    var wait = Math.max(0, 600 - (Date.now() - t0));       /* never a flash: show it for at least 600ms */
+    level(1);
+    var wait = Math.max(450, 900 - (Date.now() - t0));      /* let it reach the brim, and never flash */
     setTimeout(function () {
       root.classList.remove('loading'); root.classList.add('ready');
       window.dispatchEvent(new Event('siteready'));
     }, wait);
   }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', track); else track();
   window.addEventListener('load', ready);
   setTimeout(ready, 6000);                                  /* and never a hang: 6s tops */
 })();
