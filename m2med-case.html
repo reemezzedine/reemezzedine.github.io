@@ -246,7 +246,7 @@
 
   /* ══════════ 4 · WHAT I DID ══════════ */
   .did { background: var(--navy); color: #fff; border-radius: 24px 24px 0 0; padding: var(--sec) 0 120px; }
-  .did-head p { margin-top: 12px; max-width: 760px; font-size: 16px; line-height: 24px; color: rgba(255,255,255,.88); }
+  .did-head p { margin-top: 12px; font-size: 16px; line-height: 24px; color: rgba(255,255,255,.88); }
 
   /* The whole block - title, paragraph, rail and stage - is ONE pinned unit
      inside a tall track. Scrolling through the track picks the step; when
@@ -254,13 +254,14 @@
      so the title never hangs over anything.
      Figma: the heading sits on the 97px gutter, the decision rows on a 35px one. */
   .did-track { position: relative; }
-  .did-pin { position: sticky; top: 88px; }
-  .did-head { padding-bottom: 14px; }
+  .did-pin { position: sticky; top: 76px; }
+  /* the head reaches the same right edge as the pictures (the grid's 35px gutter) */
+  .did-head { padding-bottom: 14px; margin-right: calc(35px - clamp(20px, 7.6vw, 97px)); }
   .did-grid { margin: 8px calc(35px - clamp(20px, 7.6vw, 97px)) 0; display: grid; grid-template-columns: 401px minmax(0, 1fr); gap: 37px; align-items: start; }
   .rail { display: flex; flex-direction: column; gap: 14px; }
   .track { min-width: 0; }
   .stage { min-width: 0; }
-  .stage-in { display: grid; justify-items: center; align-items: start; }   /* each set keeps its own height */
+  .stage-in { display: grid; justify-items: end; align-items: start; }   /* every set on one right edge; each keeps its own height */
   .set { grid-area: 1 / 1; max-width: 100%; opacity: 0; transform: translateY(18px); pointer-events: none;
          transition: opacity .45s var(--ios), transform .6s var(--ios); }
   .set.on { opacity: 1; transform: none; pointer-events: auto; }
