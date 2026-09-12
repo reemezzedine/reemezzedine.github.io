@@ -456,6 +456,9 @@
   .choices button[aria-pressed="true"] { background: var(--blue); color: #fff; }
 
   /* ══════════ 6 · OUTCOME ══════════ */
+  /* the full-bleed scene, board 1014:1036 - a 1280x800 picture with 50px corners */
+  .scene { width: 100%; max-width: 1280px; margin: var(--sec) auto 0; padding: 0 clamp(20px, 7.6vw, 97px); }
+  .scene img { width: 100%; aspect-ratio: 1280 / 800; object-fit: cover; border-radius: 50px; display: block; }
   .outcome { padding: var(--sec) 0 64px; }
   .foot { display: flex; justify-content: center; padding: 0 0 72px; }
   .totop { display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 20px 0 16px; border-radius: 999px; background: var(--card); color: var(--navy); font-size: 14px; font-weight: 600; transition: transform .45s var(--bubble), background .3s var(--ios); }
@@ -821,6 +824,11 @@
     </div>
   </div>
 </section>
+
+<!-- ══ 5b · THE SCENE: every screen of the build, laid out together ══ -->
+<figure class="scene rise">
+  <img src="assets/m2med-case/scene.jpg" alt="The M2Med screens laid out together: events, itinerary, optional sessions, QR badge, documents, CME credits and the speaker portal">
+</figure>
 
 <!-- ══ 6 · OUTCOME ════════════════════════════════════════════════════ -->
 <section class="outcome" id="outcome">
