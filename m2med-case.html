@@ -245,35 +245,31 @@
   .problem figure img { width: 304px; max-width: 100%; margin: 0 auto; border-radius: 16px; }
 
   /* ══════════ 4 · WHAT I DID ══════════ */
-  .did { background: var(--navy); color: #fff; border-radius: 24px; padding: var(--sec) 0 96px; }
+  .did { background: var(--navy); color: #fff; border-radius: 24px 24px 0 0; padding: var(--sec) 0 120px; }
   .did-head p { margin-top: 12px; max-width: 760px; font-size: 16px; line-height: 24px; color: rgba(255,255,255,.88); }
 
-  /* Samsung's model: the rail stays put, the image sets scroll past it on the right,
-     and the set nearest the spy line decides which title is open.
+  /* The whole block - title, paragraph, rail and stage - is ONE pinned unit
+     inside a tall track. Scrolling through the track picks the step; when
+     the money path is done the track ends and the block leaves together,
+     so the title never hangs over anything.
      Figma: the heading sits on the 97px gutter, the decision rows on a 35px one. */
-  /* The head is sticky: it pins just under the portrait and the steps scroll
-     beneath it, so the title and its paragraph stay in view whichever step is
-     open. The rail and stage pin below it - --did-stick is set by script from
-     the head's real height. 88px of air before the grid became 36. */
-  .did-head { position: sticky; top: 104px; z-index: 6; background: var(--navy); padding-bottom: 22px; }
-  /* a navy shelf above the stuck head, so nothing scrolls through the gap under the portrait */
-  .did-head::before { content: ''; position: absolute; left: -50vw; right: -50vw; bottom: 100%; height: 104px; background: var(--navy); }
-  .did-grid { margin: 36px calc(35px - clamp(20px, 7.6vw, 97px)) 0; display: grid; grid-template-columns: 401px minmax(0, 1fr); gap: 37px; align-items: start; }
-  .rail { position: sticky; top: var(--did-stick, var(--stick)); display: flex; flex-direction: column; gap: 14px; }
-  /* the track is tall (JS: one band of scroll per step); the stage pins inside it and the image sets
-     share one cell, so each step fades out exactly where the next one fades in */
+  .did-track { position: relative; }
+  .did-pin { position: sticky; top: 104px; }
+  .did-head { padding-bottom: 22px; }
+  .did-grid { margin: 14px calc(35px - clamp(20px, 7.6vw, 97px)) 0; display: grid; grid-template-columns: 401px minmax(0, 1fr); gap: 37px; align-items: start; }
+  .rail { display: flex; flex-direction: column; gap: 14px; }
   .track { min-width: 0; }
-  .stage { position: sticky; top: var(--did-stick, var(--stick)); min-width: 0; }
-  .stage-in { display: grid; }
-  .set { grid-area: 1 / 1; opacity: 0; transform: translateY(18px); pointer-events: none;
+  .stage { min-width: 0; }
+  .stage-in { display: grid; justify-items: center; }
+  .set { grid-area: 1 / 1; max-width: 100%; opacity: 0; transform: translateY(18px); pointer-events: none;
          transition: opacity .45s var(--ios), transform .6s var(--ios); }
   .set.on { opacity: 1; transform: none; pointer-events: auto; }
   .set.out { transform: translateY(-18px); }
   @media (max-width: 1000px) {
     .did-grid { margin: 72px 0 0; grid-template-columns: minmax(0, 1fr); gap: 24px; }
     .rail { display: none; }                      /* JS moves each title above its own images */
-    .track { height: auto !important; }
-    .stage { position: static; }
+    .did-track { height: auto !important; }
+    .did-pin { position: static; }
     .stage-in { display: flex; flex-direction: column; gap: 72px; zoom: 1 !important; }
     .stage .rail-item { margin-bottom: 20px; padding: 24px; }
     .stage .rail-item .rail-body { grid-template-rows: 1fr; opacity: 1; }
@@ -303,7 +299,8 @@
   .rail-pad h4 { font-size: 15px; line-height: 16px; font-weight: 600; text-transform: capitalize; }
   .rail-pad p { font-size: 14px; line-height: 21px; color: var(--ink2); }
 
-  .shots { display: flex; gap: 57px; align-items: flex-start; flex-wrap: wrap; min-width: 0; }
+  .shots { display: flex; gap: 57px; align-items: flex-start; flex-wrap: nowrap; min-width: 0; }
+  @media (max-width: 1000px) { .shots { flex-wrap: wrap; } }
   .shots > div { min-width: 0; max-width: 100%; }
   .phone-col { width: 325px; max-width: 100%; flex: none; }
   .phone-col img { width: 100%; }
@@ -384,7 +381,7 @@
   .modal.center { text-align: center; }
 
   /* ══════════ 5 · THE SYSTEM ══════════ */
-  .system { background: var(--tint); border-radius: 24px; padding: var(--sec) 0; margin-top: var(--sec); }
+  .system { background: var(--tint); border-radius: 24px; padding: var(--sec) 0; margin-top: -24px; position: relative; z-index: 2; }   /* rides over the navy, no white seam */
   .system .inner { width: 100%; max-width: 1280px; margin: 0 auto; padding: 0 clamp(20px, 7.6vw, 97px); }
   .system .lede { font-size: 16px; line-height: 28px; color: var(--blue); margin-top: 12px; }
   .sys-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; margin-top: 32px; }
@@ -580,6 +577,8 @@
 <!-- ══ 4 · WHAT I DID ═════════════════════════════════════════════════ -->
 <section class="did" id="did">
   <div class="wrap">
+    <div class="did-track" id="track">
+    <div class="did-pin" id="didPin">
     <div class="did-head">
       <h2>What I did</h2>
       <p>After researching with medical professionals, mapping user flows, comparing competitor apps, and understanding the commercial needs of business clients, I got to work. Here's a snapshot of a few of the changes I made.</p>
@@ -623,7 +622,7 @@
         </div></div></div>
       </button>
       </aside>
-      <div class="track" id="track">
+      <div class="track">
       <div class="stage" id="stage">
       <div class="stage-in" id="stageIn">
       <div class="set" data-step="0">
@@ -747,6 +746,8 @@
       </div>
       </div>
       </div>
+    </div>
+    </div>
     </div>
   </div>
 </section>
@@ -941,17 +942,23 @@
   var segs = [].slice.call(document.querySelectorAll('.set'));
   var railItems = [].slice.call(document.querySelectorAll('.rail-item'));
   var rail = document.getElementById('rail'), track = document.getElementById('track'), stage = document.getElementById('stage');
+  var pin = document.getElementById('didPin');
   var current = -1, N = segs.length;
   var BAND = 0.62;                               /* one step = 62% of a viewport of scroll */
   function zoomOf() { return parseFloat(getComputedStyle(document.querySelector('.page')).zoom) || 1; }
-  function stickTop() { return parseFloat(getComputedStyle(stage).top) * zoomOf(); }   /* screen px */
+  function stickTop() { return parseFloat(getComputedStyle(pin).top) * zoomOf(); }   /* screen px */
   var stageIn = document.getElementById('stageIn');
   function sizeTrack() {
     if (window.innerWidth <= 1000) { track.style.height = ''; stageIn.style.zoom = ''; return; }
     stageIn.style.zoom = '';
-    var natural = stage.getBoundingClientRect().height, avail = window.innerHeight - stickTop() - 24;
-    if (natural > avail) stageIn.style.zoom = Math.max(0.6, avail / natural).toFixed(3);
-    track.style.height = Math.round((N * window.innerHeight * BAND + stage.getBoundingClientRect().height) / zoomOf()) + 'px';
+    /* the pinned block must fit under its top line: shrink the image sets
+       (never the rail or the head) until both its height and width do */
+    var pinH = pin.getBoundingClientRect().height, stageH = stage.getBoundingClientRect().height;
+    var availH = window.innerHeight - stickTop() - 24 - (pinH - stageH);
+    var availW = stage.getBoundingClientRect().width, natW = stageIn.scrollWidth * zoomOf();
+    var z = Math.min(1, availH / stageH, availW / natW);
+    if (z < 1) stageIn.style.zoom = Math.max(0.6, z).toFixed(3);
+    track.style.height = Math.round((N * window.innerHeight * BAND + pin.getBoundingClientRect().height) / zoomOf()) + 'px';
   }
   function setStep(i) {
     if (i === current) return;
@@ -961,14 +968,14 @@
   }
   function pickRow() {
     if (window.innerWidth <= 1000) { setStep(0); return; }
-    var t = track.getBoundingClientRect(), range = t.height - stage.getBoundingClientRect().height;
+    var t = track.getBoundingClientRect(), range = t.height - pin.getBoundingClientRect().height;
     var p = range > 0 ? (stickTop() - t.top) / range : 0;
     p = Math.max(0, Math.min(1, p));
     setStep(Math.min(N - 1, Math.floor(p * N)));
   }
   railItems.forEach(function (r, i) {
     r.addEventListener('click', function () {
-      var t = track.getBoundingClientRect(), range = t.height - stage.getBoundingClientRect().height;
+      var t = track.getBoundingClientRect(), range = t.height - pin.getBoundingClientRect().height;
       goTo(window.scrollY + t.top - stickTop() + range * (i + 0.08) / N);
     });
   });
@@ -1141,17 +1148,6 @@
   check();
 })();
 
-/* ── the sticky What I did head: pin the rail and stage below its real height ── */
-(function () {
-  var head = document.querySelector('.did-head');
-  if (!head) return;
-  function fit() {
-    var top = parseFloat(getComputedStyle(head).top) || 104;
-    document.documentElement.style.setProperty('--did-stick', (top + head.offsetHeight + 16) + 'px');
-  }
-  if ('ResizeObserver' in window) new ResizeObserver(fit).observe(head);
-  addEventListener('resize', fit); addEventListener('load', fit); fit();
-})();
 </script>
 </body>
 </html>
