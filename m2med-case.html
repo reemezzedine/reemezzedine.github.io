@@ -275,6 +275,14 @@
   .did-head { padding-bottom: 14px; margin-right: calc(35px - clamp(20px, 7.6vw, 97px)); }
   .did-grid { margin: 8px calc(35px - clamp(20px, 7.6vw, 97px)) 0; display: grid; grid-template-columns: 401px minmax(0, 1fr); gap: 37px; align-items: start; }
   .rail { display: flex; flex-direction: column; gap: 14px; }
+  /* under the last step, once it is open: keep going */
+  .did-more { align-self: center; width: 28px; height: 28px; margin-top: 6px; color: var(--mint); background: none; border: 0; padding: 0; cursor: pointer;
+              opacity: 0; pointer-events: none; transition: opacity .5s var(--ios); }
+  .did-more svg { width: 100%; height: 100%; stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; display: block;
+                  animation: didMore 1.8s cubic-bezier(.45,0,.55,1) infinite; }
+  .did-pin.at-end .did-more { opacity: 1; pointer-events: auto; }
+  @keyframes didMore { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(6px); } }
+  @media (prefers-reduced-motion: reduce) { .did-more svg { animation: none; } }
   .track { min-width: 0; }
   .stage { min-width: 0; }
   .stage-in { display: grid; justify-items: end; align-items: start; }   /* every set on one right edge; each keeps its own height */
@@ -536,7 +544,7 @@
 
 <header class="top">
   <a class="head" href="index.html" aria-label="Reem Ezzedine, home"><img src="assets/portrait.png" alt="Reem Ezzedine"></a>
-  <a class="cta" href="mailto:reem.ezzedine36@gmail.com">Contact</a>
+  <a class="cta" href="index.html#work-with-me">Contact</a>
 </header>
 
 <main class="page">
@@ -545,9 +553,9 @@
   <div class="hero-logo stage1"><img src="assets/m2med-case/m2med-logo.svg" alt="M2Med"></div>
   <div class="hero-phone stage1">
     <img class="phone" src="assets/m2med-case/hero-phone.png" alt="The M2Med app on an iPhone, held in a hand">
-    <img class="snip snip-session" src="assets/m2med-case/snip-session.png" alt="Parallel session card with a room picker">
-    <img class="snip snip-event"   src="assets/m2med-case/snip-event.png"   alt="Event card showing CME credits and sessions">
-    <img class="snip snip-nav"     src="assets/m2med-case/snip-nav.png"     alt="Bottom navigation with Events, QR and Profile">
+    <img class="snip snip-session" src="assets/m2med-case/snip-session.png" alt="Parallel session card with a room picker" loading="lazy" decoding="async">
+    <img class="snip snip-event"   src="assets/m2med-case/snip-event.png"   alt="Event card showing CME credits and sessions" loading="lazy" decoding="async">
+    <img class="snip snip-nav"     src="assets/m2med-case/snip-nav.png"     alt="Bottom navigation with Events, QR and Profile" loading="lazy" decoding="async">
     <div class="hero-fade" aria-hidden="true"></div>
   </div>
 
@@ -573,7 +581,7 @@
   <div class="ba rise">
     <span class="ba-tag before">Before</span>
     <span class="ba-tag after">After</span>
-    <img src="assets/m2med-case/intro-phones.png" alt="The developer build on the left, the redesign on the right">
+    <img src="assets/m2med-case/intro-phones.png" alt="The developer build on the left, the redesign on the right" loading="lazy" decoding="async">
   </div>
 </section>
 
@@ -595,7 +603,7 @@
             <li>A photo takes nearly half the card, and sponsor logos sit above the fold</li>
           </ul>
         </div>
-        <figure><img src="assets/m2med-case/problem-card.png" alt="The original event card"></figure>
+        <figure><img src="assets/m2med-case/problem-card.png" alt="The original event card" loading="lazy" decoding="async"></figure>
       </article>
       <article class="problem rise" style="--d:140ms">
         <h3>The interface didn't represent what actually happens at an event.</h3>
@@ -604,7 +612,7 @@
           <li>A speaker attends three events and uploads the same passport three times</li>
           <li>The design was crammed with no color hierarchy and spacing. Buttons were not distinguishable and had no accessibility accommodations</li>
         </ul>
-        <figure><img src="assets/m2med-case/problem-program.png" alt="The original program as a flat list"></figure>
+        <figure><img src="assets/m2med-case/problem-program.png" alt="The original program as a flat list" loading="lazy" decoding="async"></figure>
       </article>
       <article class="problem rise" style="--d:280ms">
         <h3>The end product had commercial rules the interface did not factor in.</h3>
@@ -614,7 +622,7 @@
           <li>Events have refund policies, but there's no refund handling.</li>
           <li>Events have capacity limits, but there's no waitlist.</li>
         </ul>
-        <figure><img src="assets/m2med-case/problem-dialog.png" alt="The original registration dialog"></figure>
+        <figure><img src="assets/m2med-case/problem-dialog.png" alt="The original registration dialog" loading="lazy" decoding="async"></figure>
       </article>
     </div>
   </div>
@@ -667,20 +675,21 @@
           <h4>Solution</h4><p>Three registration confirmations with itemised lines. Three cancellation states per refund outcome. A waitlist that states its terms on screen.</p>
         </div></div></div>
       </button>
+      <button class="did-more" type="button" data-more aria-label="Continue to The system"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v16M5 13l7 7 7-7"/></svg></button>
       </aside>
       <div class="track">
       <div class="stage" id="stage">
       <div class="stage-in" id="stageIn">
       <div class="set" data-step="0">
       <div class="shots">
-        <div class="phone-col"><img src="assets/m2med-case/d01-a.png" alt="Create your account, stepped with a segmented control"></div>
-        <div class="phone-col"><img src="assets/m2med-case/d01-b.png" alt="Choose your interests"></div>
+        <div class="phone-col"><img src="assets/m2med-case/d01-a.png" alt="Create your account, stepped with a segmented control" loading="lazy" decoding="async"></div>
+        <div class="phone-col"><img src="assets/m2med-case/d01-b.png" alt="Choose your interests" loading="lazy" decoding="async"></div>
       </div>
       </div>
       <div class="set" data-step="1">
       <div class="shots">
-        <div class="phone-col"><p class="stage-lab">Before</p><img src="assets/m2med-case/d02-before.png" alt="The original CME tracker"></div>
-        <div class="phone-col"><p class="stage-lab">After</p><img src="assets/m2med-case/d02-after.png" alt="The redesigned CME tracker with a settable goal"></div>
+        <div class="phone-col"><p class="stage-lab">Before</p><img src="assets/m2med-case/d02-before.png" alt="The original CME tracker" loading="lazy" decoding="async"></div>
+        <div class="phone-col"><p class="stage-lab">After</p><img src="assets/m2med-case/d02-after.png" alt="The redesigned CME tracker with a settable goal" loading="lazy" decoding="async"></div>
       </div>
       </div>
       <div class="set" data-step="2">
@@ -749,8 +758,8 @@
       </div>
       <div class="set" data-step="3">
       <div class="shots">
-        <div class="phone-col"><img src="assets/m2med-case/d04-a.png" alt="Speaker portal"></div>
-        <div class="phone-col"><img src="assets/m2med-case/d04-b.png" alt="My documents, the personal library"></div>
+        <div class="phone-col"><img src="assets/m2med-case/d04-a.png" alt="Speaker portal" loading="lazy" decoding="async"></div>
+        <div class="phone-col"><img src="assets/m2med-case/d04-b.png" alt="My documents, the personal library" loading="lazy" decoding="async"></div>
       </div>
       </div>
       <div class="set" data-step="4">
@@ -874,7 +883,7 @@
 
 <!-- ══ 5b · THE SCENE: every screen of the build, laid out together ══ -->
 <figure class="scene rise">
-  <img src="assets/m2med-case/scene.jpg" alt="The M2Med screens laid out together: events, itinerary, optional sessions, QR badge, documents, CME credits and the speaker portal">
+  <img src="assets/m2med-case/scene.jpg" alt="The M2Med screens laid out together: events, itinerary, optional sessions, QR badge, documents, CME credits and the speaker portal" loading="lazy" decoding="async">
 </figure>
 
 <!-- ══ 6 · OUTCOME ════════════════════════════════════════════════════ -->
@@ -1015,6 +1024,7 @@
     current = i;
     railItems.forEach(function (r, k) { r.classList.toggle('active', k === i); });
     segs.forEach(function (g, k) { g.classList.toggle('on', k === i); g.classList.toggle('out', k < i); });
+    pin.classList.toggle('at-end', i === N - 1);
   }
   function pickRow() {
     if (window.innerWidth <= 1000) { setStep(0); return; }
@@ -1034,7 +1044,7 @@
   function layoutRail() {
     var narrow = window.innerWidth <= 1000;
     if (narrow && !interleaved) { railItems.forEach(function (r, i) { segs[i].parentNode.insertBefore(r, segs[i]); }); interleaved = true; }
-    else if (!narrow && interleaved) { railItems.forEach(function (r) { rail.appendChild(r); }); interleaved = false; }
+    else if (!narrow && interleaved) { railItems.forEach(function (r) { rail.appendChild(r); }); var more = rail.querySelector('.did-more'); if (more) rail.appendChild(more); interleaved = false; }
     sizeTrack();
   }
   layoutRail();
@@ -1170,6 +1180,11 @@
   window.addEventListener('resize', function () { layoutRail(); pickRow(); paintHl(); checkStats(); kick(); }, { passive: true });
   window.addEventListener('load', function () { sizeTrack(); pickRow(); paintHl(); checkStats(); });
   pickRow(); paintHl(); checkStats(); kick();
+
+  /* the arrow under the money path carries on to The system */
+  [].forEach.call(document.querySelectorAll('[data-more]'), function (el) {
+    el.addEventListener('click', function () { var t = document.querySelector('.system'); if (t) goTo(t.getBoundingClientRect().top + window.scrollY - 24); });
+  });
 
   /* the footer glides back to the top */
   [].forEach.call(document.querySelectorAll('[data-top]'), function (el) {

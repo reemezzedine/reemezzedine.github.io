@@ -270,35 +270,40 @@
     font-family: var(--display); font-weight: 400; font-size: 40px; line-height: 60px;
     letter-spacing: 2px; text-transform: uppercase; white-space: nowrap;
   }
+  /* tighter than the board's 640/32: 520 wide, 20 between fields, centred in the page */
   .work-form {
-    width: 640px; max-width: calc(100% - 48px); margin: 10px auto 0;
-    display: flex; flex-direction: column; gap: 32px;
+    width: 520px; max-width: calc(100% - 48px); margin: auto;
+    display: flex; flex-direction: column; gap: 20px;
   }
-  .field { display: flex; flex-direction: column; gap: 16px; }
-  .field label { font-family: var(--body); font-size: 16px; font-weight: 600; line-height: 20px; color: #000; }
+  .field { display: flex; flex-direction: column; gap: 10px; }
+  .field label { font-family: var(--body); font-size: 15px; font-weight: 600; line-height: 20px; color: #000; }
   .field input, .field textarea {
-    font-family: var(--body); font-size: 16px; font-weight: 500; line-height: 20px; color: #000;
+    font-family: var(--body); font-size: 15px; font-weight: 500; line-height: 20px; color: #000;
     background: transparent; border: 0; outline: 0; border-radius: 0; width: 100%;
     -webkit-appearance: none; appearance: none;
   }
   .field input::placeholder, .field textarea::placeholder { color: #999; opacity: 1; }
   /* the 1px underline is black at 12%, 16 under the placeholder */
-  .field input { padding: 0 0 16px; border-bottom: 1px solid rgba(0, 0, 0, .12); transition: border-color .3s var(--ease); }
+  .field input { padding: 0 0 10px; border-bottom: 1px solid rgba(0, 0, 0, .12); transition: border-color .3s var(--ease); }
   .field input:focus { border-bottom-color: rgba(0, 0, 0, .6); }
   .field textarea {
-    height: 140px; padding: 20px; resize: none;
+    height: 104px; padding: 14px 16px; resize: none;
     border: 2px solid #fff; border-radius: 12px; transition: border-color .3s var(--ease);
   }
   .field textarea:focus { border-color: #000; }
   .work-submit {
     align-self: flex-start;
-    height: 44px; padding: 12px 24px; border: 0; border-radius: 100px; cursor: pointer;
-    background: #000; color: #fff; font-family: var(--body); font-size: 16px; font-weight: 600; line-height: 20px;
-    transition: transform .45s var(--spring);
+    height: 40px; padding: 10px 22px; border: 0; border-radius: 100px; cursor: pointer;
+    background: #000; color: #fff; font-family: var(--body); font-size: 15px; font-weight: 600; line-height: 20px;
+    transition: transform .45s var(--spring), background .3s var(--ease);
   }
   .work-submit:hover { transform: scale(1.04); }
+  .work-submit:disabled { cursor: default; transform: none; }
+  .work-form.sent .work-submit { background: var(--pink); }
+  .work-note { font-family: var(--body); font-size: 13px; line-height: 18px; color: #c0262f; display: none; }
+  .work-form.error .work-note { display: block; }
   .work-foot {
-    margin-top: auto; padding: 32px 32px 24px;   /* board: text bottom sits 24 above the edge */
+    margin-top: 0; padding: 32px 32px 24px;   /* board: text bottom sits 24 above the edge */
     font-family: var(--display); font-weight: 400; font-size: 25px; line-height: normal; color: #000;
   }
   /* the section is at least the board's 803, and never shorter than the screen */
@@ -372,12 +377,15 @@
      each card anchors its own origin below. */
   .laptop { left: 373px; top: 271px; width: 534px; height: 298px; object-fit: contain; }
   /* the deck's direction cues: beside each device, pointing the way the cards travel */
-  .deck-cue { width: 26px; height: 26px; color: var(--pink); }
-  .deck-cue svg { width: 100%; height: 100%; stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
-  .cue-left  { left: 388px; top: 385px; }
-  .cue-left svg  { animation: cueLeft 1.8s cubic-bezier(.45,0,.55,1) infinite; }
-  .cue-right { left: 936px; top: 407px; }
+  .deck-cue { width: 26px; height: 26px; color: var(--pink); background: none; border: 0; padding: 0; cursor: pointer; transition: transform .35s var(--spring); }
+  .deck-cue:hover { transform: scale(1.18); }
+  .deck-cue svg { width: 100%; height: 100%; stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; display: block; }
+  /* M2Med: bottom-right of the phone, pointing on to Samsung */
+  .cue-right { left: 866px; top: 556px; }
   .cue-right svg { animation: cueRight 1.8s cubic-bezier(.45,0,.55,1) infinite; }
+  /* Samsung: bottom-left of the laptop, pointing back to M2Med */
+  .cue-left  { left: 328px; top: 540px; }
+  .cue-left svg  { animation: cueLeft 1.8s cubic-bezier(.45,0,.55,1) infinite; }
   @keyframes cueLeft  { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(-6px); } }
   @keyframes cueRight { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(6px); } }
   @media (prefers-reduced-motion: reduce) { .scroll-cue svg, .deck-cue svg { animation: none; } }
@@ -513,7 +521,7 @@
 <!-- The portrait. Fixed, so it can travel from the hero into the nav and
      replace "About". Hover on her: a small swell and a slight tilt. -->
 <a class="portrait-morph" id="portraitMorph" href="#about" aria-label="About Reem">
-  <img src="assets/portrait.png" alt="Reem Ezzedine">
+  <img src="assets/portrait.png" alt="Reem Ezzedine" fetchpriority="high">
 </a>
 
 <!-- The white-stroke name. A body-level sibling of the portrait, NOT a child
@@ -550,16 +558,16 @@
 
       <!-- ── card 1 · M2Med ── -->
       <article class="card" data-i="0" id="cardM2med">
-        <img class="device phone" src="assets/m2med/phone.png" alt="M2Med app on an iPhone">
+        <img class="device phone" src="assets/m2med/phone.png" alt="M2Med app on an iPhone" loading="lazy" decoding="async">
         <div class="card-extras">
         <div class="tags stage1">
           <span class="tag">2026</span>
           <span class="tag">App Design</span>
         </div>
 
-        <img class="snip snip-session" src="assets/m2med/session-card.png" alt="Parallel session card with room picker">
-        <img class="snip snip-event"   src="assets/m2med/event-card.png"   alt="Event card showing CME credits">
-        <img class="snip snip-nav"     src="assets/m2med/bottom-nav.png"   alt="App bottom navigation">
+        <img class="snip snip-session" src="assets/m2med/session-card.png" alt="Parallel session card with room picker" loading="lazy" decoding="async">
+        <img class="snip snip-event"   src="assets/m2med/event-card.png"   alt="Event card showing CME credits" loading="lazy" decoding="async">
+        <img class="snip snip-nav"     src="assets/m2med/bottom-nav.png"   alt="App bottom navigation" loading="lazy" decoding="async">
 
         <p class="case-desc stage1">
           <b>M2med</b> is a <b>medical events app</b> for healthcare professionals, finding and
@@ -567,21 +575,21 @@
         </p>
 
         <a class="dive stage1" href="m2med-case.html">Dive in</a>
-        <span class="deck-cue cue-left stage1" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 12H4M11 5l-7 7 7 7"/></svg></span>
+        <button class="deck-cue cue-right stage1" type="button" data-card="1" aria-label="Next: Samsung"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16M13 5l7 7-7 7"/></svg></button>
         </div>
       </article>
 
       <!-- ── card 2 · Samsung. Shell only: cover photo and features to come. ── -->
       <article class="card" data-i="1" id="cardSamsung">
-        <img class="device laptop" src="assets/samsung/laptop-cover.png" alt="Samsung CRM work on a laptop">
+        <img class="device laptop" src="assets/samsung/laptop-cover.png" alt="Samsung CRM work on a laptop" loading="lazy" decoding="async">
         <div class="card-extras">
         <div class="tags stage1">
           <span class="tag">2026</span>
           <span class="tag">CRM Design</span>
         </div>
 
-        <img class="snip pill-spotify" src="assets/samsung/pill-spotify.svg" alt="Spotify Premium">
-        <img class="snip pill-strava"  src="assets/samsung/pill-strava.svg"  alt="Strava">
+        <img class="snip pill-spotify" src="assets/samsung/pill-spotify.svg" alt="Spotify Premium" loading="lazy" decoding="async">
+        <img class="snip pill-strava"  src="assets/samsung/pill-strava.svg"  alt="Strava" loading="lazy" decoding="async">
 
         <p class="case-desc sam-desc stage1">
           <b>Samsung CRM product design</b> across five markets and three languages,
@@ -589,7 +597,7 @@
         </p>
 
         <a class="dive stage1" href="samsung-case.html">Dive in</a>
-        <span class="deck-cue cue-right stage1" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 12h16M13 5l7 7-7 7"/></svg></span>
+        <button class="deck-cue cue-left stage1" type="button" data-card="0" aria-label="Back: M2Med"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12H4M11 5l-7 7 7 7"/></svg></button>
 
         <div class="soon-dot stage1" aria-hidden="true"></div>
         <p class="soon-label stage1">more coming soon!</p>
@@ -608,14 +616,14 @@
      a shell until Reem sends its board. -->
 <section class="page page-work" id="work-with-me">
   <div class="work-label"><h2>Work with me</h2></div>
-  <form class="work-form" id="workForm" novalidate>
+  <form class="work-form" id="workForm" action="https://formspree.io/f/xyeyaqod" method="POST">
     <div class="field">
       <label for="wfName">Name</label>
       <input id="wfName" name="name" type="text" placeholder="Jane Smith" autocomplete="name">
     </div>
     <div class="field">
       <label for="wfEmail">Email</label>
-      <input id="wfEmail" name="email" type="email" placeholder="jane@example.com" autocomplete="email">
+      <input id="wfEmail" name="email" type="email" placeholder="jane@example.com" autocomplete="email" required>
     </div>
     <div class="field">
       <label for="wfTitle">Message Title</label>
@@ -623,9 +631,10 @@
     </div>
     <div class="field">
       <label for="wfMsg">Message</label>
-      <textarea id="wfMsg" name="message" placeholder="Tell me about the project..."></textarea>
+      <textarea id="wfMsg" name="message" placeholder="Tell me about the project..." required></textarea>
     </div>
     <button class="work-submit" type="submit">Send me a message</button>
+    <p class="work-note">That didn’t go through. Please try again, or email reem.ezzedine36@gmail.com.</p>
   </form>
   <p class="work-foot">Reem Ezzedine 2026 portfolio</p>
 </section>
@@ -879,6 +888,15 @@
       else scrollTo({ top: y, behavior: 'smooth' });
     }
 
+    // the arrows beside the devices carry you to the other card
+    function goToCard(i) {
+      var y = wrap.offsetTop + LEAD + (i / SEGS) * (SEGS * TRAVEL);
+      if (lenis) lenis.scrollTo(y, { duration: 0.9 }); else scrollTo({ top: y, behavior: 'smooth' });
+    }
+    [].forEach.call(document.querySelectorAll('[data-card]'), function (b) {
+      b.addEventListener('click', function () { goToCard(+b.getAttribute('data-card')); });
+    });
+
     var raf = 0;
     function onScroll() {
       if (!raf) raf = requestAnimationFrame(function () { raf = 0; paint(); });
@@ -912,6 +930,14 @@
     addEventListener('scroll', function () { requestAnimationFrame(navPill); }, { passive: true });
     addEventListener('resize', navPill);
     navPill();
+    // a case study's Contact button links here with #work-with-me: land on the form
+    if (work && location.hash === '#work-with-me') {
+      requestAnimationFrame(function () {
+        fit();
+        if (lenis) lenis.scrollTo(work.offsetTop, { immediate: true }); else scrollTo(0, work.offsetTop);
+        paint(); navPill();
+      });
+    }
 
     // Playground: the "coming soon" oval follows the cursor while it is on the word
     var play = document.getElementById('navPlay'), soon = document.getElementById('soon');
@@ -933,17 +959,31 @@
       else scrollTo({ top: y, behavior: 'smooth' });
     });
 
-    // The form opens a ready-addressed email with what was typed
+    // The form posts to Formspree in place; the button becomes the confirmation
     var form = document.getElementById('workForm');
     if (form) form.addEventListener('submit', function (e) {
       e.preventDefault();
       var v = function (id) { return (document.getElementById(id).value || '').trim(); };
-      var subject = v('wfTitle') || 'Let\'s work together';
-      var body = (v('wfName') ? v('wfName') + '\n' : '') + (v('wfEmail') ? v('wfEmail') + '\n\n' : '\n') + v('wfMsg');
-      location.href = 'mailto:reem.ezzedine36@gmail.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+      var btn = form.querySelector('.work-submit');
+      var title = v('wfTitle') || 'Let\'s work together';
+      form.classList.remove('error');
+      btn.disabled = true; btn.textContent = 'Sending…';
+      fetch(form.action, {
+        method: 'POST',
+        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: v('wfName'), email: v('wfEmail'), title: title, message: v('wfMsg'), _subject: 'Portfolio: ' + title })
+      }).then(function (r) {
+        if (!r.ok) throw new Error(r.status);
+        form.classList.add('sent');
+        btn.textContent = 'Sent — I’ll be in touch soon';
+        form.reset();
+      }).catch(function () {
+        form.classList.add('error');
+        btn.disabled = false; btn.textContent = 'Send me a message';
+      });
     });
 
-    window.__deck = { progress: progress, index: index, cards: cards,
+    window.__deck = { progress: progress, index: index, cards: cards, goTo: goToCard,
                       PITCH: PITCH, SEGS: SEGS, fitScale: function () { return k; } };
   })();
 </script>
