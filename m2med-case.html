@@ -75,6 +75,7 @@
   .top { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; align-items: center; justify-content: space-between;
          padding: 22px 32px 0; pointer-events: none; opacity: 0; transform: translateY(-10px); animation: topIn .8s var(--ios) .12s forwards; }
   @keyframes topIn { to { opacity: 1; transform: none; } }
+  html.loading .top { animation-play-state: paused; }   /* the header waits for the loading screen to lift */
   .top > * { pointer-events: auto; }
   .head { width: 72px; height: 97px; display: block; transform-origin: center; transition: transform .55s cubic-bezier(.34, 1.42, .64, 1); }
   .head img { width: 100%; height: 100%; object-fit: contain; display: block; }
@@ -528,9 +529,60 @@
     .phone-gate a { color: #ff2d55; font-weight: 600; text-decoration: none; }
     .phone-gate .anyway { margin-top: 14px; font-size: 13px; color: #646569; text-decoration: underline; text-underline-offset: 3px; background: none; border: 0; font: inherit; font-size: 13px; cursor: pointer; }
   }
+
+  /* ── loading screen: three sheets, the middle one hot pink, until the page's images are in ── */
+  .loading {
+    position: fixed; inset: 0; z-index: 10000; background: #fff;
+    display: flex; align-items: center; justify-content: center;
+    transition: opacity .45s ease, visibility 0s linear .45s;
+  }
+  html.ready .loading { opacity: 0; visibility: hidden; pointer-events: none; }
+  .loader {
+    --color-1: #ff2d55;                 /* the middle sheet */
+    --color-2: #ffd9e6;                 /* the bottom sheet, light pink so it shows on white */
+    --color-3: rgba(255, 255, 255, .7); /* the top sheet */
+    --size: 1px;
+    position: relative;
+    width: calc(48 * var(--size)); height: calc(48 * var(--size));
+    background: var(--color-1);
+    transform: rotateX(65deg) rotate(45deg);
+    color: var(--color-2);
+    animation: layers1 1s linear infinite alternate;
+  }
+  .loader::after {
+    content: ''; position: absolute; inset: 0; background: var(--color-3);
+    animation: layerTr 1s linear infinite alternate;
+  }
+  @keyframes layers1 {
+    0% { box-shadow: 0 0 0 0; }
+    90%, 100% { box-shadow: calc(20 * var(--size)) calc(20 * var(--size)) 0 calc(-4 * var(--size)); }
+  }
+  @keyframes layerTr {
+    0% { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(calc(-25 * var(--size)), calc(-25 * var(--size))) scale(1); }
+  }
 </style>
 </head>
 <body>
+
+<!-- Loading screen: lifts once the page's images are in (see the script right after it) -->
+<div class="loading" id="loading" aria-hidden="true"><div class="loader"></div></div>
+<script>
+(function () {
+  var root = document.documentElement; root.classList.add('loading');
+  var t0 = Date.now(), done = false;
+  function ready() {
+    if (done) return; done = true;
+    var wait = Math.max(0, 600 - (Date.now() - t0));       /* never a flash: show it for at least 600ms */
+    setTimeout(function () {
+      root.classList.remove('loading'); root.classList.add('ready');
+      window.dispatchEvent(new Event('siteready'));
+    }, wait);
+  }
+  window.addEventListener('load', ready);
+  setTimeout(ready, 6000);                                  /* and never a hang: 6s tops */
+})();
+</script>
 
 <!-- Phones get a note instead of a broken layout; "Show it anyway" lets them through -->
 <div class="phone-gate" id="phoneGate" role="dialog" aria-label="Best viewed on a computer">
@@ -941,10 +993,13 @@
 
   /* ── 1 · hero: logo + phone rise, then the snippets bubble ── */
   var hero = document.getElementById('hero');
-  requestAnimationFrame(function () {
+  function intro() {
     hero.classList.add('in1');
     setTimeout(function () { hero.classList.add('in2'); }, reduce ? 0 : 420);
-  });
+  }
+  /* the loading screen lifts first; the hero rises once it has */
+  if (document.documentElement.classList.contains('ready')) requestAnimationFrame(intro);
+  else window.addEventListener('siteready', function () { requestAnimationFrame(intro); }, { once: true });
 
   /* ── info chips: bubble in on the first real scroll, 85ms apart ── */
   var pills = [].slice.call(document.querySelectorAll('.pill'));
