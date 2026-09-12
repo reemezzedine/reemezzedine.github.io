@@ -263,8 +263,9 @@
     background: #e3f2ff; color: #000;
     display: flex; flex-direction: column;
   }
+  /* the title sits under the nav's row, not on it (nav is 124 tall) */
   .work-label {
-    height: 108px; padding: 24px 0; display: flex; align-items: center; justify-content: center;
+    padding: 128px 0 8px; display: flex; align-items: center; justify-content: center;
   }
   .work-label h2 {
     font-family: var(--display); font-weight: 400; font-size: 40px; line-height: 60px;
@@ -931,12 +932,16 @@
     addEventListener('resize', navPill);
     navPill();
     // a case study's Contact button links here with #work-with-me: land on the form
+    // The browser's own jump to the anchor happens before the deck has its
+    // height, so it lands short; land again after load, once it has settled.
     if (work && location.hash === '#work-with-me') {
-      requestAnimationFrame(function () {
+      var land = function () {
         fit();
         if (lenis) lenis.scrollTo(work.offsetTop, { immediate: true }); else scrollTo(0, work.offsetTop);
-        paint(); navPill();
-      });
+        paint(); requestAnimationFrame(navPill); setTimeout(navPill, 120);
+      };
+      land();
+      addEventListener('load', function () { land(); setTimeout(land, 80); setTimeout(land, 300); });
     }
 
     // Playground: the "coming soon" oval follows the cursor while it is on the word
