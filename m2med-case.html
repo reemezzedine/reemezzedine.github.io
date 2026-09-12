@@ -254,13 +254,13 @@
      so the title never hangs over anything.
      Figma: the heading sits on the 97px gutter, the decision rows on a 35px one. */
   .did-track { position: relative; }
-  .did-pin { position: sticky; top: 104px; }
-  .did-head { padding-bottom: 22px; }
-  .did-grid { margin: 14px calc(35px - clamp(20px, 7.6vw, 97px)) 0; display: grid; grid-template-columns: 401px minmax(0, 1fr); gap: 37px; align-items: start; }
+  .did-pin { position: sticky; top: 88px; }
+  .did-head { padding-bottom: 14px; }
+  .did-grid { margin: 8px calc(35px - clamp(20px, 7.6vw, 97px)) 0; display: grid; grid-template-columns: 401px minmax(0, 1fr); gap: 37px; align-items: start; }
   .rail { display: flex; flex-direction: column; gap: 14px; }
   .track { min-width: 0; }
   .stage { min-width: 0; }
-  .stage-in { display: grid; justify-items: center; }
+  .stage-in { display: grid; justify-items: center; align-items: start; }   /* each set keeps its own height */
   .set { grid-area: 1 / 1; max-width: 100%; opacity: 0; transform: translateY(18px); pointer-events: none;
          transition: opacity .45s var(--ios), transform .6s var(--ios); }
   .set.on { opacity: 1; transform: none; pointer-events: auto; }
@@ -270,7 +270,8 @@
     .rail { display: none; }                      /* JS moves each title above its own images */
     .did-track { height: auto !important; }
     .did-pin { position: static; }
-    .stage-in { display: flex; flex-direction: column; gap: 72px; zoom: 1 !important; }
+    .stage-in { display: flex; flex-direction: column; gap: 72px; }
+    .set { zoom: 1 !important; }
     .stage .rail-item { margin-bottom: 20px; padding: 24px; }
     .stage .rail-item .rail-body { grid-template-rows: 1fr; opacity: 1; }
     .set, .set.out { opacity: 1; transform: none; pointer-events: auto; }   /* phones: every step is laid out in full */
@@ -361,8 +362,8 @@
      it display:block with a 2px top margin, so the tick sat off-centre */
   .modal .line span.cb { width: 22px; height: 22px; margin: 0; border-radius: 6px; border: 2px solid var(--line); display: grid; place-items: center; flex: none; transition: background .2s, border-color .2s; }
   .modal .line span.cb svg { display: block; width: 16px; height: 16px; stroke: #fff; fill: none; stroke-width: 3.2; stroke-linecap: round; stroke-linejoin: round; opacity: 0; transition: opacity .15s; }
-  .line[aria-checked="true"] .cb { background: var(--blue); border-color: var(--blue); }
-  .line[aria-checked="true"] .cb svg { opacity: 1; }
+  .modal .line[aria-checked="true"] span.cb { background: var(--blue); border-color: var(--blue); }
+  .modal .line[aria-checked="true"] span.cb svg { opacity: 1; }
   .modal .line[role="checkbox"] { cursor: pointer; }
   /* the total sits in a MINT box, not the grey card - the part that had drifted */
   .modal .total { margin-top: 16px; background: #e7fff3; border-radius: 12px; padding: 16px; display: flex; align-items: center; justify-content: space-between; font-size: 14px; font-weight: 400; color: var(--ink2); }
@@ -949,15 +950,19 @@
   function stickTop() { return parseFloat(getComputedStyle(pin).top) * zoomOf(); }   /* screen px */
   var stageIn = document.getElementById('stageIn');
   function sizeTrack() {
-    if (window.innerWidth <= 1000) { track.style.height = ''; stageIn.style.zoom = ''; return; }
-    stageIn.style.zoom = '';
-    /* the pinned block must fit under its top line: shrink the image sets
-       (never the rail or the head) until both its height and width do */
+    if (window.innerWidth <= 1000) { track.style.height = ''; segs.forEach(function (g) { g.style.zoom = ''; }); return; }
+    segs.forEach(function (g) { g.style.zoom = ''; });
+    /* the pinned block must fit under its top line. Each image set is fitted
+       on its own, so the phones keep their size and only a set that is taller
+       or wider than the room it has shrinks. */
     var pinH = pin.getBoundingClientRect().height, stageH = stage.getBoundingClientRect().height;
     var availH = window.innerHeight - stickTop() - 24 - (pinH - stageH);
-    var availW = stage.getBoundingClientRect().width, natW = stageIn.scrollWidth * zoomOf();
-    var z = Math.min(1, availH / stageH, availW / natW);
-    if (z < 1) stageIn.style.zoom = Math.max(0.6, z).toFixed(3);
+    var availW = stage.getBoundingClientRect().width;
+    segs.forEach(function (g) {
+      var h = g.getBoundingClientRect().height, w = g.scrollWidth * zoomOf();
+      var z = Math.min(1, availH / h, availW / w);
+      if (z < 1) g.style.zoom = Math.max(0.6, z).toFixed(3);
+    });
     track.style.height = Math.round((N * window.innerHeight * BAND + pin.getBoundingClientRect().height) / zoomOf()) + 'px';
   }
   function setStep(i) {
