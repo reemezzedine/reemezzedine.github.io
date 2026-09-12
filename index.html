@@ -150,7 +150,12 @@
   .footprint {
     color: var(--pink); font-weight: 600; cursor: pointer;
     position: relative; display: inline-block;
+    /* a soft underline, the cue that there is something to hover */
+    text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 5px;
+    text-decoration-color: rgba(255, 45, 85, .35);
+    transition: text-decoration-color .3s var(--ease);
   }
+  .footprint:hover, body.cards .footprint { text-decoration-color: var(--pink); }
 
   /* ── postcards: only while the pointer is on "global footprint" ── */
   .postcard {
@@ -565,17 +570,11 @@
   if (!trigger) return;
 
   /* ── postcards ────────────────────────────────────────────────────
-     Only while the pointer is on "global footprint." They deal out one
-     after another on enter and pack back in reverse on leave. Not latched:
-     moving away puts them away. A short grace stops a one-pixel slip off
-     the phrase from collapsing them mid-deal. */
-  var away = 0;
-  function show() { clearTimeout(away); body.classList.add('cards'); }
-  function hide() { clearTimeout(away); away = setTimeout(function () { body.classList.remove('cards'); }, 160); }
+     The first hover on "global footprint." deals them out one after
+     another, and they stay: latched, nothing packs them back in. */
+  function show() { body.classList.add('cards'); }
   trigger.addEventListener('mouseenter', show);
   trigger.addEventListener('focus', show);
-  trigger.addEventListener('mouseleave', hide);
-  trigger.addEventListener('blur', hide);
 })();
 
   /* ── portrait morph ──────────────────────────────────────────────────

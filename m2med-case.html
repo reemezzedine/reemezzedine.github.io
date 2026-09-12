@@ -360,8 +360,10 @@
   .modal .line span { display: block; font-size: 12px; color: var(--ink3); margin-top: 2px; }
   .modal .line .p { font-size: 14px; font-weight: 800; white-space: nowrap; }
   .modal .line .p.free { color: #00b971; }
-  .cb { width: 22px; height: 22px; border-radius: 6px; border: 2px solid var(--line); display: grid; place-items: center; flex: none; transition: background .2s, border-color .2s; }
-  .cb svg { width: 14px; height: 14px; stroke: #fff; fill: none; stroke-width: 3; opacity: 0; transition: opacity .15s; }
+  /* .modal .line span (the description rule) also matched this box and made
+     it display:block with a 2px top margin, so the tick sat off-centre */
+  .modal .line span.cb { width: 22px; height: 22px; margin: 0; border-radius: 6px; border: 2px solid var(--line); display: grid; place-items: center; flex: none; transition: background .2s, border-color .2s; }
+  .modal .line span.cb svg { display: block; width: 16px; height: 16px; stroke: #fff; fill: none; stroke-width: 3.2; stroke-linecap: round; stroke-linejoin: round; opacity: 0; transition: opacity .15s; }
   .line[aria-checked="true"] .cb { background: var(--blue); border-color: var(--blue); }
   .line[aria-checked="true"] .cb svg { opacity: 1; }
   .modal .line[role="checkbox"] { cursor: pointer; }
