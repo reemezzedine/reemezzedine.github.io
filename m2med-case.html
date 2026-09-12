@@ -4,6 +4,22 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>M2Med — Founding Design · Reem Ezzedine</title>
+<meta name="description" content="How I joined a medical events app as its founding designer: registration, CME credit tracking, parallel sessions, speaker documents and payments, plus the design system the developer built against.">
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<!-- link previews: WhatsApp, LinkedIn, iMessage, Slack, X -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Reem Ezzedine">
+<meta property="og:title" content="M2Med — Founding Design · Reem Ezzedine">
+<meta property="og:description" content="How I joined a medical events app as its founding designer: registration, CME credit tracking, parallel sessions, speaker documents and payments, plus the design system the developer built against.">
+<meta property="og:url" content="https://reemezzedine.com/m2med-case.html">
+<meta property="og:image" content="https://reemezzedine.com/assets/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="M2Med — Founding Design · Reem Ezzedine">
+<meta name="twitter:description" content="How I joined a medical events app as its founding designer: registration, CME credit tracking, parallel sessions, speaker documents and payments, plus the design system the developer built against.">
+<meta name="twitter:image" content="https://reemezzedine.com/assets/og.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inclusive+Sans:wght@600&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -486,9 +502,37 @@
     .set { transition: none; }
     *, *::before, *::after { transition-duration: 0s !important; animation: none !important; }
   }
+
+  /* ── phones: this is a big-screen portfolio, say so instead of breaking ── */
+  .phone-gate { display: none; }
+  @media (max-width: 767px), ((hover: none) and (pointer: coarse) and (max-width: 1024px)) {
+    .phone-gate {
+      position: fixed; inset: 0; z-index: 9999; background: #fff; color: #111;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+      padding: 32px 28px; gap: 18px; font-family: "Montserrat", -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    .phone-gate[hidden] { display: none; }
+    body:has(.phone-gate:not([hidden])) { overflow: hidden; }
+    .phone-gate img { width: 96px; height: 96px; border-radius: 50%; }
+    .phone-gate h2 { font-size: 22px; line-height: 28px; font-weight: 700; letter-spacing: -.3px; margin-top: 6px; }
+    .phone-gate p { font-size: 15px; line-height: 23px; color: #48494b; max-width: 320px; }
+    .phone-gate p b { color: #111; font-weight: 600; }
+    .phone-gate a { color: #ff2d55; font-weight: 600; text-decoration: none; }
+    .phone-gate .anyway { margin-top: 14px; font-size: 13px; color: #646569; text-decoration: underline; text-underline-offset: 3px; background: none; border: 0; font: inherit; font-size: 13px; cursor: pointer; }
+  }
 </style>
 </head>
 <body>
+
+<!-- Phones get a note instead of a broken layout; "Show it anyway" lets them through -->
+<div class="phone-gate" id="phoneGate" role="dialog" aria-label="Best viewed on a computer">
+  <img src="assets/apple-touch-icon.png" alt="">
+  <h2>Hi, I’m Reem.</h2>
+  <p>This portfolio is built for a big screen. Open <b>reemezzedine.com</b> on a computer to see the work properly.</p>
+  <p>Or say hello: <a href="mailto:reem.ezzedine36@gmail.com">reem.ezzedine36@gmail.com</a></p>
+  <button class="anyway" type="button" onclick="document.getElementById('phoneGate').hidden=true">Show it anyway</button>
+</div>
+
 
 <header class="top">
   <a class="head" href="index.html" aria-label="Reem Ezzedine, home"><img src="assets/portrait.png" alt="Reem Ezzedine"></a>
