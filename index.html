@@ -80,14 +80,16 @@
      for as long as it is over the word */
   .soon {
     position: fixed; left: 0; top: 0; z-index: 300; pointer-events: none;
-    height: 32px; padding: 0 16px; border-radius: 100px;
-    display: inline-flex; align-items: center; white-space: nowrap;
-    background: #ffd9e6; color: var(--pink);
+    display: inline-block; white-space: nowrap;
+    color: var(--pink);
     font-family: var(--body); font-size: 13px; font-weight: 600; letter-spacing: -0.2px;
     opacity: 0; transform: translate(-50%, -50%) scale(.9);
     transition: opacity .18s var(--ease), transform .25s var(--spring);
   }
   .soon.show { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  /* Playground is greyed a touch, since it is not open yet */
+  #navPlay { opacity: .45; }
+  #navPlay:hover { opacity: .45; }
 
   /* when the portrait has docked it IS the About link, so the pill text goes */
   body.docked .nav-about { color: transparent; background: transparent; }
