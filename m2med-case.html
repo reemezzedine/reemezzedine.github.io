@@ -595,7 +595,11 @@
     }, wait);
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', track); else track();
-  window.addEventListener('load', ready);
+  window.addEventListener('load', function () {
+    /* downloaded is not painted: wait until the pictures are decoded too */
+    var imgs = [].filter.call(document.images, function (i) { return i.loading !== 'lazy' && i.decode; });
+    Promise.all(imgs.map(function (i) { return i.decode().catch(function () {}); })).then(ready, ready);
+  });
   setTimeout(ready, 6000);                                  /* and never a hang: 6s tops */
 })();
 </script>

@@ -560,7 +560,11 @@
     }, wait);
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', track); else track();
-  window.addEventListener('load', ready);
+  window.addEventListener('load', function () {
+    /* downloaded is not painted: wait until the pictures are decoded too */
+    var imgs = [].filter.call(document.images, function (i) { return i.loading !== 'lazy' && i.decode; });
+    Promise.all(imgs.map(function (i) { return i.decode().catch(function () {}); })).then(ready, ready);
+  });
   setTimeout(ready, 6000);                                  /* and never a hang: 6s tops */
 })();
 </script>
@@ -714,6 +718,10 @@
      the portrait morph all keep working. This layer is where the friction
      comes from, not from any per-element easing. */
   (function () {
+    /* the browser must not restore an old scroll position halfway through
+       loading - the hero's fixed layers are measured then, and came out
+       hundreds of pixels off. The page opens at the top. */
+    if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     if (typeof Lenis === 'undefined') return;
     var lenis = new Lenis({
@@ -841,6 +849,12 @@
     // (webfont swap, late images, a reflow) has to trigger a repaint, or the
     // portrait sits at a stale position until the next scroll.
     addEventListener('load', function () { placeStroke(); onScroll(); });
+    addEventListener('siteready', function () {
+      placeStroke(); paint();
+      setTimeout(function () { placeStroke(); paint(); }, 150);
+      setTimeout(function () { placeStroke(); paint(); }, 600);
+    });
+    addEventListener('scroll', placeStroke, { passive: true });   /* cheap, and self-heals any stale placement */
     addEventListener('resize', placeStroke);
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { placeStroke(); paint(); });
     placeStroke();
@@ -998,6 +1012,8 @@
     addEventListener('scroll', function () { requestAnimationFrame(navPill); }, { passive: true });
     addEventListener('resize', navPill);
     navPill();
+    // once the loading screen lifts the layout is final: settle the deck and the pill
+    addEventListener('siteready', function () { fit(); paint(); navPill(); setTimeout(function () { paint(); navPill(); }, 150); });
     // a case study's Contact button links here with #work-with-me: land on the form
     // The browser's own jump to the anchor happens before the deck has its
     // height, so it lands short; land again after load, once it has settled.
