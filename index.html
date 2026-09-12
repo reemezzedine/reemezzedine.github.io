@@ -178,6 +178,15 @@
     font-size: 30px; line-height: 37px; font-weight: 400; letter-spacing: -.32px;
     text-align: center; z-index: 3;
   }
+  /* a small pink arrow under the tagline: there is more below */
+  .scroll-cue {
+    left: 628px; top: 664px; width: 24px; height: 24px; z-index: 3;
+    color: var(--pink); display: block;
+  }
+  .scroll-cue svg { width: 100%; height: 100%; stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round;
+                    animation: cueDown 1.8s cubic-bezier(.45,0,.55,1) infinite; }
+  @keyframes cueDown { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(6px); } }
+
   .footprint {
     color: var(--pink); font-weight: 600; cursor: pointer;
     position: relative; display: inline-block;
@@ -362,6 +371,17 @@
      (640, 420) - a different line from the phone's (644.5, 398), which is why
      each card anchors its own origin below. */
   .laptop { left: 373px; top: 271px; width: 534px; height: 298px; object-fit: contain; }
+  /* the deck's direction cues: beside each device, pointing the way the cards travel */
+  .deck-cue { width: 26px; height: 26px; color: var(--pink); }
+  .deck-cue svg { width: 100%; height: 100%; stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+  .cue-left  { left: 388px; top: 385px; }
+  .cue-left svg  { animation: cueLeft 1.8s cubic-bezier(.45,0,.55,1) infinite; }
+  .cue-right { left: 936px; top: 407px; }
+  .cue-right svg { animation: cueRight 1.8s cubic-bezier(.45,0,.55,1) infinite; }
+  @keyframes cueLeft  { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(-6px); } }
+  @keyframes cueRight { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(6px); } }
+  @media (prefers-reduced-motion: reduce) { .scroll-cue svg, .deck-cue svg { animation: none; } }
+
   .pill-spotify { left: 356px; top: 308px; width: 173px; height: 66px; }
   .pill-strava  { left: 744px; top: 250px; width: 163px; height: 65px; }
   /* a live loader: a pink quarter-arc on a pale ring, turning */
@@ -515,6 +535,7 @@
       <span class="footprint" id="footprint" tabindex="0"
             aria-label="Places I have lived and worked">global footprint.</span>
     </p>
+    <a class="scroll-cue" href="#case-studies" aria-label="Scroll down to the case studies"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v16M5 13l7 7 7-7"/></svg></a>
 
     <figure class="postcard pc-usa"><img src="assets/postcards/usa.png" alt="USA, 1 year"></figure>
     <figure class="postcard pc-zambia"><img src="assets/postcards/zambia.png" alt="Zambia, 16 years"></figure>
@@ -546,6 +567,7 @@
         </p>
 
         <a class="dive stage1" href="m2med-case.html">Dive in</a>
+        <span class="deck-cue cue-left stage1" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 12H4M11 5l-7 7 7 7"/></svg></span>
         </div>
       </article>
 
@@ -567,6 +589,7 @@
         </p>
 
         <a class="dive stage1" href="samsung-case.html">Dive in</a>
+        <span class="deck-cue cue-right stage1" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 12h16M13 5l7 7-7 7"/></svg></span>
 
         <div class="soon-dot stage1" aria-hidden="true"></div>
         <p class="soon-label stage1">more coming soon!</p>
