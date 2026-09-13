@@ -530,71 +530,71 @@
     .phone-gate .anyway { margin-top: 14px; font-size: 13px; color: #646569; text-decoration: underline; text-underline-offset: 3px; background: none; border: 0; font: inherit; font-size: 13px; cursor: pointer; }
   }
 
-  /* ── loading screen: a hot-pink drop that fills as the page's images arrive ── */
+  /* ── loading screen: a pink bar that stretches and snaps, "loading" riding along (Uiverse, alexruix) ── */
   .loading {
     position: fixed; inset: 0; z-index: 10000; background: #fff;
     display: flex; align-items: center; justify-content: center;
     transition: opacity .45s ease, visibility 0s linear .45s;
   }
   html.ready .loading { opacity: 0; visibility: hidden; pointer-events: none; }
-  .loader {
-    --color-1: #ff2d55;                  /* the liquid */
-    --color-2: rgba(0, 0, 0, .5);
-    --color-3: rgba(0, 0, 0, .15);
-    --color-4: #fff;
-    --color-5: rgba(255, 255, 255, .4);
-    --size: 1px;
-    --level: 8%;                         /* how full: set by script as images land */
-    width: calc(150 * var(--size)); height: calc(150 * var(--size));
-    background-color: var(--color-1);
-    border-radius: 50%; position: relative; overflow: hidden;
-    box-shadow: 0 0 calc(30 * var(--size)) calc(4 * var(--size)) var(--color-2) inset,
-                0 calc(5 * var(--size)) calc(12 * var(--size)) var(--color-3);
+  .loader { width: 80px; height: 50px; position: relative; }
+  .loader-text {
+    position: absolute; top: 0; padding: 0; margin: 0;
+    color: #ff8fae; font-family: "Montserrat", -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: .8rem; font-weight: 500; letter-spacing: 1px;
+    animation: text_713 3.5s ease both infinite;
   }
-  /* the two white shapes are the air above the liquid: they sit lower when
-     the drop is empty and slide up out of the circle as it fills */
-  .loader::before, .loader::after {
-    content: ''; position: absolute; width: 100%; height: 100%;
-    border-radius: 45%; top: calc(-1 * var(--level));
-    background-color: var(--color-4);
-    animation: wave 5s linear infinite;
-    transition: top .6s cubic-bezier(.22, 1, .36, 1);
+  .load {
+    background-color: #ff2d55; border-radius: 50px; display: block;
+    height: 16px; width: 16px; bottom: 0; position: absolute;
+    transform: translateX(64px);
+    animation: loading_713 3.5s ease both infinite;
   }
-  .loader::before { border-radius: 30%; background: var(--color-5); }
-  @keyframes wave { 0% { transform: rotate(0); } 100% { transform: rotate(360deg); } }
+  .load::before {
+    position: absolute; content: ""; width: 100%; height: 100%;
+    background-color: #ffb3c7; border-radius: inherit;
+    animation: loading2_713 3.5s ease both infinite;
+  }
+  @keyframes text_713 {
+    0%   { letter-spacing: 1px; transform: translateX(0px); }
+    40%  { letter-spacing: 2px; transform: translateX(26px); }
+    80%  { letter-spacing: 1px; transform: translateX(32px); }
+    90%  { letter-spacing: 2px; transform: translateX(0px); }
+    100% { letter-spacing: 1px; transform: translateX(0px); }
+  }
+  @keyframes loading_713 {
+    0%   { width: 16px; transform: translateX(0px); }
+    40%  { width: 100%; transform: translateX(0px); }
+    80%  { width: 16px; transform: translateX(64px); }
+    90%  { width: 100%; transform: translateX(0px); }
+    100% { width: 16px; transform: translateX(0px); }
+  }
+  @keyframes loading2_713 {
+    0%   { transform: translateX(0px); width: 16px; }
+    40%  { transform: translateX(0%); width: 80%; }
+    80%  { width: 100%; transform: translateX(0px); }
+    90%  { width: 80%; transform: translateX(15px); }
+    100% { transform: translateX(0px); width: 16px; }
+  }
   }
 </style>
 </head>
 <body>
 
 <!-- Loading screen: lifts once the page's images are in (see the script right after it) -->
-<div class="loading" id="loading" aria-hidden="true"><div class="loader"></div></div>
+<div class="loading" id="loading" aria-hidden="true"><div class="loader"><p class="loader-text">loading</p><span class="load"></span></div></div>
 <script>
 (function () {
   var root = document.documentElement; root.classList.add('loading');
   var t0 = Date.now(), done = false;
-  var loader = document.querySelector('.loader');
-  function level(p) { if (loader) loader.style.setProperty('--level', Math.round(p * 100) + '%'); }
-  /* the drop fills with the page's images: each one that lands lifts the level */
-  function track() {
-    var imgs = [].filter.call(document.images, function (i) { return i.loading !== 'lazy'; });
-    var n = imgs.length, k = 0;
-    function bump() { k++; level(0.08 + 0.9 * (k / Math.max(1, n))); }
-    imgs.forEach(function (i) {
-      if (i.complete) bump();
-      else { i.addEventListener('load', bump, { once: true }); i.addEventListener('error', bump, { once: true }); }
-    });
-  }
   function ready() {
     if (done) return; done = true;
-    level(1);
-    var wait = Math.max(450, 900 - (Date.now() - t0));      /* let it reach the brim, and never flash */
+    var wait = Math.max(0, 700 - (Date.now() - t0));       /* never a flash: on screen for at least 700ms */
     setTimeout(function () {
       root.classList.remove('loading'); root.classList.add('ready');
       window.dispatchEvent(new Event('siteready'));
     }, wait);
   }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', track); else track();
   window.addEventListener('load', function () {
     /* downloaded is not painted: wait until the pictures are decoded too */
     var imgs = [].filter.call(document.images, function (i) { return i.loading !== 'lazy' && i.decode; });
