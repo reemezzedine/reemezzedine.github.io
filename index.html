@@ -22,7 +22,7 @@
 <meta name="twitter:image" content="https://reemezzedine.com/assets/og.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inclusive+Sans:wght@600&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   @font-face {
     font-family: "Sans Sara";
@@ -115,7 +115,7 @@
     width: 99px; height: 39px; border-radius: 100px;
     display: grid; place-items: center;
     background: #000; color: #fff; text-decoration: none;
-    font-family: "Inclusive Sans", var(--body);
+    font-family: var(--body);
     font-size: 16px; font-weight: 600; letter-spacing: -0.32px;
     transition: transform .45s var(--spring);
   }
@@ -339,7 +339,7 @@
     transform-origin: 644.5px 398px;   /* the phone's centre */
   }
   #cardSamsung { transform-origin: 640px 420px; }   /* the laptop's centre */
-  #cardSamsung .case-desc { top: 635px; left: 372px; }
+  #cardSamsung .case-desc { top: 633px; left: 330px; }
   #cardSamsung .dive      { top: 692px; left: 529px; }
   .card > *, .card-extras > * { position: absolute; }
   .card-extras { position: absolute; inset: 0; }
@@ -363,9 +363,9 @@
   .tags { left: 563px; top: 160px; display: flex; gap: 10px; }
   .tag {
     display: inline-flex; align-items: center; justify-content: center;
-    width: 71px; height: 19px; border-radius: 100px; background: #000;
-    color: #fff; font-family: "Inclusive Sans", var(--body);
-    font-size: 10px; font-weight: 600; letter-spacing: -.32px;
+    min-width: 71px; padding: 0 11px; height: 21px; border-radius: 100px; background: #000;
+    color: #fff; font-family: var(--body);
+    font-size: 11px; font-weight: 600; letter-spacing: -.2px;
   }
 
   .phone  { left: 443.5px; top: 197px; width: 402px; height: 402px; }
@@ -406,7 +406,7 @@
   @media (prefers-reduced-motion: reduce) { .soon-dot { animation: none; } }
   .soon-label {
     left: 1102px; top: 452px; width: 109px;
-    font-family: Inter, var(--body); font-size: 12px; line-height: 16px;
+    font-family: var(--body); font-size: 12px; line-height: 16px;
     font-weight: 400; color: #000; text-align: center;
   }
 
@@ -421,8 +421,8 @@
   .snip-nav     { left: 673px; top: 423px; width: 177px; height: 51px;  }
 
   .case-desc {
-    left: 381px; top: 611px; width: 517px;
-    text-align: center; font-size: 12px; line-height: 16px;
+    left: 340px; top: 609px; width: 600px;
+    text-align: center; font-size: 14px; line-height: 20px;
     font-weight: 500; letter-spacing: 0; color: #000;
   }
   .case-desc b { font-weight: 700; }
@@ -432,7 +432,7 @@
     left: 538px; top: 668px;
     display: inline-flex; align-items: center; justify-content: center;
     width: 203px; height: 55px; border-radius: 100px; background: #000;
-    color: #fff; font-family: "Inclusive Sans", var(--body);
+    color: #fff; font-family: var(--body);
     font-size: 16px; font-weight: 600; letter-spacing: -.32px;
     transition: transform .45s var(--spring);
   }
@@ -492,7 +492,7 @@
     .phone-gate p { font-size: 15px; line-height: 23px; color: #48494b; max-width: 320px; }
     .phone-gate p b { color: #111; font-weight: 600; }
     .phone-gate a { color: #ff2d55; font-weight: 600; text-decoration: none; }
-    .phone-gate .anyway { margin-top: 14px; font-size: 13px; color: #646569; text-decoration: underline; text-underline-offset: 3px; background: none; border: 0; font: inherit; font-size: 13px; cursor: pointer; }
+    .phone-gate .anyway { margin-top: 14px; color: #646569; text-decoration: underline; text-underline-offset: 3px; background: none; border: 0; font: inherit; font-family: "Montserrat", -apple-system, sans-serif; font-size: 13px; cursor: pointer; }
   }
 
   /* ── loading screen: a pink bar that stretches and snaps, "loading" riding along (Uiverse, alexruix) ── */
