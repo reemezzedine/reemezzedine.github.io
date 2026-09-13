@@ -487,7 +487,7 @@
     }
     .phone-gate[hidden] { display: none; }
     body:has(.phone-gate:not([hidden])) { overflow: hidden; }
-    .phone-gate img { width: 96px; height: 96px; border-radius: 50%; }
+    .phone-gate img { width: 96px; height: auto; }
     .phone-gate h2 { font-size: 22px; line-height: 28px; font-weight: 700; letter-spacing: -.3px; margin-top: 6px; }
     .phone-gate p { font-size: 15px; line-height: 23px; color: #48494b; max-width: 320px; }
     .phone-gate p b { color: #111; font-weight: 600; }
@@ -571,7 +571,7 @@
 
 <!-- Phones get a note instead of a broken layout; "Show it anyway" lets them through -->
 <div class="phone-gate" id="phoneGate" role="dialog" aria-label="Best viewed on a computer">
-  <img src="assets/apple-touch-icon.png" alt="">
+  <img src="assets/portrait.webp" alt="">
   <h2>Hi, I’m Reem.</h2>
   <p>This portfolio is built for a big screen. Open <b>reemezzedine.com</b> on a computer to see the work properly.</p>
   <p>Or say hello: <a href="mailto:reem.ezzedine36@gmail.com">reem.ezzedine36@gmail.com</a></p>
