@@ -22,7 +22,7 @@
 <meta name="twitter:image" content="https://reemezzedine.com/assets/og.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -75,9 +75,9 @@
   .head img { width: 100%; height: 100%; object-fit: contain; display: block; }
   .head:hover { transform: scale(1.08); }
   .cta {
-    width: 105px; height: 40px; border-radius: 20px; display: grid; place-items: center;
+    width: 99px; height: 39px; border-radius: 100px; display: grid; place-items: center;
     background: #fff; color: #000001; text-decoration: none;
-    font-size: 15px; font-weight: 500; letter-spacing: -0.01em;
+    font-size: 16px; font-weight: 600; letter-spacing: -0.32px;
     box-shadow: 0 6px 20px -8px rgba(0,0,0,.6);
     transition: transform .45s var(--bubble);
   }
@@ -107,10 +107,10 @@
 
   .tagline {
     margin: 26px auto 0; max-width: 720px;
-    font-size: clamp(18px, 1.6vw, 23px); line-height: 1.42; font-weight: 300;
+    font-size: clamp(18px, 1.6vw, 23px); line-height: 1.42; font-weight: 400;
     letter-spacing: -0.01em; color: rgba(255,255,255,0.74);
   }
-  .tagline strong { font-weight: 600; color: #fff; }
+  .tagline strong { font-weight: 700; color: #fff; }
 
   /* ══════════ PILLS ══════════ */
   .pills { margin-top: 42px; display: flex; flex-direction: column; align-items: center; gap: 15px; }
@@ -127,7 +127,7 @@
   .pill .k, .pill .v { transition: opacity .7s var(--ios) .22s; opacity: 0; }
   .pill.in .k, .pill.in .v { opacity: 1; }
   .pill .k { font-size: 11px; color: var(--muted); line-height: 1.5; white-space: nowrap; }
-  .pill .v { font-size: 13.5px; font-weight: 500; color: #fff; line-height: 1.45; white-space: nowrap; letter-spacing: -0.01em; }
+  .pill .v { font-size: 13.5px; font-weight: 700; color: #fff; line-height: 1.45; white-space: nowrap; letter-spacing: -0.01em; }
 
   /* ══════════ BODY LAYOUT ══════════ */
   .body-wrap {
@@ -153,7 +153,7 @@
     display: flex; align-items: center; justify-content: space-between; gap: 12px;
     transition: color .45s var(--ios), padding .7s var(--ios);
   }
-  .rail-item.active .rail-head { color: #fff; font-weight: 500; padding-bottom: 14px; }
+  .rail-item.active .rail-head { color: #fff; font-weight: 700; padding-bottom: 14px; }
 
   .rail-body {
     display: grid; grid-template-rows: 0fr; opacity: 0;
@@ -164,15 +164,15 @@
   .rail-inner-pad { padding: 0 26px 27px; }
 
   .rail-body p {
-    font-size: 13.5px; line-height: 1.78; font-weight: 300; color: rgba(255,255,255,0.72);
+    font-size: 13.5px; line-height: 1.78; font-weight: 400; color: rgba(255,255,255,0.72);
   }
   .rail-body h4 {
-    font-size: 13.5px; font-weight: 500; color: #fff; margin: 0 0 10px;
+    font-size: 13.5px; font-weight: 700; color: #fff; margin: 0 0 10px;
   }
   .rail-body h4 + ul { margin-bottom: 22px; }
   .rail-body ul { list-style: none; display: flex; flex-direction: column; gap: 11px; }
   .rail-body li {
-    font-size: 13.5px; line-height: 1.72; font-weight: 300; color: rgba(255,255,255,0.72);
+    font-size: 13.5px; line-height: 1.72; font-weight: 400; color: rgba(255,255,255,0.72);
     padding-left: 15px; position: relative;
   }
   .rail-body li::before {
@@ -184,7 +184,7 @@
   .stage { display: flex; flex-direction: column; }
 
   .seg-label {
-    font-size: 15px; font-weight: 500; color: rgba(255,255,255,0.9);
+    font-size: 15px; font-weight: 700; color: rgba(255,255,255,0.9);
     letter-spacing: -0.01em; padding-top: 4px; margin-bottom: 18px;
   }
 
@@ -227,7 +227,7 @@
   /* the same Back to top pill as M2Med, no footer bar */
   .foot { display: flex; justify-content: center; padding: 0 0 72px; }
   .totop { display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 20px 0 16px; border-radius: 999px;
-           background: #F6F8FC; color: #0A0F2D; font: inherit; font-size: 14px; font-weight: 600; border: 0; cursor: pointer;
+           background: #F6F8FC; color: #0A0F2D; font: inherit; font-size: 14px; font-weight: 700; border: 0; cursor: pointer;
            transition: transform .45s var(--bubble), background .3s var(--ios); }
   .totop svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
   .totop:hover { transform: translateY(-3px); background: #E1EBFA; }
