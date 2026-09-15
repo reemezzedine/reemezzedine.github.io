@@ -321,11 +321,16 @@
      makes the next one read as waiting its turn. After the last card the
      wrapper ends and the page returns to normal vertical scroll. */
   .rail-wrap { position: relative; }
+  /* The rail is pinned to the stage's centre and scaled from there. It used
+     to be a grid item, and on a short laptop screen (a 1366x768 Windows
+     machine gives ~630px of viewport) the grid row grew to the rail's full
+     828px, so the rail sat at the top and the Dive in button fell off the
+     bottom. Absolute centring never overflows one way. */
   .rail-stage {
     position: sticky; top: 0; height: 100vh;
-    overflow: hidden; display: grid; place-items: center;
+    overflow: hidden;
   }
-  .rail { position: relative; width: 1280px; height: 828px; transform-origin: 50% 50%; }
+  .rail { position: absolute; left: 50%; top: 50%; width: 1280px; height: 828px; transform-origin: 50% 50%; transform: translate(-50%, -50%); }
 
   .card {
     position: absolute; inset: 0;
@@ -906,7 +911,7 @@
     function fit() {
       // a touch larger than before: was capped at 1 against 1320/880
       k = Math.min(1.1, innerWidth / 1200, innerHeight / 800);
-      rail.style.transform = 'scale(' + k + ')';
+      rail.style.transform = 'translate(-50%, -50%) scale(' + k + ')';
       // + a dwell, so Samsung sits centred for a beat before anything moves,
       // + one extra viewport: the stage stays pinned while the next section
       // rides up over it, instead of being pushed off in lockstep with it
