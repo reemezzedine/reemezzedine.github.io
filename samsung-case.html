@@ -589,6 +589,7 @@
   var rail = document.querySelector('.rail');
   function fitRail() {
     if (!rail || getComputedStyle(rail).position !== 'sticky') { if (rail) rail.style.top = ''; return; }
+    rail.style.zoom = '';
     var h = 0;
     railItems.forEach(function (r) {
       var body = r.querySelector('.rail-body');
@@ -598,8 +599,13 @@
     });
     h += 17 * (railItems.length - 1);
     var stick = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--stick')) || 128;
-    /* may go negative on a short screen: the open paragraph wins over the rail's head */
-    rail.style.top = Math.min(stick, window.innerHeight - h - 24) + 'px';
+    /* On a short screen the rail is shrunk until the whole thing - head and
+       open paragraph - fits between 24px margins, rather than pushed up out
+       of the top of the window. */
+    var z = Math.min(1, (window.innerHeight - 48) / h);
+    rail.style.zoom = z < 1 ? z.toFixed(3) : '';
+    var top = Math.max(24, Math.min(stick, window.innerHeight - h * z - 24));
+    rail.style.top = (top / z).toFixed(1) + 'px';    /* top is read inside the zoom */
   }
   window.addEventListener('resize', fitRail);
   fitRail();

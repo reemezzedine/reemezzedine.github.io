@@ -1072,14 +1072,14 @@
   var segs = [].slice.call(document.querySelectorAll('.set'));
   var railItems = [].slice.call(document.querySelectorAll('.rail-item'));
   var rail = document.getElementById('rail'), track = document.getElementById('track'), stage = document.getElementById('stage');
-  var pin = document.getElementById('didPin');
+  var pin = document.getElementById('didPin'), grid = document.querySelector('.did-grid');
   var current = -1, N = segs.length;
   var BAND = 0.62;                               /* one step = 62% of a viewport of scroll */
   function zoomOf() { return parseFloat(getComputedStyle(document.querySelector('.page')).zoom) || 1; }
   function stickTop() { return parseFloat(getComputedStyle(pin).top) * zoomOf(); }   /* screen px */
   var stageIn = document.getElementById('stageIn');
   function sizeTrack() {
-    if (window.innerWidth <= 1000) { track.style.height = ''; segs.forEach(function (g) { g.style.zoom = ''; }); return; }
+    if (window.innerWidth <= 1000) { track.style.height = ''; grid.style.zoom = ''; segs.forEach(function (g) { g.style.zoom = ''; }); return; }
     segs.forEach(function (g) { g.style.zoom = ''; });
     /* the pinned block must fit under its top line. Each image set is fitted
        on its own, so the phones keep their size and only a set that is taller
@@ -1092,6 +1092,13 @@
       var z = Math.min(1, availH / h, availW / w);
       if (z < 1) g.style.zoom = Math.max(0.6, z).toFixed(3);
     });
+    /* On a short laptop screen the rail's open paragraph, not the images, is
+       what runs off the bottom. If the pinned block still does not fit,
+       shrink the rail and stage together until it does. */
+    grid.style.zoom = '';
+    var room = window.innerHeight - stickTop() - 24;
+    var pinNow = pin.getBoundingClientRect().height, gridNow = grid.getBoundingClientRect().height;
+    if (pinNow > room) grid.style.zoom = Math.max(0.5, (room - (pinNow - gridNow)) / gridNow).toFixed(3);
     track.style.height = Math.round((N * window.innerHeight * BAND + pin.getBoundingClientRect().height) / zoomOf()) + 'px';
   }
   function setStep(i) {
