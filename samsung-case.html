@@ -332,7 +332,7 @@
   var t0 = Date.now(), done = false;
   function ready() {
     if (done) return; done = true;
-    var wait = Math.max(0, 700 - (Date.now() - t0));       /* never a flash: on screen for at least 700ms */
+    var wait = Math.max(0, 400 - (Date.now() - t0));       /* never a flash: on screen for at least 400ms */
     setTimeout(function () {
       root.classList.remove('loading'); root.classList.add('ready');
       window.dispatchEvent(new Event('siteready'));

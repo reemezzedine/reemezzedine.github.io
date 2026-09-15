@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Reem Ezzedine — Product Designer</title>
 <meta name="description" content="Product designer with a global footprint. Case studies: founding design for M2Med, a medical events app, and CRM product design at Samsung.">
+<link rel="preload" as="image" href="assets/portrait.webp" fetchpriority="high">
 <link rel="icon" type="image/png" href="assets/favicon.png">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <!-- link previews: WhatsApp, LinkedIn, iMessage, Slack, X -->
@@ -557,7 +558,7 @@
   var t0 = Date.now(), done = false;
   function ready() {
     if (done) return; done = true;
-    var wait = Math.max(0, 700 - (Date.now() - t0));       /* never a flash: on screen for at least 700ms */
+    var wait = Math.max(0, 400 - (Date.now() - t0));       /* never a flash: on screen for at least 400ms */
     setTimeout(function () {
       root.classList.remove('loading'); root.classList.add('ready');
       window.dispatchEvent(new Event('siteready'));
@@ -620,10 +621,10 @@
     </p>
     <a class="scroll-cue" href="#case-studies" aria-label="Scroll down to the case studies"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v16M5 13l7 7 7-7"/></svg></a>
 
-    <figure class="postcard pc-usa"><img src="assets/postcards/usa.webp" alt="USA, 1 year"></figure>
-    <figure class="postcard pc-zambia"><img src="assets/postcards/zambia.webp" alt="Zambia, 16 years"></figure>
-    <figure class="postcard pc-lebanon"><img src="assets/postcards/lebanon.webp" alt="Lebanon, 6 years"></figure>
-    <figure class="postcard pc-denmark"><img src="assets/postcards/denmark.webp" alt="Denmark, 3 years"></figure>
+    <figure class="postcard pc-usa"><img data-src="assets/postcards/usa.webp" alt="USA, 1 year"></figure>
+    <figure class="postcard pc-zambia"><img data-src="assets/postcards/zambia.webp" alt="Zambia, 16 years"></figure>
+    <figure class="postcard pc-lebanon"><img data-src="assets/postcards/lebanon.webp" alt="Lebanon, 6 years"></figure>
+    <figure class="postcard pc-denmark"><img data-src="assets/postcards/denmark.webp" alt="Denmark, 3 years"></figure>
   </div>
 </header>
 
@@ -744,7 +745,11 @@
 
   /* ── postcards ────────────────────────────────────────────────────
      The first hover on "global footprint." deals them out one after
-     another, and they stay: latched, nothing packs them back in. */
+     another, and they stay: latched, nothing packs them back in.
+     Their images are fetched the moment the loading screen lifts, so
+     they never hold the reveal back. */
+  function fetchCards() { [].forEach.call(document.querySelectorAll('.postcard img[data-src]'), function (i) { i.src = i.getAttribute('data-src'); i.removeAttribute('data-src'); }); }
+  if (document.documentElement.classList.contains('ready')) fetchCards(); else addEventListener('siteready', fetchCards, { once: true });
   function show() { body.classList.add('cards'); }
   trigger.addEventListener('mouseenter', show);
   trigger.addEventListener('focus', show);
