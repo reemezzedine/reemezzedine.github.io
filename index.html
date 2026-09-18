@@ -1074,10 +1074,21 @@
         btn.textContent = 'Sent — I’ll be in touch soon';
         form.reset();
       }).catch(function () {
-        form.classList.add('error');
-        btn.disabled = false; btn.textContent = 'Send me a message';
+        /* Formspree refuses in-page (AJAX) posts while its reCAPTCHA is on.
+           Rather than lose the message, hand it over as a plain form post:
+           Formspree shows its own check, then sends the visitor back here. */
+        var sub = document.createElement('input'); sub.type = 'hidden'; sub.name = '_subject'; sub.value = 'Portfolio: ' + title;
+        var nxt = document.createElement('input'); nxt.type = 'hidden'; nxt.name = '_next'; nxt.value = location.origin + location.pathname + '#sent';
+        form.appendChild(sub); form.appendChild(nxt);
+        HTMLFormElement.prototype.submit.call(form);
       });
     });
+    // back from Formspree's own page: show the sent state on the form
+    if (form && location.hash === '#sent') {
+      form.classList.add('sent');
+      var sb = form.querySelector('.work-submit'); sb.disabled = true; sb.textContent = 'Sent — I’ll be in touch soon';
+      if (work) requestAnimationFrame(function () { if (lenis) lenis.scrollTo(work.offsetTop, { immediate: true }); else scrollTo(0, work.offsetTop); });
+    }
 
     window.__deck = { progress: progress, index: index, cards: cards, goTo: goToCard,
                       PITCH: PITCH, SEGS: SEGS, fitScale: function () { return k; } };
