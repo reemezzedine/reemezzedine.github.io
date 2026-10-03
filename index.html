@@ -344,7 +344,7 @@
        on one line. */
     transform-origin: 644.5px 398px;   /* the phone's centre */
   }
-  #cardSamsung { transform-origin: 640px 420px; }   /* the laptop's centre */
+  #cardSamsung, #cardRevati { transform-origin: 640px 420px; }   /* the laptop's centre */
   /* copy and button sit at the same spot on both cards, centred on the card's own axis (640) */
   .card > *, .card-extras > * { position: absolute; }
   .card-extras { position: absolute; inset: 0; }
@@ -674,6 +674,27 @@
 
         <a class="dive stage1" href="samsung-case.html">Dive in</a>
         <button class="deck-cue cue-left stage1" type="button" data-card="0" aria-label="Back: M2Med"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12H4M11 5l-7 7 7 7"/></svg></button>
+
+        <button class="deck-cue cue-right stage1" type="button" data-card="2" aria-label="Next: Revati"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16M13 5l7 7-7 7"/></svg></button>
+        </div>
+      </article>
+
+      <!-- ── card 3 · Revati ── -->
+      <article class="card" data-i="2" id="cardRevati">
+        <img class="device laptop" src="assets/revati/laptop-cover.webp" alt="The Revati site on a laptop" loading="lazy" decoding="async">
+        <div class="card-extras">
+        <div class="tags stage1">
+          <span class="tag">2026</span>
+          <span class="tag">Web Design</span>
+        </div>
+
+        <p class="case-desc stage1">
+          <b>Revati</b> is a design and real estate development company, where I built a site
+          that reads as clearly to an investor as it does to a resident
+        </p>
+
+        <a class="dive stage1" href="revati-case.html">Dive in</a>
+        <button class="deck-cue cue-left stage1" type="button" data-card="1" aria-label="Back: Samsung"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12H4M11 5l-7 7 7 7"/></svg></button>
 
         <div class="soon-dot stage1" aria-hidden="true"></div>
         <p class="soon-label stage1">more coming soon!</p>
