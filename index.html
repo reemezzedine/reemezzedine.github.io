@@ -73,6 +73,7 @@
     pointer-events: none;
   }
   .nav > * { pointer-events: auto; }
+  .nav-burger { display: none; }   /* phones only, see the phone block */
   .nav-links {
     position: absolute; left: 83px; top: 44px; height: 36px;
     display: flex; align-items: center;
@@ -543,40 +544,74 @@
      ══════════════════════════════════════════════════════════════════════ */
   @media (max-width: 767px) {
 
-    /* ── nav: a simple bar instead of two absolute coordinates ── */
+    /* ── nav: a hamburger and Contact. Three links plus a pill is too much
+           for 375px, so the links live in a sheet that opens on tap. ── */
     .nav {
-      position: fixed; width: 100%; height: auto; padding: 14px 18px;
+      position: fixed; width: 100%; height: auto; padding: 12px 18px;
       display: flex; align-items: center; justify-content: space-between; gap: 12px;
-      background: rgba(255,255,255,.92); backdrop-filter: blur(10px);
+      background: rgba(255,255,255,.94); backdrop-filter: blur(10px);
     }
-    .nav-links { position: static; height: auto; }
-    .nav-links a { font-size: 14px; padding: 0 10px; height: 32px; }
-    .nav-links a + a { margin-left: 4px; }
+    .nav-burger {
+      display: flex; flex-direction: column; justify-content: center; gap: 6px;
+      width: 38px; height: 34px; margin-left: -8px; background: none; border: 0;
+      cursor: pointer; -webkit-tap-highlight-color: transparent;
+    }
+    .nav-burger span {
+      display: block; width: 21px; height: 2px; border-radius: 2px; background: var(--nav-ink);
+      transition: transform .32s var(--ease), opacity .2s var(--ease);
+    }
+    .nav.open .nav-burger span:first-child { transform: translateY(4px) rotate(45deg); }
+    .nav.open .nav-burger span:last-child  { transform: translateY(-4px) rotate(-45deg); }
+
+    .nav-links {
+      position: absolute; left: 14px; top: calc(100% + 6px); height: auto;
+      flex-direction: column; align-items: stretch; gap: 2px;
+      padding: 8px; border-radius: 20px; background: #fff;
+      box-shadow: 0 18px 44px -18px rgba(0,0,0,.35), 0 0 0 1px rgba(0,0,0,.05);
+      opacity: 0; transform: translateY(-8px) scale(.98); pointer-events: none;
+      transition: opacity .24s var(--ease), transform .32s var(--spring);
+    }
+    .nav.open .nav-links { opacity: 1; transform: none; pointer-events: auto; }
+    .nav-links a { font-size: 15px; height: 40px; padding: 0 18px; justify-content: flex-start; }
+    .nav-links a + a { margin-left: 0; }
     .nav-about { min-width: 0; }
+    #navPlay { display: none; }                            /* parked on phones for now */
     .nav-cta { position: static; width: auto; height: 34px; padding: 0 16px; font-size: 14px; }
     body.docked .nav-about { color: var(--nav-ink); }      /* she never docks here */
 
     /* ── hero: the canvas becomes a column ── */
-    .hero { min-height: 0; display: block; padding: 86px 20px 0; overflow: visible; }
+    .hero { min-height: 0; display: block; padding: 82px 20px 0; overflow: visible; }
     .hero-inner {
       position: static; width: 100%; height: auto; transform: none !important;
-      display: flex; flex-direction: column; align-items: center; text-align: center;
+      display: flex; flex-direction: column; align-items: flex-start; text-align: left;
     }
     .hero-inner > * { position: static; }
-    /* markup order is hello, slot, name, tagline: on a phone the name reads first */
+    /* markup order is hello, slot, name, tagline: on a phone the name reads
+       first, then her, then the line, then the places, then the cue */
     .hello { order: 1; } .name-fill { order: 2; } .portrait { order: 3; }
-    .tagline { order: 4; } .scroll-cue { order: 5; } .postcards-row { order: 6; }
-    .hello { width: auto; font-size: 18px; line-height: 24px; }
-    .name-fill { left: auto; top: auto; width: min(100%, 320px); margin: 14px 0 0; }
+    .tagline { order: 4; } .postcards-row { order: 5; } .scroll-cue { order: 6; }
+    /* the words run flush left with the name; she and the cue stay centred */
+    .portrait, .scroll-cue { align-self: center; }
+    .hello { width: auto; font-size: 18px; line-height: 24px; padding-left: 2px; }
+    .name-fill { left: auto; top: auto; width: min(100%, 320px); margin: 10px 0 0; }
     /* the morph and its white stroke are desktop-only; the slot carries her instead */
     .portrait-morph, .name-stroke { display: none !important; }
     .portrait {
       left: auto; top: auto;
-      width: min(62%, 230px); height: auto; aspect-ratio: 365 / 492; margin: 10px 0 0;
+      width: min(62%, 230px); height: auto; aspect-ratio: 365 / 492; margin: 12px 0 0;
       background: url("assets/portrait.webp") center bottom / contain no-repeat;
+      transform-origin: 50% 88%; cursor: pointer; -webkit-tap-highlight-color: transparent;
     }
-    .tagline { left: auto; top: auto; width: auto; margin-top: 18px; font-size: 17px; line-height: 25px; }
-    .scroll-cue { left: auto; top: auto; margin: 22px 0 0; }
+    .portrait.shake { animation: headShake .62s cubic-bezier(.36,.07,.19,.97); }
+    @keyframes headShake {
+      0%, 100% { transform: rotate(0deg); }
+      18% { transform: rotate(-7deg); }
+      38% { transform: rotate(5.5deg); }
+      58% { transform: rotate(-3.5deg); }
+      78% { transform: rotate(2deg); }
+    }
+    .tagline { left: auto; top: auto; width: 100%; margin-top: 18px; font-size: 17px; line-height: 25px; text-align: left; }
+    .scroll-cue { left: auto; top: auto; margin: 26px 0 0; }
 
     /* the postcards cannot wait for a hover that never comes: they are simply
        shown, in a row under the tagline */
@@ -597,24 +632,29 @@
     .rail {
       position: static; left: auto; top: auto; width: 100%; height: auto;
       transform: none !important;
-      display: flex; flex-direction: column; gap: 72px; padding: 72px 20px 0;
+      display: flex; flex-direction: column; gap: 76px; padding: 72px 20px 104px;
     }
     .card {
       position: static; inset: auto; transform: none !important;
       display: flex; flex-direction: column; align-items: center; text-align: center;
     }
     .card > *, .card-extras > * { position: static; left: auto; top: auto; }
-    .card-extras {
-      position: static; inset: auto; opacity: 1 !important; pointer-events: auto;
-      display: flex; flex-direction: column; align-items: center; width: 100%;
-    }
+    /* display: contents lifts the extras into the card's own column, so the
+       chips can sit above the device the way they do on the desktop board */
+    .card-extras { display: contents; }
+    .tags       { order: 1; }
+    .device     { order: 2; }
+    .case-desc  { order: 3; }
+    .dive       { order: 4; }
+    .soon-dot   { order: 5; }
+    .soon-label { order: 6; }
     .device { width: 100%; height: auto; filter: none !important; opacity: 1 !important; object-fit: contain; }
     .phone { width: min(78%, 300px); }
     .snip, .deck-cue { display: none; }        /* they live in canvas coordinates */
-    .tags { margin-top: 18px; }
+    .tags { margin-top: 0; margin-bottom: 18px; }
     .case-desc { width: auto; margin-top: 14px; font-size: 15px; line-height: 22px; }
     .dive { width: auto; margin-top: 20px; height: 50px; padding: 0 30px; font-size: 16px; }
-    .soon-dot { margin: 26px auto 0; }
+    .soon-dot { margin: 30px auto 0; }
     .soon-label { width: auto; margin-top: 10px; }
 
     /* ── the stacking page stops pulling itself over the pinned deck ── */
@@ -657,7 +697,8 @@
 
 
 
-<nav class="nav">
+<nav class="nav" id="nav">
+  <button class="nav-burger" id="navBurger" type="button" aria-label="Open the menu" aria-expanded="false" aria-controls="navLinks"><span></span><span></span></button>
   <div class="nav-links" id="navLinks">
     <a class="nav-about" href="#about" id="navAbout">About</a>
     <a href="#case-studies" id="navCases">Case Studies</a>
@@ -1155,6 +1196,41 @@
       land();
       addEventListener('load', function () { land(); setTimeout(land, 80); setTimeout(land, 300); });
     }
+
+    /* ── phones: the links live behind a hamburger, and tapping her shakes
+           her head. Both are inert on desktop, where the button is display:none
+           and the hero portrait is the travelling element instead.        ── */
+    (function () {
+      var nav = document.getElementById('nav');
+      var burger = document.getElementById('navBurger');
+      if (!nav || !burger) return;
+      var y0 = window.scrollY;
+      function setOpen(on) {
+        if (on) y0 = window.scrollY;
+        nav.classList.toggle('open', on);
+        burger.setAttribute('aria-expanded', String(on));
+        burger.setAttribute('aria-label', on ? 'Close the menu' : 'Open the menu');
+      }
+      burger.addEventListener('click', function (e) { e.stopPropagation(); setOpen(!nav.classList.contains('open')); });
+      nav.addEventListener('click', function (e) { if (e.target.closest('.nav-links a')) setOpen(false); });
+      document.addEventListener('click', function (e) { if (!nav.contains(e.target)) setOpen(false); });
+      /* Lenis emits scroll events as it settles, so only a real move closes it */
+      addEventListener('scroll', function () {
+        if (!nav.classList.contains('open')) { y0 = window.scrollY; return; }
+        if (Math.abs(window.scrollY - y0) > 24) setOpen(false);
+      }, { passive: true });
+    })();
+
+    (function () {
+      var head = document.querySelector('.portrait');
+      if (!head || !PHONE.matches) return;
+      head.addEventListener('click', function () {
+        head.classList.remove('shake');
+        void head.offsetWidth;                 /* restart the animation */
+        head.classList.add('shake');
+      });
+      head.addEventListener('animationend', function () { head.classList.remove('shake'); });
+    })();
 
     // Playground: the "coming soon" oval follows the cursor while it is on the word
     var play = document.getElementById('navPlay'), soon = document.getElementById('soon');
