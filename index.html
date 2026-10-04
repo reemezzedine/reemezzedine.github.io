@@ -668,9 +668,62 @@
     .work-foot { padding: 28px 20px 24px; font-size: 20px; }
   }
 
+
+  /* ── phones: the home page is where the portfolio's own craft lives - the
+        travelling portrait, the pinned deck, the postcards. A soft,
+        dismissible note offers that version on a laptop; "Show it anyway"
+        lets anyone straight into the phone layout. Home page only. ── */
+  .peek { display: none; }
+  @media (max-width: 767px) {
+    .peek {
+      position: fixed; inset: 0; z-index: 9998; display: flex;
+      align-items: center; justify-content: center; padding: 24px;
+      background: rgba(255,255,255,.76); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
+      animation: peekIn .5s var(--ease) both;
+    }
+    .peek[hidden] { display: none; }
+    body:has(.peek:not([hidden])) { overflow: hidden; }
+    @keyframes peekIn { from { opacity: 0; } to { opacity: 1; } }
+    .peek-card {
+      width: 100%; max-width: 330px; background: #fff; border-radius: 28px;
+      padding: 26px 24px 22px; text-align: center;
+      box-shadow: 0 28px 70px -26px rgba(0,0,0,.4), 0 0 0 1px rgba(0,0,0,.05);
+      animation: peekCard .62s var(--spring) both .06s;
+    }
+    @keyframes peekCard { from { opacity: 0; transform: translateY(14px) scale(.97); } to { opacity: 1; transform: none; } }
+    .peek-card img { width: 78px; height: 78px; border-radius: 50%; margin: 0 auto 14px; object-fit: cover; object-position: center top; background: #ffd9e6; }
+    .peek-card h2 { font-size: 19px; line-height: 26px; font-weight: 700; letter-spacing: -.3px; color: var(--ink); }
+    .peek-card p { font-size: 14px; line-height: 22px; color: #48494b; margin-top: 10px; }
+    .peek-card p b { color: var(--ink); font-weight: 600; }
+    .peek-go {
+      width: 100%; height: 46px; margin-top: 18px; border-radius: 999px;
+      background: #000; color: #fff; font-family: var(--body); font-size: 15px; font-weight: 600;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .peek-mail { display: inline-block; margin-top: 14px; font-size: 13px; color: #646569; text-decoration: none; }
+    .peek-mail b { color: var(--pink); font-weight: 600; }
+  }
 </style>
 </head>
 <body>
+
+<!-- Phones: a soft note offering the full version on a laptop, dismissible -->
+<div class="peek" id="peek" role="dialog" aria-label="Best on a bigger screen">
+  <div class="peek-card">
+    <img src="assets/portrait.webp" alt="">
+    <h2>Hi, I&rsquo;m Reem.</h2>
+    <p>To see the most creative version of this portfolio, with all of its moving parts, open <b>reemezzedine.com</b> on a bigger screen.</p>
+    <button class="peek-go" type="button" id="peekGo">Show it anyway</button>
+    <a class="peek-mail" href="mailto:reem.ezzedine36@gmail.com">or say <b>hello</b></a>
+  </div>
+</div>
+<script>
+  (function () {
+    var p = document.getElementById('peek'), go = document.getElementById('peekGo');
+    if (!p || !go) return;
+    go.addEventListener('click', function () { p.hidden = true; });
+  })();
+</script>
 
 <!-- Loading screen: lifts once the page's images are in (see the script right after it) -->
 <div class="loading" id="loading" aria-hidden="true"><div class="loader"><p class="loader-text">loading</p><span class="load"></span></div></div>
