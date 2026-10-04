@@ -283,6 +283,23 @@
                   animation: didMore 1.8s cubic-bezier(.45,0,.55,1) infinite; }
   .did-pin.at-end .did-more { opacity: 1; pointer-events: auto; }
   @keyframes didMore { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(6px); } }
+  /* ── phones: the 1000px block above already restacks the page; these are
+        the last few pieces that assume a wide window ── */
+  @media (max-width: 767px) {
+    .page { zoom: 1; }
+    .hero-fade { left: 0; right: 0; }        /* the -30% bleed overflows a narrow page */
+    html { overflow-x: hidden; }
+    .rail-pad p, .modal .note, .modal .terms, .modal .line span, .stat .l { font-size: 13px; line-height: 20px; }
+    .phone-col { width: 100%; }
+    .shots { gap: 28px; }
+    .modals { gap: 20px; }
+    .received h2, .did-head h2, .system h2, .outcome h2 { font-size: 26px; line-height: 34px; letter-spacing: -.4px; }
+    .intro .lead { font-size: 20px; line-height: 30px; }
+    .stats { gap: 14px; }
+    .scene { padding: 0 20px; }
+    .scene img { border-radius: 24px; }
+  }
+
   @media (prefers-reduced-motion: reduce) { .did-more svg { animation: none; } }
   .track { min-width: 0; }
   .stage { min-width: 0; }
@@ -513,22 +530,6 @@
   }
 
   /* ── phones: this is a big-screen portfolio, say so instead of breaking ── */
-  .phone-gate { display: none; }
-  @media (max-width: 767px), ((hover: none) and (pointer: coarse) and (max-width: 1024px)) {
-    .phone-gate {
-      position: fixed; inset: 0; z-index: 9999; background: #fff; color: #111;
-      display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
-      padding: 32px 28px; gap: 18px; font-family: "Montserrat", -apple-system, BlinkMacSystemFont, sans-serif;
-    }
-    .phone-gate[hidden] { display: none; }
-    body:has(.phone-gate:not([hidden])) { overflow: hidden; }
-    .phone-gate img { width: 96px; height: auto; }
-    .phone-gate h2 { font-size: 22px; line-height: 28px; font-weight: 700; letter-spacing: -.3px; margin-top: 6px; }
-    .phone-gate p { font-size: 15px; line-height: 23px; color: #48494b; max-width: 320px; }
-    .phone-gate p b { color: #111; font-weight: 600; }
-    .phone-gate a { color: #ff2d55; font-weight: 600; text-decoration: none; }
-    .phone-gate .anyway { margin-top: 14px; color: #646569; text-decoration: underline; text-underline-offset: 3px; background: none; border: 0; font: inherit; font-family: "Montserrat", -apple-system, sans-serif; font-size: 13px; cursor: pointer; }
-  }
 
   /* ── loading screen: a pink bar that stretches and snaps, "loading" riding along (Uiverse, alexruix) ── */
   .loading {
@@ -576,7 +577,6 @@
     90%  { width: 80%; transform: translateX(15px); }
     100% { transform: translateX(0px); width: 16px; }
   }
-  }
 </style>
 </head>
 <body>
@@ -604,14 +604,6 @@
 })();
 </script>
 
-<!-- Phones get a note instead of a broken layout; "Show it anyway" lets them through -->
-<div class="phone-gate" id="phoneGate" role="dialog" aria-label="Best viewed on a computer">
-  <img src="assets/portrait.webp" alt="">
-  <h2>Hi, I’m Reem.</h2>
-  <p>This portfolio is built for a big screen. Open <b>reemezzedine.com</b> on a computer to see the work properly.</p>
-  <p>Or say hello: <a href="mailto:reem.ezzedine36@gmail.com">reem.ezzedine36@gmail.com</a></p>
-  <button class="anyway" type="button" onclick="document.getElementById('phoneGate').hidden=true">Show it anyway</button>
-</div>
 
 
 <header class="top">

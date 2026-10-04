@@ -198,6 +198,9 @@
   }
   .footprint:hover, body.cards .footprint { text-decoration-color: var(--pink); }
 
+  /* the row wrapper exists for the phone column; on the canvas it is inert */
+  .postcards-row { position: static; display: contents; }
+
   /* ── postcards: only while the pointer is on "global footprint" ── */
   .postcard {
     position: absolute; opacity: 0; pointer-events: none;
@@ -482,22 +485,6 @@
   }
 
   /* ── phones: this is a big-screen portfolio, say so instead of breaking ── */
-  .phone-gate { display: none; }
-  @media (max-width: 767px), ((hover: none) and (pointer: coarse) and (max-width: 1024px)) {
-    .phone-gate {
-      position: fixed; inset: 0; z-index: 9999; background: #fff; color: #111;
-      display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
-      padding: 32px 28px; gap: 18px; font-family: "Montserrat", -apple-system, BlinkMacSystemFont, sans-serif;
-    }
-    .phone-gate[hidden] { display: none; }
-    body:has(.phone-gate:not([hidden])) { overflow: hidden; }
-    .phone-gate img { width: 96px; height: auto; }
-    .phone-gate h2 { font-size: 22px; line-height: 28px; font-weight: 700; letter-spacing: -.3px; margin-top: 6px; }
-    .phone-gate p { font-size: 15px; line-height: 23px; color: #48494b; max-width: 320px; }
-    .phone-gate p b { color: #111; font-weight: 600; }
-    .phone-gate a { color: #ff2d55; font-weight: 600; text-decoration: none; }
-    .phone-gate .anyway { margin-top: 14px; color: #646569; text-decoration: underline; text-underline-offset: 3px; background: none; border: 0; font: inherit; font-family: "Montserrat", -apple-system, sans-serif; font-size: 13px; cursor: pointer; }
-  }
 
   /* ── loading screen: a pink bar that stretches and snaps, "loading" riding along (Uiverse, alexruix) ── */
   .loading {
@@ -545,7 +532,102 @@
     90%  { width: 80%; transform: translateX(15px); }
     100% { transform: translateX(0px); width: 16px; }
   }
+
+  /* ══════════════════════════════════════════════════════════════════════
+     PHONES: the desktop build above is a 1280 canvas with a pinned
+     horizontal deck, neither of which suits a small touch screen. Below
+     767px every absolute position is released and the page becomes one
+     ordinary column. Nothing above this block is modified, so the desktop
+     layout is untouched; the scripts that drive the canvas bow out through
+     the PHONE guards in the JS.
+     ══════════════════════════════════════════════════════════════════════ */
+  @media (max-width: 767px) {
+
+    /* ── nav: a simple bar instead of two absolute coordinates ── */
+    .nav {
+      position: fixed; width: 100%; height: auto; padding: 14px 18px;
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      background: rgba(255,255,255,.92); backdrop-filter: blur(10px);
+    }
+    .nav-links { position: static; height: auto; }
+    .nav-links a { font-size: 14px; padding: 0 10px; height: 32px; }
+    .nav-links a + a { margin-left: 4px; }
+    .nav-about { min-width: 0; }
+    .nav-cta { position: static; width: auto; height: 34px; padding: 0 16px; font-size: 14px; }
+    body.docked .nav-about { color: var(--nav-ink); }      /* she never docks here */
+
+    /* ── hero: the canvas becomes a column ── */
+    .hero { min-height: 0; display: block; padding: 86px 20px 0; overflow: visible; }
+    .hero-inner {
+      position: static; width: 100%; height: auto; transform: none !important;
+      display: flex; flex-direction: column; align-items: center; text-align: center;
+    }
+    .hero-inner > * { position: static; }
+    /* markup order is hello, slot, name, tagline: on a phone the name reads first */
+    .hello { order: 1; } .name-fill { order: 2; } .portrait { order: 3; }
+    .tagline { order: 4; } .scroll-cue { order: 5; } .postcards-row { order: 6; }
+    .hello { width: auto; font-size: 18px; line-height: 24px; }
+    .name-fill { left: auto; top: auto; width: min(100%, 320px); margin: 14px 0 0; }
+    /* the morph and its white stroke are desktop-only; the slot carries her instead */
+    .portrait-morph, .name-stroke { display: none !important; }
+    .portrait {
+      left: auto; top: auto;
+      width: min(62%, 230px); height: auto; aspect-ratio: 365 / 492; margin: 10px 0 0;
+      background: url("assets/portrait.webp") center bottom / contain no-repeat;
+    }
+    .tagline { left: auto; top: auto; width: auto; margin-top: 18px; font-size: 17px; line-height: 25px; }
+    .scroll-cue { left: auto; top: auto; margin: 22px 0 0; }
+
+    /* the postcards cannot wait for a hover that never comes: they are simply
+       shown, in a row under the tagline */
+    .postcards-row {
+      display: flex; flex-wrap: wrap; justify-content: center;
+      gap: 12px; margin-top: 26px; width: 100%;
+    }
+    .postcard {
+      position: static; left: auto; top: auto; width: auto;
+      opacity: 1 !important; transform: none !important; pointer-events: auto; flex: 0 0 auto;
+    }
+    .postcard img { height: 92px; width: auto; }
+    .footprint { text-decoration-color: var(--pink); }
+
+    /* ── the deck: a stack of cards, not a pinned rail ── */
+    .rail-wrap { height: auto !important; }
+    .rail-stage { position: static; height: auto; overflow: visible; }
+    .rail {
+      position: static; left: auto; top: auto; width: 100%; height: auto;
+      transform: none !important;
+      display: flex; flex-direction: column; gap: 72px; padding: 72px 20px 0;
+    }
+    .card {
+      position: static; inset: auto; transform: none !important;
+      display: flex; flex-direction: column; align-items: center; text-align: center;
+    }
+    .card > *, .card-extras > * { position: static; left: auto; top: auto; }
+    .card-extras {
+      position: static; inset: auto; opacity: 1 !important; pointer-events: auto;
+      display: flex; flex-direction: column; align-items: center; width: 100%;
+    }
+    .device { width: 100%; height: auto; filter: none !important; opacity: 1 !important; object-fit: contain; }
+    .phone { width: min(78%, 300px); }
+    .snip, .deck-cue { display: none; }        /* they live in canvas coordinates */
+    .tags { margin-top: 18px; }
+    .case-desc { width: auto; margin-top: 14px; font-size: 15px; line-height: 22px; }
+    .dive { width: auto; margin-top: 20px; height: 50px; padding: 0 30px; font-size: 16px; }
+    .soon-dot { margin: 26px auto 0; }
+    .soon-label { width: auto; margin-top: 10px; }
+
+    /* ── the stacking page stops pulling itself over the pinned deck ── */
+    .page { margin-top: 0; border-radius: 28px 28px 0 0; min-height: 0; }
+    .page-work { min-height: 0; padding-bottom: 8px; }
+    .work-label { padding: 56px 0 4px; }
+    .work-label h2 { font-size: 28px; line-height: 40px; letter-spacing: 1px; }
+    .work-form { width: 100%; padding: 0 20px; gap: 18px; }
+    .field textarea { height: 120px; }
+    .work-submit { width: 100%; height: 46px; }
+    .work-foot { padding: 28px 20px 24px; font-size: 20px; }
   }
+
 </style>
 </head>
 <body>
@@ -573,14 +655,6 @@
 })();
 </script>
 
-<!-- Phones get a note instead of a broken layout; "Show it anyway" lets them through -->
-<div class="phone-gate" id="phoneGate" role="dialog" aria-label="Best viewed on a computer">
-  <img src="assets/portrait.webp" alt="">
-  <h2>Hi, I’m Reem.</h2>
-  <p>This portfolio is built for a big screen. Open <b>reemezzedine.com</b> on a computer to see the work properly.</p>
-  <p>Or say hello: <a href="mailto:reem.ezzedine36@gmail.com">reem.ezzedine36@gmail.com</a></p>
-  <button class="anyway" type="button" onclick="document.getElementById('phoneGate').hidden=true">Show it anyway</button>
-</div>
 
 
 <nav class="nav">
@@ -621,10 +695,12 @@
     </p>
     <a class="scroll-cue" href="#case-studies" aria-label="Scroll down to the case studies"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v16M5 13l7 7 7-7"/></svg></a>
 
-    <figure class="postcard pc-usa"><img data-src="assets/postcards/usa.webp" alt="USA, 1 year"></figure>
-    <figure class="postcard pc-zambia"><img data-src="assets/postcards/zambia.webp" alt="Zambia, 16 years"></figure>
-    <figure class="postcard pc-lebanon"><img data-src="assets/postcards/lebanon.webp" alt="Lebanon, 6 years"></figure>
-    <figure class="postcard pc-denmark"><img data-src="assets/postcards/denmark.webp" alt="Denmark, 3 years"></figure>
+    <div class="postcards-row">
+      <figure class="postcard pc-usa"><img data-src="assets/postcards/usa.webp" alt="USA, 1 year"></figure>
+      <figure class="postcard pc-zambia"><img data-src="assets/postcards/zambia.webp" alt="Zambia, 16 years"></figure>
+      <figure class="postcard pc-lebanon"><img data-src="assets/postcards/lebanon.webp" alt="Lebanon, 6 years"></figure>
+      <figure class="postcard pc-denmark"><img data-src="assets/postcards/denmark.webp" alt="Denmark, 3 years"></figure>
+    </div>
   </div>
 </header>
 
@@ -784,6 +860,8 @@
      The nav links slide right over the same t to make room, which is the
      difference between the two nav layouts in the Figma boards.        */
   (function () {
+    /* phones get the flowed hero, so the travelling portrait stays out of it */
+    if (window.matchMedia('(max-width: 767px)').matches) return;
     var img   = document.getElementById('portraitMorph');
     var slot  = document.getElementById('portraitSlot');
     var nav   = document.querySelector('.nav');
@@ -933,8 +1011,18 @@
     var SEGS = N - 1;
 
     var k = 1, snapTimer = 0, lenis = window.__lenis || null;
+    /* On a phone the deck is a plain stack of cards (see the phone block in
+       the stylesheet). The measuring, the transforms and the snap all stand
+       down; everything else in this closure carries on. */
+    var PHONE = window.matchMedia('(max-width: 767px)');
 
     function fit() {
+      if (PHONE.matches) {
+        wrap.style.height = 'auto';
+        rail.style.transform = '';
+        cards.forEach(function (el) { el.style.transform = ''; el.style.zIndex = ''; el.style.removeProperty('--away'); el.classList.add('in1', 'in2', 'at-centre'); });
+        return;
+      }
       // a touch larger than before: was capped at 1 against 1320/880
       k = Math.min(1.1, innerWidth / 1200, innerHeight / 800);
       rail.style.transform = 'translate(-50%, -50%) scale(' + k + ')';
@@ -955,6 +1043,7 @@
     function index() { return progress() * SEGS; }
 
     function paint() {
+      if (PHONE.matches) return;
       /* Nothing composes until the deck has actually arrived. Without this the
          first card ran its entry sequence on page load, so by the time you
          scrolled down from the hero the snippets were already sitting there
@@ -989,6 +1078,7 @@
     /* Snap: when scrolling stops inside the deck, ease to the nearest card so
        it always settles centred rather than parked between two. */
     function snap() {
+      if (PHONE.matches) return;
       var r = wrap.getBoundingClientRect();
       if (r.top > 0 || r.bottom < innerHeight) return;      // not inside the deck
       var c = index();
@@ -1017,6 +1107,7 @@
 
     addEventListener('scroll', onScroll, { passive: true });
     addEventListener('resize', function () { fit(); paint(); });
+    if (PHONE.addEventListener) PHONE.addEventListener('change', function () { fit(); paint(); navPill(); });
     addEventListener('load', function () { fit(); paint(); });
     fit(); paint();
 
@@ -1029,6 +1120,15 @@
     var work = document.getElementById('work-with-me');
     function navPill() {
       var who = 'about';
+      if (PHONE.matches) {
+        var w = work ? work.getBoundingClientRect() : null;
+        who = (w && w.top <= innerHeight * 0.5) ? 'contact'
+            : (wrap.getBoundingClientRect().top <= innerHeight * 0.5 ? 'cases' : 'about');
+        if (about) about.classList.toggle('active', who === 'about');
+        if (cases) cases.classList.toggle('active', who === 'cases');
+        if (contact) contact.classList.toggle('active', who === 'contact');
+        return;
+      }
       if (work && work.getBoundingClientRect().top <= innerHeight * 0.45) who = 'contact';
       else {
         var r = wrap.getBoundingClientRect();
