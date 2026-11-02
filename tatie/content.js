@@ -16,9 +16,9 @@ window.CONTENT = {
     candles: 7,
     kicker: "2 november",           // small line above the title
     title: "happy birthday, tatie", // big title
-    hint: "make a wish, ya albe ✶ then swipe across the candles",
+    hint: "make a wish! ya albe ✶ then swipe across the candles",
     fallbackHint: "can't swipe? tap each flame",
-    done: "kel sene w ente salme, hayete ♡",
+    done: "كل سنة وانت بخير ♡",
     button: "open the scrapbook →",
   },
 
@@ -42,6 +42,19 @@ window.CONTENT = {
      In a strip, a photo can be { src: "...", y: 20 } to move the crop:
        y: 0 shows the top of the photo, 50 the middle, 100 the bottom */
   pages: [
+    {
+      type: "note",
+      title: "for you",
+      envelopeLabel: "tap to open · from reem",
+      letter: [
+        "ya albo la albe,",
+        "happiest of birthdays to my beautifulest, favoritest human in the whole wide world.",
+        "i miss you so much and i love you so much and i'm so proud of everything you've achieved so far.",
+        "you're a literal light to the world and you have the most beautiful, most bubbly energy i've ever seen. i can only hope to watch you grow and bloom into the woman that you are.",
+        "keep being amazing and insane. i love you so much.",
+      ],
+      signoff: "ana bel aktar,<br>reem",
+    },
     {
       type: "photos",
       title: "berlin, us",
@@ -123,7 +136,7 @@ window.CONTENT = {
         { when: "apr 22", what: "signed the contract + lunch with your team lead and HR" },
         { when: "apr 29", what: "first day in the office. berlin girl officially" },
         { when: "sep", what: "\"and....they sent me the contract.\" FULL TIME. 🎉" },
-        { when: "nov 2", what: "a new year of you. i'm so proud of you i could cry. i did." },
+        { when: "nov 2", what: "a new year of you. i'm so proud of you." },
       ],
       photo: { src: "photos/headshot.webp", caption: "corporate tatie 💼", tilt: 3, filter: "bw" },
     },
@@ -179,19 +192,6 @@ window.CONTENT = {
       type: "stickers",
       title: "sticker sheet",
       note: "our most sent stickers. peel them off and stick them anywhere on the page",
-    },
-    {
-      type: "note",
-      title: "for you",
-      envelopeLabel: "tap to open · from reem",
-      letter: [
-        "ya albo la albe,",
-        "happiest of birthdays to my beautifulest, favoritest human in the whole wide world.",
-        "i miss you so much and i love you so much and i'm so proud of everything you've achieved so far.",
-        "you're a literal light to the world and you have the most beautiful, most bubbly energy i've ever seen. i can only hope to watch you grow and bloom into the woman that you are.",
-        "keep being amazing and insane. i love you so much.",
-      ],
-      signoff: "ana bel aktar,<br>reem",
     },
   ],
 

@@ -150,8 +150,15 @@
   }
 
   /* ---- open the scrapbook ---- */
-  $("#open-btn").addEventListener("click", () => {
-    buildBook();
+  $("#open-btn").addEventListener("click", async () => {
+    const btn = $("#open-btn");
+    if (btn.disabled) return;
+    if (!bookReady.done) {
+      // the scrapbook builds behind the cake from the start; only open once every photo + sticker is in
+      btn.disabled = true;
+      btn.textContent = "loading the scrapbook…";
+      await bookReady;
+    }
     document.body.classList.remove("locked");
     document.body.classList.add("opened");
     window.scrollTo(0, 0);
@@ -481,7 +488,7 @@
       return { l: r.left + sx - pad, t: r.top + sy - pad, r: r.right + sx + pad, b: r.bottom + sy + pad };
     };
     const hit = (a, b) => a.l < b.r && a.r > b.l && a.t < b.b && a.b > b.t;
-    const taken = [...book.querySelectorAll(OBSTACLES)].map((el) => box(el, 6));
+    const taken = [...book.querySelectorAll(OBSTACLES)].map((el) => box(el, 10));
     book.querySelectorAll(".free-sticker:not(.auto)").forEach((el) => taken.push(box(el, 4)));
 
     const pages = [...book.querySelectorAll(".page")];
@@ -532,7 +539,7 @@
     const imgs = [...book.querySelectorAll("img")];
     imgs.forEach((i) => (i.loading = "eager"));
     const loaded = Promise.all(imgs.map((i) => (i.complete ? 0 : new Promise((r) => { i.onload = i.onerror = r; }))));
-    const timeout = new Promise((r) => setTimeout(r, 8000));
+    const timeout = new Promise((r) => setTimeout(r, 30000)); // never leave her stuck on a very slow connection
     return Promise.race([Promise.all([loaded, document.fonts.ready]), timeout]);
   }
 
@@ -593,8 +600,11 @@
     const endEl = h("footer", "ending", `${C.ending}<br><button type="button">blow the candles again</button>`);
     endEl.querySelector("button").addEventListener("click", () => location.reload());
     book.appendChild(endEl);
-    whenSettled().then(() => requestAnimationFrame(scatterStickers));
+    return whenSettled().then(() => new Promise((r) => requestAnimationFrame(() => { scatterStickers(); r(); })));
   }
+
+  const bookReady = buildBook();
+  bookReady.then(() => (bookReady.done = true));
 
   // handy for editing: open page.html#book to jump straight to the scrapbook
   if (location.hash === "#book") {
