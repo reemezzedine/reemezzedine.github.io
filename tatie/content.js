@@ -104,7 +104,7 @@ window.CONTENT = {
         {
           label: "matcha girl",
           photo: "photos/blossom-matcha.webp",
-          back: "\"iced matcha latte zu spät bein pilates.\"<br>\"i really am such a simple girl i love going on matcha dates w my girlies.\"<br>a matcha date is owed.",
+          back: "\"i really am such a simple girl i love going on matcha dates w my girlies.\"<br>a matcha date is owed.",
         },
         {
           label: "50 hours",
