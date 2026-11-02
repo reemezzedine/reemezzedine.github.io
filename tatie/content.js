@@ -78,7 +78,7 @@ window.CONTENT = {
     },
     {
       type: "memories",
-      title: "admit one",
+      title: "our little moments",
       note: "tickets to things that live in my head rent free. tap one.",
       items: [
         {
