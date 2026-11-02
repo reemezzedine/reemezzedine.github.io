@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#f5f3ef">
+  <title>happy birthday tatie</title>
+  <meta property="og:title" content="happy birthday tatie">
+  <meta property="og:description" content="make a wish first ♡">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Instrument+Sans:wght@400;500;600&family=Caveat:wght@500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=12">
+</head>
+<body class="locked">
+
+  <!-- ============ CAKE SCREEN (inside the booth) ============ -->
+  <section id="cake-screen" aria-label="Birthday cake">
+    <div class="curtain curtain-l" aria-hidden="true"></div>
+    <div class="curtain curtain-r" aria-hidden="true"></div>
+    <div class="valance" aria-hidden="true"></div>
+
+    <div class="booth-content">
+      <div class="cake-top">
+        <div class="marquee">
+          <div class="marquee-inner">
+            <p class="cake-kicker" id="cake-name"></p>
+            <h1 class="cake-title" id="cake-title"></h1>
+          </div>
+        </div>
+        <p class="cake-hint" id="cake-hint"></p>
+      </div>
+
+      <div class="cake-stage" id="cake-stage">
+        <div class="candles" id="candles"></div>
+        <svg class="cake" viewBox="0 0 320 230" aria-hidden="true">
+          <defs>
+            <pattern id="dots" width="16" height="16" patternUnits="userSpaceOnUse">
+              <circle cx="8" cy="8" r="2" fill="#ffffff" opacity=".8"/>
+            </pattern>
+          </defs>
+          <!-- plate -->
+          <ellipse cx="160" cy="212" rx="150" ry="14" fill="#4f6ef7" opacity=".08"/>
+          <ellipse cx="160" cy="206" rx="146" ry="13" fill="#ffffff" stroke="#e3e8f5" stroke-width="1.5"/>
+          <!-- bottom tier -->
+          <rect x="40" y="120" width="240" height="84" rx="14" fill="#bccaff"/>
+          <rect x="40" y="120" width="240" height="84" rx="14" fill="url(#dots)"/>
+          <g fill="#ffffff">
+            <path d="M42 198 q10 -12 20 0 q10 -12 20 0 q10 -12 20 0 q10 -12 20 0 q10 -12 20 0 q10 -12 20 0 q10 -12 20 0 q10 -12 20 0 q10 -12 20 0 q10 -12 20 0 q10 -12 20 0 q9 -12 16 0 z"/>
+          </g>
+          <!-- top tier -->
+          <rect x="78" y="62" width="164" height="66" rx="12" fill="#ffffff" stroke="#e3e8f5" stroke-width="1.5"/>
+          <path d="M80 84 q13 18 27 0 q13 18 27 0 q13 18 27 0 q13 18 27 0 q13 18 27 0 q13 18 25 0" fill="none" stroke="#f7c6d6" stroke-width="3" stroke-linecap="round"/>
+          <g fill="#f7c6d6"><circle cx="107" cy="84" r="3.2"/><circle cx="134" cy="84" r="3.2"/><circle cx="161" cy="84" r="3.2"/><circle cx="188" cy="84" r="3.2"/><circle cx="215" cy="84" r="3.2"/></g>
+          <g fill="#ffffff">
+            <path d="M80 66 q8 -10 16 0 q8 -10 16 0 q8 -10 16 0 q8 -10 16 0 q8 -10 16 0 q8 -10 16 0 q8 -10 16 0 q8 -10 16 0 q8 -10 16 0 q8 -10 16 0 z"/>
+          </g>
+          <path d="M44 128 q14 14 28 0 q14 14 28 0 q14 14 28 0 q14 14 28 0 q14 14 28 0 q14 14 28 0 q14 14 28 0 q14 14 28 0 q14 14 12 0" fill="#ffffff"/>
+          <!-- bows -->
+          <g transform="translate(60 152)">
+            <path d="M0 0 c-15 -11 -15 11 0 0 c15 -11 15 11 0 0" fill="#f7c6d6"/>
+            <path d="M0 0 l-6 15 M0 0 l6 15" stroke="#f7c6d6" stroke-width="3" stroke-linecap="round"/>
+          </g>
+          <g transform="translate(260 152)">
+            <path d="M0 0 c-15 -11 -15 11 0 0 c15 -11 15 11 0 0" fill="#f7c6d6"/>
+            <path d="M0 0 l-6 15 M0 0 l6 15" stroke="#f7c6d6" stroke-width="3" stroke-linecap="round"/>
+          </g>
+          <text x="160" y="172" text-anchor="middle" font-family="'Instrument Serif', serif" font-style="italic" font-size="34" fill="#ffffff" id="cake-text">tatie</text>
+        </svg>
+      </div>
+
+      <div class="cake-bottom">
+        <p class="cake-done" id="cake-done"></p>
+        <button class="btn" id="open-btn" type="button"></button>
+        <button class="link-btn" id="skip-btn" type="button"></button>
+      </div>
+    </div>
+
+    <div class="flash" id="flash" aria-hidden="true"></div>
+    <canvas id="sparkles" aria-hidden="true"></canvas>
+  </section>
+
+  <!-- ============ SCRAPBOOK ============ -->
+  <main id="book" aria-label="Scrapbook"></main>
+
+  <script src="content.js?v=12"></script>
+  <script src="app.js?v=12"></script>
+</body>
+</html>
