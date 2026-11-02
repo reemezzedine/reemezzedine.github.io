@@ -19,7 +19,6 @@
   $("#cake-done").textContent = C.cake.done;
   $("#open-btn").textContent = C.cake.button;
   $("#skip-btn").textContent = C.cake.fallbackHint;
-  $("#cake-text").textContent = C.nickname.toLowerCase();
 
   const candleWrap = $("#candles");
   const candles = [];

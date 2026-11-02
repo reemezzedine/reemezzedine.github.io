@@ -10,8 +10,8 @@
   <meta property="og:description" content="make a wish first ♡">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Instrument+Sans:wght@400;500;600&family=Caveat:wght@500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=16">
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Instrument+Sans:wght@400;500;600&family=Caveat:wght@500;700&family=Dancing+Script:wght@700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=18">
 </head>
 <body class="locked">
 
@@ -36,37 +36,40 @@
         <div class="candles" id="candles"></div>
         <svg class="cake" viewBox="0 0 320 230" aria-hidden="true">
           <defs>
-            <pattern id="dots" width="16" height="16" patternUnits="userSpaceOnUse">
-              <circle cx="8" cy="8" r="2" fill="#ffffff" opacity=".8"/>
-            </pattern>
+            <linearGradient id="cream" x1="0" x2="1">
+              <stop offset="0" stop-color="#f1dfbb"/><stop offset=".35" stop-color="#fdf5e3"/><stop offset=".65" stop-color="#fdf5e3"/><stop offset="1" stop-color="#ecd7ae"/>
+            </linearGradient>
+            <radialGradient id="cherry" cx=".35" cy=".35" r=".7">
+              <stop offset="0" stop-color="#ff6b6b"/><stop offset=".5" stop-color="#d0202e"/><stop offset="1" stop-color="#8e0f1a"/>
+            </radialGradient>
+            <g id="rosette"><circle r="7" fill="#fff8ea"/><path d="M-4 -1 a4 4 0 1 1 3 4 a2.5 2.5 0 1 1 1 -4" fill="none" stroke="#e3cfa2" stroke-width="1.2" stroke-linecap="round"/></g>
+            <g id="pinkrose"><circle r="6.5" fill="#f4b3bf"/><path d="M-3.5 -1 a3.5 3.5 0 1 1 2.5 3.5 a2 2 0 1 1 1 -3.5" fill="none" stroke="#e07f93" stroke-width="1.2" stroke-linecap="round"/></g>
+            <g id="cherrybit"><path d="M1 -6 q2 -9 8 -13" fill="none" stroke="#4a2a1a" stroke-width="1.4" stroke-linecap="round"/><circle r="6.5" fill="url(#cherry)"/><ellipse cx="-2.2" cy="-2.4" rx="1.8" ry="1.1" fill="#fff" opacity=".7"/></g>
           </defs>
-          <!-- plate -->
-          <ellipse cx="160" cy="212" rx="150" ry="14" fill="#4f6ef7" opacity=".08"/>
-          <ellipse cx="160" cy="206" rx="146" ry="13" fill="#ffffff" stroke="#e3e8f5" stroke-width="1.5"/>
+          <!-- golden doily -->
+          <path d="M312 207 Q320.3 208.9 309.4 210.1 Q314.9 212.7 301.7 213.1 Q304.1 216.4 289.2 215.9 Q288.5 219.7 272.3 218.5 Q268.5 222.5 251.6 220.6 Q244.8 224.9 227.8 222.2 Q218.2 226.6 201.6 223.4 Q189.6 227.6 174 223.9 Q160 228 146 223.9 Q130.4 227.6 118.4 223.4 Q101.8 226.6 92.2 222.2 Q75.2 224.9 68.4 220.6 Q51.5 222.5 47.7 218.5 Q31.5 219.7 30.8 215.9 Q15.9 216.4 18.3 213.1 Q5.1 212.7 10.6 210.1 Q-0.3 208.9 8 207 Q-0.3 205.1 10.6 203.9 Q5.1 201.3 18.3 200.9 Q15.9 197.6 30.8 198.1 Q31.5 194.3 47.7 195.5 Q51.5 191.5 68.4 193.4 Q75.2 189.1 92.2 191.8 Q101.8 187.4 118.4 190.6 Q130.4 186.4 146 190.1 Q160 186 174 190.1 Q189.6 186.4 201.6 190.6 Q218.2 187.4 227.8 191.8 Q244.8 189.1 251.6 193.4 Q268.5 191.5 272.3 195.5 Q288.5 194.3 289.2 198.1 Q304.1 197.6 301.7 200.9 Q314.9 201.3 309.4 203.9 Q320.3 205.1 312 207 Z" fill="#e8c467" stroke="#c99a3a" stroke-width="1.5" transform="translate(0 3)" opacity=".55"/>
+          <path d="M312 207 Q320.3 208.9 309.4 210.1 Q314.9 212.7 301.7 213.1 Q304.1 216.4 289.2 215.9 Q288.5 219.7 272.3 218.5 Q268.5 222.5 251.6 220.6 Q244.8 224.9 227.8 222.2 Q218.2 226.6 201.6 223.4 Q189.6 227.6 174 223.9 Q160 228 146 223.9 Q130.4 227.6 118.4 223.4 Q101.8 226.6 92.2 222.2 Q75.2 224.9 68.4 220.6 Q51.5 222.5 47.7 218.5 Q31.5 219.7 30.8 215.9 Q15.9 216.4 18.3 213.1 Q5.1 212.7 10.6 210.1 Q-0.3 208.9 8 207 Q-0.3 205.1 10.6 203.9 Q5.1 201.3 18.3 200.9 Q15.9 197.6 30.8 198.1 Q31.5 194.3 47.7 195.5 Q51.5 191.5 68.4 193.4 Q75.2 189.1 92.2 191.8 Q101.8 187.4 118.4 190.6 Q130.4 186.4 146 190.1 Q160 186 174 190.1 Q189.6 186.4 201.6 190.6 Q218.2 187.4 227.8 191.8 Q244.8 189.1 251.6 193.4 Q268.5 191.5 272.3 195.5 Q288.5 194.3 289.2 198.1 Q304.1 197.6 301.7 200.9 Q314.9 201.3 309.4 203.9 Q320.3 205.1 312 207 Z" fill="#efcf78" stroke="#c99a3a" stroke-width="1.5"/>
+          <g fill="#fff6dc"><circle cx="305.4" cy="208.3" r="1.3"/> <circle cx="300.4" cy="211" r="1.3"/> <circle cx="290.7" cy="213.5" r="1.3"/> <circle cx="276.5" cy="215.7" r="1.3"/> <circle cx="258.4" cy="217.7" r="1.3"/> <circle cx="236.9" cy="219.3" r="1.3"/> <circle cx="212.7" cy="220.5" r="1.3"/> <circle cx="186.8" cy="221.3" r="1.3"/> <circle cx="160" cy="221.5" r="1.3"/> <circle cx="133.2" cy="221.3" r="1.3"/> <circle cx="107.3" cy="220.5" r="1.3"/> <circle cx="83.1" cy="219.3" r="1.3"/> <circle cx="61.6" cy="217.7" r="1.3"/> <circle cx="43.5" cy="215.7" r="1.3"/> <circle cx="29.3" cy="213.5" r="1.3"/> <circle cx="19.6" cy="211" r="1.3"/> <circle cx="14.6" cy="208.3" r="1.3"/> <circle cx="14.6" cy="205.7" r="1.3"/> <circle cx="19.6" cy="203" r="1.3"/> <circle cx="29.3" cy="200.5" r="1.3"/> <circle cx="43.5" cy="198.3" r="1.3"/> <circle cx="61.6" cy="196.3" r="1.3"/> <circle cx="83.1" cy="194.7" r="1.3"/> <circle cx="107.3" cy="193.5" r="1.3"/> <circle cx="133.2" cy="192.7" r="1.3"/> <circle cx="160" cy="192.5" r="1.3"/> <circle cx="186.8" cy="192.7" r="1.3"/> <circle cx="212.7" cy="193.5" r="1.3"/> <circle cx="236.9" cy="194.7" r="1.3"/> <circle cx="258.4" cy="196.3" r="1.3"/> <circle cx="276.5" cy="198.3" r="1.3"/> <circle cx="290.7" cy="200.5" r="1.3"/> <circle cx="300.4" cy="203" r="1.3"/> <circle cx="305.4" cy="205.7" r="1.3"/></g>
           <!-- bottom tier -->
-          <rect x="40" y="120" width="240" height="84" rx="14" fill="#bccaff"/>
-          <rect x="40" y="120" width="240" height="84" rx="14" fill="url(#dots)"/>
-          <g fill="#ffffff">
-            <path d="M42 198 q10 -12 20 0 q10 -12 20 0 q10 -12 20 0 q10 -12 20 0 q10 -12 20 0 q10 -12 20 0 q10 -12 20 0 q10 -12 20 0 q10 -12 20 0 q10 -12 20 0 q10 -12 20 0 q9 -12 16 0 z"/>
-          </g>
+          <path d="M40 124 v74 a120 9 0 0 0 240 0 v-74 z" fill="url(#cream)"/>
+          <path d="M44 132 q14.5 11 29 0 q14.5 11 29 0 q14.5 11 29 0 q14.5 11 29 0 q14.5 11 29 0 q14.5 11 29 0 q14.5 11 29 0 q14.5 11 29 0" fill="none" stroke="#ec9aac" stroke-width="2" stroke-linecap="round"/>
+          <g fill="#e2b13c"><circle cx="44" cy="132" r="1.7"/><circle cx="73" cy="132" r="1.7"/><circle cx="102" cy="132" r="1.7"/><circle cx="131" cy="132" r="1.7"/><circle cx="160" cy="132" r="1.7"/><circle cx="189" cy="132" r="1.7"/><circle cx="218" cy="132" r="1.7"/><circle cx="247" cy="132" r="1.7"/><circle cx="276" cy="132" r="1.7"/></g>
+          <text x="160" y="178" text-anchor="middle" font-family="'Dancing Script', cursive" font-weight="700" font-size="31" fill="#c8202f" id="cake-text">Happy Birthday</text>
+          <g fill="#c8202f"><circle cx="48" cy="191" r="2"/><circle cx="64" cy="192" r="2"/><circle cx="80" cy="192.1" r="2"/><circle cx="96" cy="191.2" r="2"/><circle cx="112" cy="190.1" r="2"/><circle cx="128" cy="189.8" r="2"/><circle cx="144" cy="190.7" r="2"/><circle cx="160" cy="191.8" r="2"/><circle cx="176" cy="192.2" r="2"/><circle cx="192" cy="191.5" r="2"/><circle cx="208" cy="190.3" r="2"/><circle cx="224" cy="189.8" r="2"/><circle cx="240" cy="190.4" r="2"/><circle cx="256" cy="191.5" r="2"/><circle cx="272" cy="192.2" r="2"/></g>
+          <use href="#pinkrose" x="42" y="200"/><use href="#pinkrose" x="55.1" y="200.7"/><use href="#pinkrose" x="68.2" y="201.4"/><use href="#pinkrose" x="81.3" y="202"/><use href="#pinkrose" x="94.4" y="202.6"/><use href="#pinkrose" x="107.6" y="203.1"/><use href="#pinkrose" x="120.7" y="203.5"/><use href="#pinkrose" x="133.8" y="203.8"/><use href="#pinkrose" x="146.9" y="203.9"/><use href="#pinkrose" x="160" y="204"/><use href="#pinkrose" x="173.1" y="203.9"/><use href="#pinkrose" x="186.2" y="203.8"/><use href="#pinkrose" x="199.3" y="203.5"/><use href="#pinkrose" x="212.4" y="203.1"/><use href="#pinkrose" x="225.6" y="202.6"/><use href="#pinkrose" x="238.7" y="202"/><use href="#pinkrose" x="251.8" y="201.4"/><use href="#pinkrose" x="264.9" y="200.7"/><use href="#pinkrose" x="278" y="200"/>
+          <!-- whipped cream ledge -->
+          <ellipse cx="160" cy="124" rx="120" ry="7" fill="#fbf0d8"/>
+          <use href="#rosette" x="44" y="123"/><use href="#rosette" x="57.6" y="126"/><use href="#rosette" x="71.3" y="123"/><use href="#rosette" x="248.7" y="126"/><use href="#rosette" x="262.4" y="123"/><use href="#rosette" x="276" y="126"/>
           <!-- top tier -->
-          <rect x="78" y="62" width="164" height="66" rx="12" fill="#ffffff" stroke="#e3e8f5" stroke-width="1.5"/>
-          <path d="M80 84 q13 18 27 0 q13 18 27 0 q13 18 27 0 q13 18 27 0 q13 18 27 0 q13 18 25 0" fill="none" stroke="#f7c6d6" stroke-width="3" stroke-linecap="round"/>
-          <g fill="#f7c6d6"><circle cx="107" cy="84" r="3.2"/><circle cx="134" cy="84" r="3.2"/><circle cx="161" cy="84" r="3.2"/><circle cx="188" cy="84" r="3.2"/><circle cx="215" cy="84" r="3.2"/></g>
-          <g fill="#ffffff">
-            <path d="M80 66 q8 -10 16 0 q8 -10 16 0 q8 -10 16 0 q8 -10 16 0 q8 -10 16 0 q8 -10 16 0 q8 -10 16 0 q8 -10 16 0 q8 -10 16 0 q8 -10 16 0 z"/>
-          </g>
-          <path d="M44 128 q14 14 28 0 q14 14 28 0 q14 14 28 0 q14 14 28 0 q14 14 28 0 q14 14 28 0 q14 14 28 0 q14 14 28 0 q14 14 12 0" fill="#ffffff"/>
-          <!-- bows -->
-          <g transform="translate(60 152)">
-            <path d="M0 0 c-15 -11 -15 11 0 0 c15 -11 15 11 0 0" fill="#f7c6d6"/>
-            <path d="M0 0 l-6 15 M0 0 l6 15" stroke="#f7c6d6" stroke-width="3" stroke-linecap="round"/>
-          </g>
-          <g transform="translate(260 152)">
-            <path d="M0 0 c-15 -11 -15 11 0 0 c15 -11 15 11 0 0" fill="#f7c6d6"/>
-            <path d="M0 0 l-6 15 M0 0 l6 15" stroke="#f7c6d6" stroke-width="3" stroke-linecap="round"/>
-          </g>
-          <text x="160" y="172" text-anchor="middle" font-family="'Instrument Serif', serif" font-style="italic" font-size="34" fill="#ffffff" id="cake-text">tatie</text>
+          <path d="M78 64 v56 a82 7 0 0 0 164 0 v-56 z" fill="url(#cream)"/>
+          <path d="M82 80 q13 10 26 0 q13 10 26 0 q13 10 26 0 q13 10 26 0 q13 10 26 0 q13 10 26 0" fill="none" stroke="#ec9aac" stroke-width="1.8" stroke-linecap="round"/>
+          <g fill="#e2b13c"><circle cx="82" cy="80" r="1.7"/><circle cx="108" cy="80" r="1.7"/><circle cx="134" cy="80" r="1.7"/><circle cx="160" cy="80" r="1.7"/><circle cx="186" cy="80" r="1.7"/><circle cx="212" cy="80" r="1.7"/><circle cx="238" cy="80" r="1.7"/></g>
+          <path d="M82 97 q13 8 26 0 q13 8 26 0 q13 8 26 0 q13 8 26 0 q13 8 26 0 q13 8 26 0" fill="none" stroke="#f2b8c4" stroke-width="1.5" stroke-linecap="round"/>
+          <g fill="#e2b13c"><circle cx="82" cy="97" r="1.7"/><circle cx="108" cy="97" r="1.7"/><circle cx="134" cy="97" r="1.7"/><circle cx="160" cy="97" r="1.7"/><circle cx="186" cy="97" r="1.7"/><circle cx="212" cy="97" r="1.7"/><circle cx="238" cy="97" r="1.7"/></g>
+          <ellipse cx="160" cy="64" rx="82" ry="6" fill="#fbf0d8"/>
+          <use href="#rosette" x="80" y="63"/><use href="#rosette" x="93.3" y="65.5"/><use href="#rosette" x="106.7" y="63"/><use href="#rosette" x="120" y="65.5"/><use href="#rosette" x="133.3" y="63"/><use href="#rosette" x="146.7" y="65.5"/><use href="#rosette" x="160" y="63"/><use href="#rosette" x="173.3" y="65.5"/><use href="#rosette" x="186.7" y="63"/><use href="#rosette" x="200" y="65.5"/><use href="#rosette" x="213.3" y="63"/><use href="#rosette" x="226.7" y="65.5"/><use href="#rosette" x="240" y="63"/>
+          <use href="#rosette" x="82" y="121"/><use href="#rosette" x="97.6" y="122.5"/><use href="#rosette" x="113.2" y="121"/><use href="#rosette" x="128.8" y="122.5"/><use href="#rosette" x="144.4" y="121"/><use href="#rosette" x="160" y="122.5"/><use href="#rosette" x="175.6" y="121"/><use href="#rosette" x="191.2" y="122.5"/><use href="#rosette" x="206.8" y="121"/><use href="#rosette" x="222.4" y="122.5"/><use href="#rosette" x="238" y="121"/>
+          <use href="#cherrybit" x="56" y="117"/><use href="#cherrybit" x="266" y="117"/><use href="#cherrybit" x="70" y="121"/><use href="#cherrybit" x="252" y="121"/>
         </svg>
       </div>
 
@@ -84,7 +87,7 @@
   <!-- ============ SCRAPBOOK ============ -->
   <main id="book" aria-label="Scrapbook"></main>
 
-  <script src="content.js?v=16"></script>
-  <script src="app.js?v=16"></script>
+  <script src="content.js?v=18"></script>
+  <script src="app.js?v=18"></script>
 </body>
 </html>
