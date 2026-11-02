@@ -18,7 +18,7 @@ window.CONTENT = {
     title: "happy birthday, tatie", // big title
     hint: "make a wish! ya albe ✶ then swipe across the candles",
     fallbackHint: "can't swipe? tap each flame",
-    done: "كل سنة وانت بخير ♡",
+    done: "kel sene w ente b5eir ♡",
     button: "open the scrapbook →",
   },
 

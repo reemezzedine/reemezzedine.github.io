@@ -74,11 +74,8 @@
     checkSwipe(last, last);
   });
   screen.addEventListener("pointermove", (e) => {
-    // mouse can also "swipe" just by hovering with the button held; touch always counts
-    if (!last) {
-      if (e.pointerType === "mouse" && e.buttons === 0) return;
-      last = { x: e.clientX, y: e.clientY };
-    }
+    // a mouse blows them out just by passing over them, no click needed; touch always counts
+    if (!last) last = { x: e.clientX, y: e.clientY };
     const now = { x: e.clientX, y: e.clientY };
     checkSwipe(last, now);
     last = now;
@@ -86,6 +83,7 @@
   const end = () => (last = null);
   screen.addEventListener("pointerup", end);
   screen.addEventListener("pointercancel", end);
+  screen.addEventListener("pointerleave", end);
   // stop iOS rubber-banding / pull-to-refresh during the swipe
   screen.addEventListener("touchmove", (e) => e.preventDefault(), { passive: false });
 
